@@ -1,10 +1,10 @@
-// App — top-level state machine for the Mise mobile client.
+// App — top-level state machine for the Mise mobile client (Option A nav, MIS-230).
 //   1. No token            -> <Login>.
 //   2. Token, loading      -> brand splash while GET /api/session resolves.
-//   3. Authenticated        -> chat: <TopBar> + <MessageThread> + <Composer>.
-// A 401 anywhere (expired/invalid session) drops back to login. Layout is a
-// fixed-height column (100dvh): only the thread scrolls, so the bar and composer
-// never move and the page never scrolls horizontally.
+//   3. Authenticated       -> <TopBar> + tabbed body + <BottomNav> + <SlideOut>.
+// Navigation is role-specific from roleTier in the verified JWT (immutable).
+// A 401 anywhere drops back to login. Layout is 100dvh column — only the active
+// body scrolls; top bar and bottom nav are sticky.
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   getToken, fetchSession, sendChat, logout, clearToken,
@@ -13,16 +13,14 @@ import {
 } from './api.js';
 import Login from './components/Login.jsx';
 import TopBar from './components/TopBar.jsx';
+import SlideOut from './components/SlideOut.jsx';
 import MessageThread from './components/MessageThread.jsx';
 import Composer from './components/Composer.jsx';
 import ComplianceBanner from './components/ComplianceBanner.jsx';
+import BottomNav from './components/BottomNav.jsx';
+import Runsheet from './components/Runsheet.jsx';
 
-// "Walk me through tonight's handover." and similar -> render the structured
-// handover note (MIS-43) instead of running RAG chat. Manager sessions only.
 const HANDOVER_INTENT = /handover/i;
-
-// The Compliance Monitor banner is delivered to management sessions (Duty
-// Manager tier 5, Venue Manager tier 4) — the roles accountable for the floor.
 const MANAGER_MAX_TIER = 5;
 const ALERT_POLL_MS = 2500;
 
@@ -40,6 +38,8 @@ export default function App() {
   const [sending, setSending] = useState(false);
   const [alerts, setAlerts] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [tab, setTab] = useState('chat');
+  const [menuOpen, setMenuOpen] = useState(false);
 
   const dropToLogin = useCallback(() => {
     clearToken();
@@ -49,13 +49,13 @@ export default function App() {
     setConversationId(null);
     setAlerts([]);
     setSummary(null);
+    setTab('chat');
+    setMenuOpen(false);
   }, []);
 
   const isManager = session?.roleTier != null && session.roleTier <= MANAGER_MAX_TIER;
 
-  // Compliance Monitor: once a manager session resolves, arm the monitor and
-  // poll for active Critical alerts. The backend writes the understaffing alert
-  // ~10s after activation; polling surfaces it into the banner when it lands.
+  // Compliance Monitor: arm on manager login, poll for Critical alerts.
   useEffect(() => {
     if (!authed || !isManager) return;
     let live = true;
@@ -63,53 +63,38 @@ export default function App() {
     const poll = () => {
       fetchComplianceAlerts()
         .then((res) => live && setAlerts(res.alerts || []))
-        .catch((err) => {
-          if (err.status === 401) dropToLogin();
-        });
+        .catch((err) => { if (err.status === 401) dropToLogin(); });
     };
     poll();
     const id = setInterval(poll, ALERT_POLL_MS);
-    return () => {
-      live = false;
-      clearInterval(id);
-    };
+    return () => { live = false; clearInterval(id); };
   }, [authed, isManager, dropToLogin]);
 
   const onAcknowledge = useCallback(async (eventId, note) => {
     await acknowledgeAlert({ eventId, note });
-    // Drop it locally now; the next poll confirms it's cleared server-side.
     setAlerts((a) => a.filter((x) => x.eventId !== eventId));
   }, []);
 
-  // Resolve the session identity for the top bar once authenticated.
+  // Resolve session identity.
   useEffect(() => {
     if (!authed) return;
     let live = true;
     setLoading(true);
     fetchSession()
       .then((s) => live && setSession(s))
-      .catch((err) => {
-        if (err.status === 401) dropToLogin();
-      })
+      .catch((err) => { if (err.status === 401) dropToLogin(); })
       .finally(() => live && setLoading(false));
-    return () => {
-      live = false;
-    };
+    return () => { live = false; };
   }, [authed, dropToLogin]);
 
-  // Duty Manager opening surface (MIS-43): once a manager session resolves,
-  // load the live shift summary so it can render in place of the empty state.
+  // Shift summary for manager opening surface.
   useEffect(() => {
     if (!authed || !isManager) return;
     let live = true;
     fetchShiftSummary()
       .then((s) => live && setSummary(s))
-      .catch((err) => {
-        if (err.status === 401) dropToLogin();
-      });
-    return () => {
-      live = false;
-    };
+      .catch((err) => { if (err.status === 401) dropToLogin(); });
+    return () => { live = false; };
   }, [authed, isManager, dropToLogin]);
 
   const onSend = useCallback(
@@ -119,7 +104,6 @@ export default function App() {
       setMessages((m) => [...m, userMsg, { id: pendingId, role: 'mise', pending: true }]);
       setSending(true);
 
-      // Handover intent (manager only): render the structured note, not RAG chat.
       if (isManager && HANDOVER_INTENT.test(text)) {
         try {
           const handover = await fetchHandover();
@@ -131,20 +115,11 @@ export default function App() {
             ),
           );
         } catch (err) {
-          if (err.status === 401) {
-            dropToLogin();
-            return;
-          }
+          if (err.status === 401) { dropToLogin(); return; }
           setMessages((m) =>
             m.map((msg) =>
               msg.id === pendingId
-                ? {
-                    id: pendingId,
-                    role: 'mise',
-                    error: true,
-                    content: 'Couldn’t load the handover just now. Try again.',
-                    time: clock(),
-                  }
+                ? { id: pendingId, role: 'mise', error: true, content: "Couldn't load the handover just now. Try again.", time: clock() }
                 : msg,
             ),
           );
@@ -161,8 +136,7 @@ export default function App() {
           m.map((msg) =>
             msg.id === pendingId
               ? {
-                  id: pendingId,
-                  role: 'mise',
+                  id: pendingId, role: 'mise',
                   content: res.answer,
                   citations: res.citations,
                   confidence: res.confidence,
@@ -174,20 +148,11 @@ export default function App() {
           ),
         );
       } catch (err) {
-        if (err.status === 401) {
-          dropToLogin();
-          return;
-        }
+        if (err.status === 401) { dropToLogin(); return; }
         setMessages((m) =>
           m.map((msg) =>
             msg.id === pendingId
-              ? {
-                  id: pendingId,
-                  role: 'mise',
-                  error: true,
-                  content: 'Couldn’t reach Mise just now. Check your connection and try again.',
-                  time: clock(),
-                }
+              ? { id: pendingId, role: 'mise', error: true, content: "Couldn't reach Mise just now. Check your connection and try again.", time: clock() }
               : msg,
           ),
         );
@@ -203,8 +168,7 @@ export default function App() {
     dropToLogin();
   }, [dropToLogin]);
 
-  // The whole app lives in one viewport-height column — no page scroll.
-  const shell = { height: '100dvh', display: 'flex', flexDirection: 'column' };
+  const shell = { height: '100dvh', display: 'flex', flexDirection: 'column', background: 'var(--charcoal)', maxWidth: 430, margin: '0 auto' };
 
   if (!authed) {
     return (
@@ -216,8 +180,16 @@ export default function App() {
 
   if (loading) {
     return (
-      <div style={shell} className="items-center justify-center">
-        <div className="grid h-14 w-14 animate-pulse place-items-center rounded-2xl border border-gold/50 font-data text-2xl font-bold text-gold">
+      <div style={{ ...shell, alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{
+          width: 56, height: 56,
+          border: '1px solid rgba(184, 134, 58, 0.5)',
+          borderRadius: 8,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: 24, fontWeight: 700,
+          color: 'var(--gold)',
+        }}>
           M
         </div>
       </div>
@@ -226,16 +198,96 @@ export default function App() {
 
   return (
     <div style={shell}>
-      {/* Compliance alert — pinned above everything; blocks until acknowledged. */}
-      <ComplianceBanner alert={alerts[0]} onAcknowledge={onAcknowledge} />
-      <TopBar session={session} onLogout={onLogout} />
-      <MessageThread
-        messages={messages}
+      {/* Slide-out menu */}
+      <SlideOut
+        open={menuOpen}
         session={session}
-        summary={isManager ? summary : null}
-        onAskHandover={() => onSend("Walk me through tonight's handover.")}
+        onClose={() => setMenuOpen(false)}
+        onLogout={onLogout}
       />
-      <Composer onSend={onSend} disabled={sending} />
+
+      {/* Compliance alert — pinned above all tabs, blocks until acknowledged */}
+      <ComplianceBanner alert={alerts[0]} onAcknowledge={onAcknowledge} />
+
+      <TopBar session={session} onMenuToggle={() => setMenuOpen((v) => !v)} />
+
+      {/* Tabbed body */}
+      {tab === 'chat' && (
+        <>
+          <MessageThread
+            messages={messages}
+            session={session}
+            summary={isManager ? summary : null}
+            onAskHandover={() => onSend("Walk me through tonight's handover.")}
+          />
+          <Composer onSend={onSend} disabled={sending} />
+        </>
+      )}
+
+      {tab === 'run_sheet' && (
+        <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
+          <Runsheet onAuthError={dropToLogin} />
+        </main>
+      )}
+
+      {/* Placeholder screens for tabs not yet built — on-brand, readable */}
+      {['compliance', 'incidents', 'shift', 'bookings', 'labour', 'alerts', 'revenue', 'reports'].includes(tab) && (
+        <ComingSoon label={tab} />
+      )}
+
+      <BottomNav
+        roleTier={session?.roleTier}
+        active={tab}
+        onChange={setTab}
+        alertCount={alerts.length}
+      />
     </div>
+  );
+}
+
+// Placeholder screen for tabs that don't have a full implementation yet.
+function ComingSoon({ label }) {
+  const title = label
+    .split('_')
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(' ');
+  return (
+    <main
+      style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        padding: 32,
+        gap: 12,
+        overflowY: 'auto',
+      }}
+    >
+      <h1
+        style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontSize: 24,
+          fontWeight: 700,
+          color: 'var(--gold)',
+          margin: 0,
+          textAlign: 'center',
+        }}
+      >
+        {title}
+      </h1>
+      <p
+        style={{
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontSize: 17,
+          color: 'var(--cream-60)',
+          margin: 0,
+          textAlign: 'center',
+          lineHeight: 1.6,
+        }}
+      >
+        This screen is coming soon.
+      </p>
+    </main>
   );
 }

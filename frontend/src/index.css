@@ -1,26 +1,45 @@
-/* Mise brand system — applied exactly (MIS-34 / brand spec).
-   Tailwind v4: brand tokens are declared in @theme so they're available as
-   utilities (bg-charcoal, text-cream, text-gold, font-data, etc.). */
+/* Mise brand system — Option A (MIS-230).
+   Tailwind v4: brand tokens declared in @theme become utilities
+   (bg-charcoal, text-cream, text-gold, font-data, font-display, font-editorial). */
 @import 'tailwindcss';
 
 @theme {
-  /* Colours */
-  --color-charcoal: #1c1612; /* all screen backgrounds */
-  --color-gold: #b8863a; /* primary actions, headers, highlights */
-  --color-cream: #f5efe4; /* body text, primary content */
-  --color-cyan: #00c8e8; /* live data, numbers, timestamps */
-  --color-mint: #00e87a; /* positive states, confirmations */
-  --color-red: #e85050; /* alerts, errors, critical flags */
-  --color-amber: #e8a020; /* warnings, moderate alerts */
+  /* Colours — Option A */
+  --color-charcoal: #1c1612; /* primary background — all screens */
+  --color-gold: #b8863a; /* headlines, accents, active states */
+  --color-cream: #f5efe4; /* body copy, primary text */
+  --color-cyan: #00c8e8; /* information / in-progress */
+  --color-mint: #00e87a; /* success / compliant */
+  --color-red: #e85050; /* alert / action required */
+  --color-amber: #e8a020; /* warning / approaching threshold */
 
-  /* A slightly raised surface off the charcoal background, for cards/bubbles. */
-  --color-surface: #261e18;
+  /* Functional surfaces */
+  --color-surface: #231e19; /* card / bubble background */
   --color-surface-2: #2f2620;
   --color-hairline: #3a2f26;
 
-  /* Fonts — DM Sans for UI, IBM Plex Mono for data/numbers/timestamps. */
-  --font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
-  --font-data: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+  /* Fonts — Option A four-family system */
+  --font-display: 'Playfair Display', Georgia, serif; /* screen titles, headings */
+  --font-editorial: 'Cormorant Garamond', Georgia, serif; /* body copy, message text */
+  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif; /* UI labels, nav, buttons */
+  --font-data: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace; /* numbers, metrics, timestamps */
+}
+
+/* Option A CSS custom properties — used in components that need inline styles */
+:root {
+  --charcoal:    #1C1612;
+  --gold:        #B8863A;
+  --cream:       #F5EFE4;
+  --cyan:        #00C8E8;
+  --mint:        #00E87A;
+  --red:         #E85050;
+  --amber:       #E8A020;
+  --gold-15:     rgba(184, 134, 58, 0.15);
+  --gold-25:     rgba(184, 134, 58, 0.25);
+  --gold-40:     rgba(184, 134, 58, 0.40);
+  --cream-60:    rgba(245, 239, 228, 0.60);
+  --cream-40:    rgba(245, 239, 228, 0.40);
+  --charcoal-90: rgba(28, 22, 18, 0.90);
 }
 
 html,

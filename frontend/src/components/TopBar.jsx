@@ -1,55 +1,80 @@
-// TopBar — the persistent header. Shows the white-label (brand) name, the
-// venue name + state, and the signed-in role. ALL of it comes from
-// GET /api/session (the verified token's session), never hardcoded.
+// TopBar — Option A spec (MIS-230). Persistent 44px header.
+// Layout: MISE logotype (gold, Playfair) | venue name (cream italic, centred) | hamburger
+// All content from GET /api/session — never hardcoded.
 //
-// Data shape (props.session):
-//   { whiteLabelName, venueName, venueState, role, roleTier, staffName }
+// Props:
+//   session: { whiteLabelName, venueName, venueState, role, roleTier, staffName }
+//   onMenuToggle(): opens/closes the slide-out panel
 import React from 'react';
 
-export default function TopBar({ session, onLogout }) {
-  const venueLine = session
-    ? `${session.venueName} · ${session.venueState}`
-    : '—';
+export default function TopBar({ session, onMenuToggle }) {
   return (
     <header
-      className="shrink-0 border-b border-hairline bg-charcoal px-4"
-      style={{ paddingTop: 'calc(var(--safe-top) + 0.75rem)', paddingBottom: '0.75rem' }}
+      style={{
+        height: 44,
+        background: 'var(--charcoal)',
+        borderBottom: '1px solid var(--gold-25)',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        padding: '0 16px',
+        flexShrink: 0,
+        position: 'sticky',
+        top: 0,
+        zIndex: 50,
+      }}
     >
-      <div className="flex items-center justify-between gap-3">
-        <div className="min-w-0">
-          {/* Brand / white-label name — gold, the product identity. */}
-          <h1 className="truncate text-lg font-bold tracking-tight text-gold">
-            {session?.whiteLabelName || 'Mise'}
-          </h1>
-          {/* Venue + state in mono (it's data). */}
-          <p className="truncate font-data text-xs text-cyan">{venueLine}</p>
-        </div>
-        <div className="flex shrink-0 items-center gap-2">
-          {/* Role chip — derived from the token, not selectable here. */}
-          {session?.role && (
-            <span className="rounded-full border border-gold/40 px-2.5 py-1 text-[11px] font-semibold text-cream/90">
-              {session.role}
-            </span>
-          )}
-          <button
-            type="button"
-            onClick={onLogout}
-            aria-label="Log out"
-            className="grid h-11 w-11 place-items-center rounded-full text-cream/60 transition-colors hover:text-cream active:text-gold"
-          >
-            {/* logout glyph */}
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-              <path
-                d="M15 12H4m0 0 3.5-3.5M4 12l3.5 3.5M14 5h3a2 2 0 0 1 2 2v10a2 2 0 0 1-2 2h-3"
-                stroke="currentColor"
-                strokeWidth="1.8"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
+      <span
+        style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
+          fontWeight: 700,
+          fontSize: 14,
+          letterSpacing: '0.22em',
+          textTransform: 'uppercase',
+          color: 'var(--gold)',
+          flexShrink: 0,
+        }}
+      >
+        {session?.whiteLabelName || 'MISE'}
+      </span>
+
+      <span
+        style={{
+          fontFamily: "'Cormorant Garamond', Georgia, serif",
+          fontSize: 14,
+          fontStyle: 'italic',
+          color: 'var(--cream-60)',
+          flex: 1,
+          textAlign: 'center',
+          padding: '0 8px',
+          overflow: 'hidden',
+          whiteSpace: 'nowrap',
+          textOverflow: 'ellipsis',
+        }}
+      >
+        {session ? session.venueName : '—'}
+      </span>
+
+      <button
+        type="button"
+        onClick={onMenuToggle}
+        aria-label="Open menu"
+        style={{
+          background: 'none',
+          border: 'none',
+          cursor: 'pointer',
+          padding: 4,
+          display: 'flex',
+          flexDirection: 'column',
+          gap: 4,
+          minHeight: 'unset',
+          flexShrink: 0,
+        }}
+      >
+        <span style={{ display: 'block', width: 20, height: 1.5, background: 'var(--cream-60)', borderRadius: 1 }} />
+        <span style={{ display: 'block', width: 20, height: 1.5, background: 'var(--cream-60)', borderRadius: 1 }} />
+        <span style={{ display: 'block', width: 20, height: 1.5, background: 'var(--cream-60)', borderRadius: 1 }} />
+      </button>
     </header>
   );
 }

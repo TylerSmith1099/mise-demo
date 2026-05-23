@@ -10,6 +10,8 @@
 //   POST /api/chat     -> { conversationId, answer, citations[], confidence, lowConfidence, confidenceFloor }
 //   GET  /api/shift-summary -> { venueName, staffing, gamingLabour, openCompliance[], priorHandover } (MIS-43)
 //   GET  /api/handover -> { fromRole, toRole, shiftDate, author, openComplianceItems[], staffingNotes, incidentsSummary, actionItems[] } (MIS-43)
+//   GET  /api/runsheet -> { shiftDate, shiftLabel, items[] }                      (MIS-102 — endpoint owned by Backend)
+//   POST /api/runsheet/items/:id/check { done } -> { id, done, completedAt, completedBy } (MIS-102)
 
 const TOKEN_KEY = 'mise.token';
 
@@ -85,6 +87,45 @@ export async function logout() {
   } finally {
     clearToken();
   }
+}
+
+// ---- Shift Runsheet (MIS-102) ---------------------------------------------
+// The runsheet is a token/RLS-scoped task list for the caller's current shift.
+// Expected shape (defined by UI, implemented by Backend — see Ops/Issues/MIS-UI-NAV.md):
+//   { shiftDate: ISO, shiftLabel: 'Evening', items: [
+//       { id, label, dueAt?: ISO, category?: 'open'|'compliance'|'gaming'|'bar'|'open_close',
+//         done: bool, completedAt?: ISO, completedBy?: string } ] }
+export function fetchRunsheet() {
+  return request('/api/runsheet');
+}
+// Check / uncheck a task. The server stamps completedAt/completedBy from the
+// verified session — the client never supplies who or when.
+export function checkRunsheetItem({ id, done }) {
+  return request(`/api/runsheet/items/${encodeURIComponent(id)}/check`, {
+    method: 'POST',
+    body: { done },
+  });
+}
+
+// ---- Revenue Intelligence (MIS-238) ---------------------------------------
+// Duty Manager / Venue Manager only. Labour % per department vs benchmark.
+export function fetchRevenueIntelligence() {
+  return request('/api/revenue-intelligence');
+}
+export function flagRevenueItem({ department, labourPct }) {
+  return request('/api/revenue-intelligence/flag', {
+    method: 'POST',
+    body: { department, labourPct },
+  });
+}
+
+// ---- Reservations (MIS-243) -----------------------------------------------
+// All roles. Returns the demo Saturday's reservation data by default.
+// Shape: { date, services: [{ serviceCategory, serviceName, window,
+//   totalBookedPax, vipCount, walkInPrediction, timeSlots, bookings }] }
+export function fetchReservations(date) {
+  const path = date ? `/api/reservations/${encodeURIComponent(date)}` : '/api/reservations';
+  return request(path);
 }
 
 // ---- Compliance Monitor (MIS-44) ------------------------------------------
