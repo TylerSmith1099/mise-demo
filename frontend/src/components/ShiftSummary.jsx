@@ -8,8 +8,9 @@
 // is hardcoded. A tap on "View full handover" sends the handover request up to
 // the chat so the structured note renders inline.
 //
-// Props: { summary, staffName, onAskHandover }
+// Props: { summary, staffName, reservations?, onAskHandover }
 import React from 'react';
+import ReservationsSection from './ReservationsSection.jsx';
 
 // "15:10" from an ISO timestamp, in venue-local 24h (data → mono).
 function hhmm(iso) {
@@ -26,7 +27,7 @@ function clip(text, n = 7) {
   return w.length <= n ? text : `${w.slice(0, n).join(' ')}…`;
 }
 
-export default function ShiftSummary({ summary, staffName, onAskHandover }) {
+export default function ShiftSummary({ summary, staffName, reservations, onAskHandover }) {
   if (!summary) return null;
   const { staffing, gamingLabour, openCompliance = [], priorHandover } = summary;
   const first = staffName ? staffName.split(' ')[0] : null;
@@ -130,6 +131,9 @@ export default function ShiftSummary({ summary, staffName, onAskHandover }) {
           </button>
         </Card>
       )}
+
+      {/* Reservations — below shift overview (feature spec MIS-243) */}
+      {reservations && <ReservationsSection reservations={reservations} />}
     </section>
   );
 }

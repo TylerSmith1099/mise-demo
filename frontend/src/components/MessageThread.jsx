@@ -3,12 +3,12 @@
 // knows what to ask. The thread is the only vertically-scrolling region; the
 // top bar and composer stay fixed.
 //
-// Props: { messages: [msg], session, summary?, onAskHandover? }
+// Props: { messages: [msg], session, summary?, reservations?, onAskHandover? }
 import React, { useEffect, useRef } from 'react';
 import MessageBubble from './MessageBubble.jsx';
 import ShiftSummary from './ShiftSummary.jsx';
 
-export default function MessageThread({ messages, session, summary, onAskHandover }) {
+export default function MessageThread({ messages, session, summary, reservations, onAskHandover }) {
   const endRef = useRef(null);
   useEffect(() => {
     endRef.current?.scrollIntoView({ behavior: 'smooth', block: 'end' });
@@ -22,6 +22,7 @@ export default function MessageThread({ messages, session, summary, onAskHandove
         summary ? (
           <ShiftSummary
             summary={summary}
+            reservations={reservations}
             staffName={session?.staffName}
             onAskHandover={onAskHandover}
           />

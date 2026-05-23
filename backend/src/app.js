@@ -17,6 +17,8 @@ import { shiftSummaryRouter } from './shift-summary-api.js';
 import { runsheetRouter } from './runsheet-api.js';
 import { complianceRouter } from './compliance-monitor.js';
 import { demoRouter } from './api/routes/demo.js';
+import { reservationsRouter } from './reservations-api.js';
+import { revenueIntelligenceRouter } from './revenue-intelligence-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -114,6 +116,14 @@ export function createApp(config) {
   // /api/compliance/demo-alerts, /api/compliance/register. Serves the mock
   // adapters for The Steward Hotel. Behind authenticate like everything else.
   api.use('/', demoRouter());
+
+  // Revenue Intelligence (MIS-238): /api/revenue-intelligence + /flag.
+  // Tier 4/5 only — labour/revenue data is not visible to floor staff.
+  api.use('/', revenueIntelligenceRouter());
+
+  // Reservations (MIS-243): /api/reservations + /api/reservations/:date.
+  // All roles — no tier restriction per feature spec.
+  api.use('/', reservationsRouter());
 
   app.use('/api', api);
 

@@ -8,7 +8,7 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   getToken, fetchSession, sendChat, logout, clearToken,
-  fetchShiftSummary, fetchHandover,
+  fetchShiftSummary, fetchHandover, fetchReservations,
   activateComplianceMonitor, fetchComplianceAlerts, acknowledgeAlert,
 } from './api.js';
 import Login from './components/Login.jsx';
@@ -38,6 +38,7 @@ export default function App() {
   const [sending, setSending] = useState(false);
   const [alerts, setAlerts] = useState([]);
   const [summary, setSummary] = useState(null);
+  const [reservations, setReservations] = useState(null);
   const [tab, setTab] = useState('chat');
   const [menuOpen, setMenuOpen] = useState(false);
 
@@ -49,6 +50,7 @@ export default function App() {
     setConversationId(null);
     setAlerts([]);
     setSummary(null);
+    setReservations(null);
     setTab('chat');
     setMenuOpen(false);
   }, []);
@@ -96,6 +98,16 @@ export default function App() {
       .catch((err) => { if (err.status === 401) dropToLogin(); });
     return () => { live = false; };
   }, [authed, isManager, dropToLogin]);
+
+  // Reservations — all roles (per feature spec MIS-243).
+  useEffect(() => {
+    if (!authed || !session) return;
+    let live = true;
+    fetchReservations()
+      .then((r) => live && setReservations(r))
+      .catch((err) => { if (err.status === 401) dropToLogin(); });
+    return () => { live = false; };
+  }, [authed, session, dropToLogin]);
 
   const onSend = useCallback(
     async (text) => {
@@ -218,6 +230,7 @@ export default function App() {
             messages={messages}
             session={session}
             summary={isManager ? summary : null}
+            reservations={reservations}
             onAskHandover={() => onSend("Walk me through tonight's handover.")}
           />
           <Composer onSend={onSend} disabled={sending} />

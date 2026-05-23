@@ -11,7 +11,8 @@
 // Props:
 //   onAuthError(): called on a 401 so the shell can drop to <Login>
 import React, { useCallback, useEffect, useState } from 'react';
-import { fetchRunsheet, checkRunsheetItem } from '../api.js';
+import { fetchRunsheet, checkRunsheetItem, fetchReservations } from '../api.js';
+import ReservationsSection from './ReservationsSection.jsx';
 
 function hhmm(iso) {
   if (!iso) return '';
@@ -32,6 +33,7 @@ const CATEGORY_COLOUR = {
 
 export default function Runsheet({ onAuthError }) {
   const [state, setState] = useState({ status: 'loading', sheet: null });
+  const [reservations, setReservations] = useState(null);
 
   useEffect(() => {
     let live = true;
@@ -42,6 +44,9 @@ export default function Runsheet({ onAuthError }) {
         // 404 / not-yet-implemented endpoint → calm empty state, not an error wall.
         live && setState({ status: err.status === 404 ? 'empty' : 'error', sheet: null });
       });
+    fetchReservations()
+      .then((r) => live && setReservations(r))
+      .catch(() => {});
     return () => {
       live = false;
     };
@@ -144,6 +149,9 @@ export default function Runsheet({ onAuthError }) {
           <span className="text-mint">{done}</span>/{items.length}
         </span>
       </header>
+
+      {/* Reservations section — all roles per feature spec (MIS-243) */}
+      {reservations && <ReservationsSection reservations={reservations} />}
 
       <ul className="flex flex-col gap-2">
         {items.map((item) => (
