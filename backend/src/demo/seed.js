@@ -27,6 +27,16 @@ import { getGamingMachines, getPosSummary } from '../integrations/mock/pos.js';
 
 export const DEMO_PASSWORD = 'mise-demo-2026';
 
+// Fixed, DOCUMENTED demo tenant ids (MIS-201). The login screen requires a
+// Client ID + Venue ID, so the demo accounts are only usable if those ids are
+// stable and known. Previously the seed minted random UUIDs every boot, which
+// (a) left the login ids only in the deploy logs and (b) created a fresh orphan
+// tenant on every redeploy. Pinning them makes the demo loginable with the
+// credentials in DEPLOY.md and makes the seed idempotent across reboots.
+// Overridable via env for any environment that needs different ids.
+export const DEMO_CLIENT_ID = process.env.DEMO_CLIENT_ID || 'a0000000-0000-4000-8000-000000000001';
+export const DEMO_VENUE_ID = process.env.DEMO_VENUE_ID || 'a0000000-0000-4000-8000-000000000002';
+
 // The three demo accounts map onto specific seeded staff (by externalStaffId).
 export const DEMO_ACCOUNTS = [
   { email: 'gaming@steward.demo',      externalStaffId: 'STW-011', label: 'Gaming Attendant (Sarah Chen)' },
@@ -36,11 +46,21 @@ export const DEMO_ACCOUNTS = [
 
 export async function seedStewardDemo() {
   const passwordHash = await hashPassword(DEMO_PASSWORD);
-  const clientId = randomUUID();
-  const venueId = randomUUID();
+  const clientId = DEMO_CLIENT_ID;
+  const venueId = DEMO_VENUE_ID;
 
   // externalStaffId -> { staffId, email } for wiring demo logins.
   const idMap = new Map();
+
+  // Idempotent: if this demo tenant is already seeded, do nothing. This lets the
+  // container boot with SEED_ON_BOOT=1 on a persistent DB without duplicate-key
+  // errors or orphan tenants — the demo ids stay stable across redeploys.
+  const already = await withClientContext(clientId, (q) =>
+    q(`SELECT 1 FROM clients WHERE client_id = $1`, [clientId]).then((r) => r.rowCount > 0),
+  );
+  if (already) {
+    return { clientId, venueId, staffCount: STAFF.length, idMap, skipped: true };
+  }
 
   await withClientContext(clientId, async (q) => {
     await q(

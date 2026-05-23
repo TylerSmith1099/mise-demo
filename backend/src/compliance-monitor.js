@@ -23,8 +23,21 @@
 
 import { Router } from 'express';
 import { withClientContext } from './db.js';
+import {
+  getRgRegister,
+  getActiveInspection,
+  getVenueCompliance,
+} from './integrations/mock/compliance.js';
 
 export const UNDERSTAFFING_EVENT_TYPE = 'gaming_understaffing';
+
+// Register-derived alert event types (MIS-201, Scene 3). These are the
+// additional alerts the Compliance Monitor emits alongside the live
+// understaffing check so all of Scene 3 auto-fires on Duty Manager login.
+export const RG_CERT_LAPSED_EVENT_TYPE = 'rg_cert_lapsed_on_floor';
+export const INSPECTION_EVENT_TYPE = 'compliance_inspection_in_progress';
+export const LICENCE_RENEWAL_EVENT_TYPE = 'liquor_licence_renewal_due';
+
 // Demo trigger delay. Overridable for tests; the spec calls for ~10s.
 export const ACTIVATION_DELAY_MS = Number(process.env.COMPLIANCE_DELAY_MS || 10000);
 
@@ -113,6 +126,100 @@ export async function runUnderstaffingCheck({ clientId, venueId }) {
   });
 }
 
+// Idempotently insert one Critical/Warning compliance event for `venue` unless
+// an unacknowledged one of the same event_type already exists. Runs inside the
+// caller's RLS context (`q` is already client-scoped). staff_id is left NULL —
+// the responsible staff member is named in the human-readable description, which
+// avoids coupling to the demo's per-boot random staff UUIDs.
+async function upsertEvent(q, { clientId, venueId, eventType, severity, description }) {
+  const { rows: existing } = await q(
+    `SELECT event_id, event_type, severity, description, created_at
+       FROM compliance_events
+      WHERE venue_id = $1 AND event_type = $2
+        AND acknowledged_at IS NULL AND deleted_at IS NULL
+      ORDER BY created_at DESC LIMIT 1`,
+    [venueId, eventType],
+  );
+  if (existing.length) return existing[0];
+  const { rows: ins } = await q(
+    `INSERT INTO compliance_events
+       (client_id, venue_id, staff_id, event_type, severity, description)
+     VALUES ($1, $2, NULL, $3, $4, $5)
+     RETURNING event_id, event_type, severity, description, created_at`,
+    [clientId, venueId, eventType, severity, description],
+  );
+  return ins[0];
+}
+
+/**
+ * Generate the register-derived Scene 3 alerts — RG certification lapsed on the
+ * gaming floor, an inspection in progress, and the liquor-licence renewal due —
+ * from the compliance register (the demo's single source of truth) and persist
+ * them as compliance_events for the caller's venue. Idempotent per event_type,
+ * so re-activation never duplicates. These are real, acknowledgeable rows, so
+ * the must-ack banner flow (POST /compliance/alerts/:id/ack) works unchanged.
+ *
+ * @returns {Promise<Array>} the events that now exist for the venue.
+ */
+export async function generateRegisterAlerts({ clientId, venueId }) {
+  return withClientContext(clientId, async (q) => {
+    const out = [];
+
+    // 1) RG certification lapsed for a staff member rostered on the gaming floor.
+    const rgLapsed = getRgRegister().filter((r) => r.status === 'expired' && r.onGamingFloor);
+    for (const r of rgLapsed) {
+      out.push(
+        await upsertEvent(q, {
+          clientId, venueId,
+          eventType: RG_CERT_LAPSED_EVENT_TYPE,
+          severity: 'critical',
+          description:
+            `RG certification lapsed — ${r.name} (${r.role}) RG cert expired ${r.expiryDate} ` +
+            `but is rostered on the gaming floor. Remove from the gaming floor ` +
+            `immediately and arrange renewal.`,
+        }),
+      );
+    }
+
+    // 2) Compliance inspection in progress.
+    const insp = getActiveInspection();
+    if (insp.inProgress) {
+      const arrived = new Date(insp.inspectorArrivedAt).toLocaleTimeString('en-AU', {
+        hour: '2-digit', minute: '2-digit', hour12: false, timeZone: 'Australia/Brisbane',
+      });
+      const requested = (insp.requested || []).join(' and ');
+      out.push(
+        await upsertEvent(q, {
+          clientId, venueId,
+          eventType: INSPECTION_EVENT_TYPE,
+          severity: 'critical',
+          description:
+            `Compliance inspection in progress — inspector on site since ${arrived} ` +
+            `(${insp.arrivedMinutesAgo}+ min) and has requested the ${requested}. ` +
+            `Duty Manager action required.`,
+        }),
+      );
+    }
+
+    // 3) Liquor licence renewal due (amber).
+    const venue = getVenueCompliance();
+    if (venue.liquorLicence?.status === 'amber') {
+      out.push(
+        await upsertEvent(q, {
+          clientId, venueId,
+          eventType: LICENCE_RENEWAL_EVENT_TYPE,
+          severity: 'warning',
+          description:
+            `Liquor licence renewal due — licence is amber and expires ${venue.liquorLicence.expiry}. ` +
+            `Renewal process should already be underway.`,
+        }),
+      );
+    }
+
+    return out;
+  });
+}
+
 function toAlert(row) {
   return {
     eventId: row.event_id,
@@ -126,8 +233,12 @@ function toAlert(row) {
 export function complianceRouter({ delayMs = ACTIVATION_DELAY_MS } = {}) {
   const router = Router();
 
-  // ---- POST /compliance/activate : arm the 10s Check-4 trigger -------------
-  router.post('/compliance/activate', (req, res) => {
+  // ---- POST /compliance/activate : emit Scene 3 alerts + arm Check-4 -------
+  // The register-derived alerts (RG lapsed on floor, inspection in progress,
+  // licence renewal) are emitted IMMEDIATELY so they surface on the Duty
+  // Manager's first poll after login. The live understaffing check keeps its
+  // deliberate ~10s "monitor detected it" beat.
+  router.post('/compliance/activate', async (req, res, next) => {
     const { clientId, venueId } = req.auth;
     const key = `${clientId}:${venueId}`;
     if (!pendingChecks.has(key)) {
@@ -139,6 +250,13 @@ export function complianceRouter({ delayMs = ACTIVATION_DELAY_MS } = {}) {
       }, delayMs);
       // Don't keep the event loop (or a test process) alive on this timer.
       timer.unref?.();
+    }
+    try {
+      await generateRegisterAlerts({ clientId, venueId });
+    } catch (err) {
+      // Never fail activation on the register-alert path — the understaffing
+      // timer and the alerts poll still proceed.
+      console.error('[compliance-monitor] register alerts failed:', err.message);
     }
     res.json({ activated: true, checkInSeconds: Math.round(delayMs / 1000) });
   });
@@ -152,10 +270,11 @@ export function complianceRouter({ delayMs = ACTIVATION_DELAY_MS } = {}) {
           `SELECT event_id, event_type, severity, description, created_at
              FROM compliance_events
             WHERE venue_id = $1
-              AND severity = 'critical'
+              AND severity IN ('critical', 'warning')
               AND acknowledged_at IS NULL
               AND deleted_at IS NULL
-            ORDER BY created_at DESC`,
+            ORDER BY CASE severity WHEN 'critical' THEN 0 ELSE 1 END,
+                     created_at DESC`,
           [venueId],
         );
         return rows;

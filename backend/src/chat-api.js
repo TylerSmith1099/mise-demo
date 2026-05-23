@@ -41,12 +41,50 @@ import { isSynthesisAvailable, synthesizeAnswer } from './rag/synthesize.js';
 //
 // The persona's confidence rules are honoured: with the calibrated floor
 // (retrieve.js), a real match answers confidently and an off-topic query hedges.
-function composeAnswer({ results, lowConfidence, persona }) {
+// Intent-aware lead-chunk selection (MIS-201, Scene 1). The offline hashing
+// embedder compresses cosine into a narrow band, so two topically-adjacent RG
+// chunks — "interaction with a patron showing signs of problem gambling /
+// distress" and "interaction with EXCLUDED patrons (self-exclusion)" — can land
+// within ~0.03 of each other and fuse in the wrong order. A patron-DISTRESS
+// question must lead with the distress-interaction guidance, not the
+// self-exclusion procedure (a different scenario). Both chunks are still
+// retrieved and cited; this only fixes which one leads the answer. When the
+// AU-hosted semantic model lands, the bands separate and this is a no-op.
+const DISTRESS_INTENT =
+  /distress|upset|cry|crying|agitat|problem gambl|chasing loss|borrow money|wellbeing|welfare|in trouble|signs? of harm|self-disclos|continuous play/i;
+const EXCLUSION_INTENT = /exclud|self-?exclu|banned|barred|exclusion register/i;
+// A chunk that IS the problem-gambling / patron-distress interaction guidance.
+const DISTRESS_CHUNK = (r) => {
+  const t = `${r.section || ''} ${r.content || ''}`;
+  return /distress|signs? of problem gambling|showing signs|problem gambling|wellbeing|continuous play/i.test(t);
+};
+
+// Pick the chunk that should LEAD the answer. Defaults to the fused top, but for
+// a patron-distress / problem-gambling question whose top chunk is NOT the
+// distress-interaction guidance (most often the self-exclusion procedure, which
+// is a different scenario, but also any incidental harm/safety chunk), it
+// promotes the highest-ranked distress-interaction chunk that the hybrid search
+// already surfaced. Exclusion-intent questions are deliberately exempt so a
+// genuine self-exclusion query still leads with the exclusion procedure.
+function selectLeadResult(results, query = '') {
+  if (results.length < 2) return results[0];
+  if (
+    DISTRESS_INTENT.test(query) &&
+    !EXCLUSION_INTENT.test(query) &&
+    !DISTRESS_CHUNK(results[0])
+  ) {
+    const distress = results.find(DISTRESS_CHUNK);
+    if (distress) return distress;
+  }
+  return results[0];
+}
+
+function composeAnswer({ results, lowConfidence, persona, query = '' }) {
   if (!results.length) {
     return "I couldn't find anything in your venue's knowledge base for that. " +
       'Check with your Duty Manager before acting.';
   }
-  const top = results[0];
+  const top = selectLeadResult(results, query);
 
   // Citation trail: the on-point source, plus the most relevant statute/code.
   // For a gambling/gaming question we prefer the Gaming Machine Act / RG Code
@@ -224,15 +262,21 @@ export function chatRouter(config) {
           // Fail safe, not closed: never drop the turn because synthesis is
           // unreachable. Fall back to deterministic compose; log non-secret cause.
           console.warn(`chat synthesis failed, using deterministic fallback: ${err.message}`);
-          answer = composeAnswer({ results, lowConfidence, persona });
+          answer = composeAnswer({ results, lowConfidence, persona, query: message });
         }
       } else {
-        answer = composeAnswer({ results, lowConfidence });
+        answer = composeAnswer({ results, lowConfidence, query: message });
       }
 
       // Citations: source + section + confidence for each retrieved chunk — the
-      // compliance audit trail the UI shows beneath the answer.
-      const citations = results.map((r) => ({
+      // compliance audit trail the UI shows beneath the answer. The chunk that
+      // LEADS the answer is listed first so the Sources list stays coherent with
+      // the answer text (intent routing, MIS-201); the rest keep retrieval order.
+      const lead = selectLeadResult(results, message);
+      const orderedResults = lead && results[0] !== lead
+        ? [lead, ...results.filter((r) => r !== lead)]
+        : results;
+      const citations = orderedResults.map((r) => ({
         source: r.source,
         section: r.section,
         confidence: r.confidence,

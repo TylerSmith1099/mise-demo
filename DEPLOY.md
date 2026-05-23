@@ -28,10 +28,17 @@ hardcoded backend host — the client uses relative `/auth` and `/api` paths).
 
 ## Demo accounts (seeded by `src/demo/seed.js`)
 
-Password for all three: `mise-demo-2026`
+The login screen asks for **Client ID + Venue ID + email + password**. These ids
+are FIXED and idempotent across redeploys (overridable via `DEMO_CLIENT_ID` /
+`DEMO_VENUE_ID` env):
+
+- **Client ID:** `a0000000-0000-4000-8000-000000000001`
+- **Venue ID:** `a0000000-0000-4000-8000-000000000002`
+
+Password for all three accounts: `mise-demo-2026`
 
 - `gaming@steward.demo` — Gaming Attendant (Scene 1)
-- `dutymanager@steward.demo` — Duty Manager (Scene 2)
+- `dutymanager@steward.demo` — Duty Manager (Scene 2 + 3)
 - `manager@steward.demo` — Venue Manager
 
 ## One-shot seed/ingest (persistent DB)

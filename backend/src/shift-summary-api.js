@@ -22,6 +22,7 @@
 
 import { Router } from 'express';
 import { withClientContext } from './db.js';
+import { getDemoHandover } from './integrations/mock/handover.js';
 
 export const GAMING_LABOUR_THRESHOLD_PCT = 12;
 // Matches the seed's monthly→weekly factor (scripts/seed-demo-criterion.js, W).
@@ -216,7 +217,11 @@ export function shiftSummaryRouter() {
       const handover = await withClientContext(clientId, (q) =>
         buildHandover(q, { venueId }),
       );
-      if (!handover) return res.status(404).json({ error: 'no_handover_note' });
+      // Real clients carry a relational handover_notes row. The demo tenant's
+      // operational truth lives in the mock adapters, so when no note exists we
+      // aggregate the structured handover from the live demo data (MIS-201)
+      // rather than 404-ing Scene 2.
+      if (!handover) return res.json(getDemoHandover());
       res.json(handover);
     } catch (err) {
       next(err);
