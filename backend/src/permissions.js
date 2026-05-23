@@ -41,6 +41,9 @@ export const PERMISSION_MAP = Object.freeze({
 
   // Staff directory — Coordinator / admin only.
   staff:           Object.freeze([4]),
+
+  // Revenue Intelligence — Duty Manager and Venue Manager (not floor staff).
+  'revenue-intelligence': Object.freeze([4, 5]),
 });
 
 /**

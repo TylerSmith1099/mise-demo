@@ -239,7 +239,7 @@ export default function App() {
 
       {tab === 'run_sheet' && (
         <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
-          <Runsheet onAuthError={dropToLogin} />
+          <Runsheet onAuthError={dropToLogin} roleTier={session?.roleTier} />
         </main>
       )}
 
