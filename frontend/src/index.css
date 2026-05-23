@@ -1,0 +1,80 @@
+/* Mise brand system — applied exactly (MIS-34 / brand spec).
+   Tailwind v4: brand tokens are declared in @theme so they're available as
+   utilities (bg-charcoal, text-cream, text-gold, font-data, etc.). */
+@import 'tailwindcss';
+
+@theme {
+  /* Colours */
+  --color-charcoal: #1c1612; /* all screen backgrounds */
+  --color-gold: #b8863a; /* primary actions, headers, highlights */
+  --color-cream: #f5efe4; /* body text, primary content */
+  --color-cyan: #00c8e8; /* live data, numbers, timestamps */
+  --color-mint: #00e87a; /* positive states, confirmations */
+  --color-red: #e85050; /* alerts, errors, critical flags */
+  --color-amber: #e8a020; /* warnings, moderate alerts */
+
+  /* A slightly raised surface off the charcoal background, for cards/bubbles. */
+  --color-surface: #261e18;
+  --color-surface-2: #2f2620;
+  --color-hairline: #3a2f26;
+
+  /* Fonts — DM Sans for UI, IBM Plex Mono for data/numbers/timestamps. */
+  --font-sans: 'DM Sans', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-data: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--color-charcoal);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  /* Never allow a horizontal scrollbar on a phone. */
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Respect the iOS safe area / notch on a floor phone. */
+:root {
+  --safe-top: env(safe-area-inset-top, 0px);
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Tap targets: enforce the 44×44 minimum everywhere interactive. */
+button,
+[role='button'],
+input,
+textarea {
+  min-height: 44px;
+}
+
+/* Calm, GPU-friendly entrance for new messages (perf-first: transform/opacity
+   only, no layout thrash). */
+@keyframes mise-rise {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mise-rise {
+  animation: mise-rise 160ms ease-out;
+}
+
+/* Thin, on-brand scrollbar for the thread. */
+.mise-thread::-webkit-scrollbar {
+  width: 6px;
+}
+.mise-thread::-webkit-scrollbar-thumb {
+  background: var(--color-hairline);
+  border-radius: 3px;
+}

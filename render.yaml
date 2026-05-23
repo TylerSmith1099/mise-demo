@@ -1,0 +1,54 @@
+# Render Blueprint — fastest path to a shareable HTTPS demo URL.
+# Provisions a Postgres instance + a Docker web service and wires them together.
+#
+#   1. Push this repo to GitHub, then in Render: New > Blueprint > pick the repo.
+#   2. Render auto-creates the DB and service, generates JWT_SECRET, and runs
+#      the container. SEED_ON_BOOT=1 seeds demo accounts + ingests legislation
+#      on first boot.
+#   3. Set ANTHROPIC_API_KEY + ANTHROPIC_BASE_URL in the dashboard (sync:false)
+#      to enable Claude-voiced answers; without them the deterministic fallback
+#      is used (demo-viable).
+#
+# DATA RESIDENCY: Render has no AU region (closest: Singapore). This blueprint
+# is ONLY acceptable for the demo because all seeded data is synthetic. Real
+# staff/session data must run on AWS ap-southeast-2 (see config.js / DEPLOY.md).
+databases:
+  - name: mise-demo-db
+    databaseName: mise
+    region: singapore
+    plan: free
+    postgresMajorVersion: "16"
+
+services:
+  - type: web
+    name: mise-demo
+    runtime: docker
+    region: singapore
+    plan: free
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /health
+    envVars:
+      - key: PORT
+        value: "3000"
+      - key: SERVE_FRONTEND
+        value: "1"
+      - key: SEED_ON_BOOT
+        value: "1"
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SESSION_EXPIRY_HOURS
+        value: "8"
+      - key: SESSION_TIMEOUT_MINUTES
+        value: "30"
+      - key: DB_CONNECTION_STRING
+        fromDatabase:
+          name: mise-demo-db
+          property: connectionString
+      # Supplied in the dashboard, never committed. Leave unset for fallback.
+      - key: ANTHROPIC_API_KEY
+        sync: false
+      - key: ANTHROPIC_BASE_URL
+        sync: false

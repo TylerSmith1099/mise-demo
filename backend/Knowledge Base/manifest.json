@@ -1,0 +1,330 @@
+{
+  "generatedAt": "2026-05-23T02:29:36.670Z",
+  "embeddingModel": "mise-local-hashing-v1",
+  "documents": [
+    {
+      "source": "Criterion SOP — Cash Management",
+      "idPrefix": "criterion-sop-cash",
+      "clientId": "ced250c1-ac1c-4632-a277-5201358709ce",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T12:58:58.181Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Opening and Closing",
+      "idPrefix": "criterion-sop-open-close",
+      "clientId": "ced250c1-ac1c-4632-a277-5201358709ce",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T12:58:58.185Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Gaming Floor Procedures",
+      "idPrefix": "criterion-sop-gaming-floor",
+      "clientId": "ced250c1-ac1c-4632-a277-5201358709ce",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T12:58:58.189Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Service of Alcohol",
+      "idPrefix": "criterion-sop-rsa",
+      "clientId": "ced250c1-ac1c-4632-a277-5201358709ce",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T12:58:58.191Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Gambling Patron Interaction",
+      "idPrefix": "criterion-sop-rg-interaction",
+      "clientId": "ced250c1-ac1c-4632-a277-5201358709ce",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T12:58:58.193Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Incident Reporting",
+      "idPrefix": "criterion-sop-incident",
+      "clientId": "ced250c1-ac1c-4632-a277-5201358709ce",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T12:58:58.195Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Cash Management",
+      "idPrefix": "criterion-sop-cash",
+      "clientId": "54acbf36-eabe-496b-a5b6-2ded1631dd54",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T13:44:53.283Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Opening and Closing",
+      "idPrefix": "criterion-sop-open-close",
+      "clientId": "54acbf36-eabe-496b-a5b6-2ded1631dd54",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T13:44:53.287Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Gaming Floor Procedures",
+      "idPrefix": "criterion-sop-gaming-floor",
+      "clientId": "54acbf36-eabe-496b-a5b6-2ded1631dd54",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T13:44:53.290Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Service of Alcohol",
+      "idPrefix": "criterion-sop-rsa",
+      "clientId": "54acbf36-eabe-496b-a5b6-2ded1631dd54",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T13:44:53.293Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Gambling Patron Interaction",
+      "idPrefix": "criterion-sop-rg-interaction",
+      "clientId": "54acbf36-eabe-496b-a5b6-2ded1631dd54",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T13:44:53.295Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Incident Reporting",
+      "idPrefix": "criterion-sop-incident",
+      "clientId": "54acbf36-eabe-496b-a5b6-2ded1631dd54",
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-21T13:44:53.297Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Service of Alcohol",
+      "idPrefix": "criterion-sop-rsa",
+      "clientId": "11111111-1111-1111-1111-111111111111",
+      "venueState": null,
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-22T11:22:32.520Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Gaming Floor Procedures",
+      "idPrefix": "criterion-sop-gaming-floor",
+      "clientId": "11111111-1111-1111-1111-111111111111",
+      "venueState": null,
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-22T11:22:32.524Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Gambling Patron Interaction",
+      "idPrefix": "criterion-sop-rg-patron-interaction",
+      "clientId": "11111111-1111-1111-1111-111111111111",
+      "venueState": null,
+      "lastUpdated": "2026-05-01",
+      "chunkCount": 2,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-22T11:22:32.526Z",
+      "flags": [
+        "demo SOP — original content authored for The Criterion Hotel"
+      ]
+    },
+    {
+      "source": "Gaming Machine Act 1991 (QLD)",
+      "idPrefix": "qld-gaming-machine-act-1991",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2024-01-01",
+      "chunkCount": 7,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:29.444Z",
+      "flags": [
+        "representative sectioned summary — load full statute/award text at deploy",
+        "production embedding model TBD at deploy (AU-hosted)"
+      ]
+    },
+    {
+      "source": "Queensland Responsible Gambling Code of Practice",
+      "idPrefix": "qld-rg-code",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2024-01-01",
+      "chunkCount": 7,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:30.726Z",
+      "flags": [
+        "representative sectioned summary — load full statute/award text at deploy",
+        "production embedding model TBD at deploy (AU-hosted)"
+      ]
+    },
+    {
+      "source": "Liquor Act 1992 (QLD)",
+      "idPrefix": "qld-liquor-act-1992",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2024-01-01",
+      "chunkCount": 6,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:31.950Z",
+      "flags": [
+        "representative sectioned summary — load full statute/award text at deploy",
+        "production embedding model TBD at deploy (AU-hosted)"
+      ]
+    },
+    {
+      "source": "Work Health and Safety Act 2011 (QLD)",
+      "idPrefix": "qld-whs-act-2011",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2024-01-01",
+      "chunkCount": 6,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:33.118Z",
+      "flags": [
+        "representative sectioned summary — load full statute/award text at deploy",
+        "production embedding model TBD at deploy (AU-hosted)"
+      ]
+    },
+    {
+      "source": "Fair Work Act 2009 (Cth)",
+      "idPrefix": "cth-fair-work-act-2009",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2024-01-01",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:34.165Z",
+      "flags": [
+        "representative sectioned summary — load full statute/award text at deploy",
+        "production embedding model TBD at deploy (AU-hosted)"
+      ]
+    },
+    {
+      "source": "Hospitality Industry (General) Award 2020",
+      "idPrefix": "cth-hospitality-award-2020",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2024-07-01",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:35.280Z",
+      "flags": [
+        "representative sectioned summary — load full statute/award text at deploy",
+        "production embedding model TBD at deploy (AU-hosted)"
+      ]
+    },
+    {
+      "source": "Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (Cth)",
+      "idPrefix": "cth-aml-ctf-act-2006",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-03-31",
+      "chunkCount": 8,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T02:29:36.670Z",
+      "flags": [
+        "DEPLOY FLAG — Legal-drafted summary; solicitor sign-off pending (Ops/Questions.md). Confirm thresholds/dates/mechanics and load full consolidated statute + AUSTRAC rules before production."
+      ]
+    }
+  ],
+  "ingested": [
+    {
+      "source": "Criterion SOP — Responsible Service of Alcohol",
+      "content_type": "sop",
+      "client_id": "b54d1b2b-f024-48fe-bbdf-d174a85ffc27",
+      "venue_id": null,
+      "chunk_count": 1,
+      "file": "rsa-procedures.md",
+      "sha256": "e81e5e6c2e29",
+      "at": "2026-05-22T01:10:22.941Z"
+    },
+    {
+      "source": "Criterion SOP — Gaming Floor Procedures",
+      "content_type": "sop",
+      "client_id": "b54d1b2b-f024-48fe-bbdf-d174a85ffc27",
+      "venue_id": null,
+      "chunk_count": 1,
+      "file": "gaming-floor-procedures.md",
+      "sha256": "87555a2b84a8",
+      "at": "2026-05-22T01:10:22.943Z"
+    },
+    {
+      "source": "Criterion SOP — Responsible Gambling Patron Interaction",
+      "content_type": "sop",
+      "client_id": "b54d1b2b-f024-48fe-bbdf-d174a85ffc27",
+      "venue_id": null,
+      "chunk_count": 1,
+      "file": "responsible-gambling-patron-interaction-procedures.md",
+      "sha256": "99fc42176dc6",
+      "at": "2026-05-22T01:10:22.944Z"
+    }
+  ]
+}
