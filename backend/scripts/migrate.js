@@ -51,14 +51,25 @@ export async function runMigrations(connectionString) {
   });
   await client.connect();
   try {
-    for (const file of files) {
+    // Tracking table: idempotent, pre-dates any application migration.
+    await client.query(`
+      CREATE TABLE IF NOT EXISTS schema_migrations (
+        filename TEXT PRIMARY KEY,
+        applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
+      )
+    `);
+    const { rows } = await client.query('SELECT filename FROM schema_migrations');
+    const applied = new Set(rows.map((r) => r.filename));
+    const pending = files.filter((f) => !applied.has(f));
+    for (const file of pending) {
       const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
       await client.query(sql);
+      await client.query('INSERT INTO schema_migrations (filename) VALUES ($1)', [file]);
     }
+    return pending;
   } finally {
     await client.end();
   }
-  return files;
 }
 
 // CLI entry
@@ -69,7 +80,7 @@ if (import.meta.url === `file://${process.argv[1]}`) {
     process.exit(1);
   }
   runMigrations(cs)
-    .then((files) => console.log(`applied ${files.length} migrations`))
+    .then((pending) => console.log(`applied ${pending.length} migration(s)`))
     .catch((err) => {
       console.error('migration failed:', err.message);
       process.exit(1);
