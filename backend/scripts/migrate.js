@@ -58,8 +58,28 @@ export async function runMigrations(connectionString) {
         applied_at TIMESTAMPTZ NOT NULL DEFAULT now()
       )
     `);
-    const { rows } = await client.query('SELECT filename FROM schema_migrations');
-    const applied = new Set(rows.map((r) => r.filename));
+    const { rows: tracked } = await client.query('SELECT filename FROM schema_migrations');
+    if (tracked.length === 0) {
+      // Empty tracking table: either a fresh DB or a pre-existing DB that was
+      // migrated before tracking was introduced. Check for a well-known table
+      // to distinguish the two cases and avoid re-running already-applied SQL.
+      const { rows: existing } = await client.query(
+        `SELECT 1 FROM information_schema.tables
+          WHERE table_schema = 'public' AND table_name = 'clients'`,
+      );
+      if (existing.length > 0) {
+        // DB already has the schema — mark all migrations as applied so we
+        // only run genuinely new ones going forward.
+        for (const file of files) {
+          await client.query(
+            'INSERT INTO schema_migrations (filename) VALUES ($1) ON CONFLICT DO NOTHING',
+            [file],
+          );
+        }
+      }
+    }
+    const { rows: nowTracked } = await client.query('SELECT filename FROM schema_migrations');
+    const applied = new Set(nowTracked.map((r) => r.filename));
     const pending = files.filter((f) => !applied.has(f));
     for (const file of pending) {
       const sql = await readFile(join(MIGRATIONS_DIR, file), 'utf8');
