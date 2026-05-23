@@ -1,18 +1,15 @@
 // Runsheet — the shift task list (MIS-102, component priority #3). A scrollable
 // list of the current shift's tasks; each can be checked off and the completion
 // time auto-populates (stamped server-side from the verified session, never by
-// the client). Built 375px-first; each row is a ≥44px tap target.
-//
-// Data: GET /api/runsheet + POST /api/runsheet/items/:id/check. The shape is
-// defined here (UI-owned) and implemented by the Backend/Database Agent — see
-// Ops/Issues/MIS-UI-NAV.md. Until that endpoint lands the panel degrades to a
-// calm empty state rather than erroring; no task content is hardcoded.
+// the client). Built 375px-first; each row is a >=44px tap target.
 //
 // Props:
 //   onAuthError(): called on a 401 so the shell can drop to <Login>
+//   roleTier: from the verified session; Revenue Intelligence renders for tier <= 5.
 import React, { useCallback, useEffect, useState } from 'react';
 import { fetchRunsheet, checkRunsheetItem, fetchReservations } from '../api.js';
 import ReservationsSection from './ReservationsSection.jsx';
+import RevenueIntelligence from './RevenueIntelligence.jsx';
 
 function hhmm(iso) {
   if (!iso) return '';
@@ -31,7 +28,7 @@ const CATEGORY_COLOUR = {
   open: '#00E87A',
 };
 
-export default function Runsheet({ onAuthError }) {
+export default function Runsheet({ onAuthError, roleTier }) {
   const [state, setState] = useState({ status: 'loading', sheet: null });
   const [reservations, setReservations] = useState(null);
 
@@ -41,7 +38,6 @@ export default function Runsheet({ onAuthError }) {
       .then((sheet) => live && setState({ status: 'ready', sheet }))
       .catch((err) => {
         if (err.status === 401) return onAuthError?.();
-        // 404 / not-yet-implemented endpoint → calm empty state, not an error wall.
         live && setState({ status: err.status === 404 ? 'empty' : 'error', sheet: null });
       });
     fetchReservations()
@@ -55,7 +51,6 @@ export default function Runsheet({ onAuthError }) {
   const onToggle = useCallback(
     async (item) => {
       const next = !item.done;
-      // Optimistic: flip + stamp locally now; reconcile from the server response.
       setState((s) => ({
         ...s,
         sheet: {
@@ -78,7 +73,6 @@ export default function Runsheet({ onAuthError }) {
         }));
       } catch (err) {
         if (err.status === 401) return onAuthError?.();
-        // Roll back the optimistic flip.
         setState((s) => ({
           ...s,
           sheet: {
@@ -93,31 +87,42 @@ export default function Runsheet({ onAuthError }) {
     [onAuthError],
   );
 
+  const isManager = roleTier != null && roleTier <= 5;
+
   if (state.status === 'loading') {
     return (
-      <Centered>
-        <div className="h-10 w-10 animate-pulse rounded-2xl border border-gold/50" />
-      </Centered>
+      <div className="mx-auto flex w-full max-w-[420px] flex-col gap-3">
+        {isManager && <RevenueIntelligence onAuthError={onAuthError} />}
+        <Centered>
+          <div className="h-10 w-10 animate-pulse rounded-2xl border border-gold/50" />
+        </Centered>
+      </div>
     );
   }
 
   if (state.status === 'empty' || !state.sheet?.items?.length) {
     return (
-      <Centered>
-        <p className="text-base font-semibold text-cream">No runsheet for this shift yet.</p>
-        <p className="mt-1 text-sm text-cream/55">
-          Tasks for your shift will appear here as they’re rostered.
-        </p>
-      </Centered>
+      <div className="mx-auto flex w-full max-w-[420px] flex-col gap-3">
+        {isManager && <RevenueIntelligence onAuthError={onAuthError} />}
+        <Centered>
+          <p className="text-base font-semibold text-cream">No runsheet for this shift yet.</p>
+          <p className="mt-1 text-sm text-cream/55">
+            Tasks for your shift will appear here as they are rostered.
+          </p>
+        </Centered>
+      </div>
     );
   }
 
   if (state.status === 'error') {
     return (
-      <Centered>
-        <p className="text-base font-semibold text-cream">Couldn’t load the runsheet.</p>
-        <p className="mt-1 text-sm text-cream/55">Check your connection and switch back to try again.</p>
-      </Centered>
+      <div className="mx-auto flex w-full max-w-[420px] flex-col gap-3">
+        {isManager && <RevenueIntelligence onAuthError={onAuthError} />}
+        <Centered>
+          <p className="text-base font-semibold text-cream">Couldn't load the runsheet.</p>
+          <p className="mt-1 text-sm text-cream/55">Check your connection and switch back to try again.</p>
+        </Centered>
+      </div>
     );
   }
 
@@ -130,6 +135,9 @@ export default function Runsheet({ onAuthError }) {
       className="mise-rise mx-auto flex w-full max-w-[420px] flex-col gap-3"
       aria-label="Shift runsheet"
     >
+      {/* Revenue Intelligence Card — managers only, sits above the checklist */}
+      {isManager && <RevenueIntelligence onAuthError={onAuthError} />}
+
       <header className="flex items-baseline justify-between px-1">
         <div>
           <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">
@@ -162,7 +170,6 @@ export default function Runsheet({ onAuthError }) {
               aria-pressed={item.done}
               className="flex min-h-[56px] w-full items-center gap-3 rounded-2xl border border-hairline bg-surface px-3.5 py-3 text-left transition-colors active:bg-surface-2"
             >
-              {/* Checkbox */}
               <span
                 aria-hidden="true"
                 className={`grid h-6 w-6 shrink-0 place-items-center rounded-md border ${
@@ -197,7 +204,6 @@ export default function Runsheet({ onAuthError }) {
                     {item.label}
                   </span>
                 </span>
-                {/* Due time, or the auto-stamped completion time once checked. */}
                 {item.done && item.completedAt ? (
                   <span className="font-data text-[11px] text-mint">
                     Done {hhmm(item.completedAt)}
