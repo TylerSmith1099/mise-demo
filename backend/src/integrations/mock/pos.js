@@ -15,9 +15,9 @@
 
 import { isoDate } from './workforce.js';
 
-const NOW = new Date();
+// Fresh on each call — never anchored to module load time (MIS-270).
 function hoursAgo(h) {
-  const d = new Date(NOW);
+  const d = new Date();
   d.setMinutes(d.getMinutes() - Math.round(h * 60));
   return d.toISOString();
 }
@@ -79,11 +79,11 @@ export function getGamingMachines() {
 // Gaming turnover / RTV / NGR for today (Friday, peak).
 // ---------------------------------------------------------------------------
 export function getGamingFinancials() {
-  const turnoverToday = 285_000;     // matches ~$1.8M/wk, Friday peak
-  const rtvToday = 0.124;            // 12.4% — within Fri/Sat 11–14% band
+  const turnoverToday = 285_000;     // matches ~$1.8M/wk, evening peak
+  const rtvToday = 0.124;            // 12.4% — within evening peak 11–14% band
   return {
-    date: isoDate(NOW),
-    dayOfWeek: 'Friday',
+    date: isoDate(new Date()),
+    dayOfWeek: new Date().toLocaleDateString('en-AU', { weekday: 'long', timeZone: 'Australia/Brisbane' }),
     turnoverToday,
     rtvToday,
     rtvPctDisplay: '12.4%',
@@ -110,8 +110,8 @@ export function getTradingSummary() {
   ];
   return {
     venue: 'The Steward Hotel',
-    date: isoDate(NOW),
-    dayOfWeek: 'Friday',
+    date: isoDate(new Date()),
+    dayOfWeek: new Date().toLocaleDateString('en-AU', { weekday: 'long', timeZone: 'Australia/Brisbane' }),
     hourlyBeverage,
     beverageToDate: hourlyBeverage.reduce((a, h) => a + h.revenue, 0),
     covers: { lunch: 45, dinner: 90 },

@@ -11,12 +11,12 @@
  * Dates flow through the same live-anchored helpers used by workforce.js.
  */
 
-import { STAFF, monthsFromNow, daysFromNow, isoDate } from './workforce.js';
+import { buildStaff, monthsFromNow, daysFromNow, isoDate } from './workforce.js';
 
-const NOW = new Date();
+// Fresh on every call — never anchored to module load time (MIS-270).
 function daysBetween(isoTarget) {
   const target = new Date(`${isoTarget}T00:00:00`);
-  return Math.round((target - NOW) / 86_400_000);
+  return Math.round((target - new Date()) / 86_400_000);
 }
 
 // A deterministic certificate number per staff/type — stable across calls.
@@ -38,7 +38,7 @@ function classify(expiry) {
 // RSA register — all 28 staff (those whose role carries an RSA value or gap).
 // ---------------------------------------------------------------------------
 export function getRsaRegister() {
-  return STAFF
+  return buildStaff()
     .filter((p) => p.certifications.rsa !== null)
     .map((p) => {
       const c = classify(p.certifications.rsa);
@@ -58,7 +58,7 @@ export function getRsaRegister() {
 // RG register — gaming attendants + duty managers.
 // ---------------------------------------------------------------------------
 export function getRgRegister() {
-  return STAFF
+  return buildStaff()
     .filter((p) => p.certifications.rg !== null)
     .map((p) => {
       const c = classify(p.certifications.rg);
@@ -79,7 +79,7 @@ export function getRgRegister() {
 // Food safety register — kitchen staff.
 // ---------------------------------------------------------------------------
 export function getFoodSafetyRegister() {
-  return STAFF
+  return buildStaff()
     .filter((p) => p.certifications.foodSafety !== null)
     .map((p) => {
       const c = classify(p.certifications.foodSafety);
@@ -127,7 +127,7 @@ export function getVenueCompliance() {
 // Active inspection scenario — inspector on site now (45 minutes ago).
 // ---------------------------------------------------------------------------
 export function getActiveInspection() {
-  const arrived = new Date(NOW);
+  const arrived = new Date();
   arrived.setMinutes(arrived.getMinutes() - 45);
   return {
     inProgress: true,

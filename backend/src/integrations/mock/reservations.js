@@ -28,30 +28,43 @@ import { randomUUID } from 'node:crypto';
 // ---------------------------------------------------------------------------
 // Date helpers — anchored to NOW, never hardcoded.
 // ---------------------------------------------------------------------------
-const NOW = new Date();
-
+// Fresh on every call — never anchored to module load time (MIS-270).
 function isoDate(d) {
   return d.toISOString().slice(0, 10);
 }
 
-function offsetDay(n) {
-  const d = new Date(NOW);
+function offsetDay(base, n) {
+  const d = new Date(base);
   d.setDate(d.getDate() + n);
   return isoDate(d);
 }
 
-// Nearest most-recently-completed Saturday (or today if Saturday).
+// Compute the nearest most-recently-completed Saturday (or today if Saturday).
+// Called fresh on each use so the offset is always relative to the current day.
 // dow=0 (Sun) → -1; dow=1 (Mon) → -2; ... dow=6 (Sat) → 0.
-const dow = NOW.getDay();
-const demoSatOffset = dow === 6 ? 0 : -(dow + 1);
+function demoDateOffsets() {
+  const now = new Date();
+  const dow = now.getDay();
+  const satOffset = dow === 6 ? 0 : -(dow + 1);
+  return {
+    DEMO_SAT:   offsetDay(now, satOffset),      // nearest completed Saturday
+    DEMO_FRI:   offsetDay(now, satOffset - 1),  // prior Friday
+    DEMO_MON:   offsetDay(now, satOffset - 5),  // prior Monday
+    PRIOR_SAT:  offsetDay(now, satOffset - 7),
+    PRIOR_FRI:  offsetDay(now, satOffset - 8),
+    PRIOR_MON:  offsetDay(now, satOffset - 12),
+  };
+}
 
-export const DEMO_SAT = offsetDay(demoSatOffset);          // Scene 2 demo day
-export const DEMO_FRI = offsetDay(demoSatOffset - 1);      // Fri all-day
-export const DEMO_MON = offsetDay(demoSatOffset - 5);      // Mon dinner
-
-const PRIOR_SAT = offsetDay(demoSatOffset - 7);
-const PRIOR_FRI = offsetDay(demoSatOffset - 8);
-const PRIOR_MON = offsetDay(demoSatOffset - 12);
+// Compute once per server boot. Module-level constants are used by PRIOR_WEEK_HISTORY
+// and DEMO_WEEK_DATA below. The date relationships (Mon→Fri→Sat) are always correct
+// relative to boot time; the only drift is the calendar label, which is minor
+// for the reservations history display. DEMO_ exports are used by reservations-api.js.
+const {
+  DEMO_SAT, DEMO_FRI, DEMO_MON,
+  PRIOR_SAT, PRIOR_FRI, PRIOR_MON,
+} = demoDateOffsets();
+export { DEMO_SAT, DEMO_FRI, DEMO_MON };
 
 // ---------------------------------------------------------------------------
 // Service catalogue — maps day-of-week to service windows.

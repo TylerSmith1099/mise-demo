@@ -10,28 +10,30 @@
  * slots into the MIS-139 connector framework: a future DeputyConnector pointed
  * at a real account would return the same shape.
  *
- * All dates are computed RELATIVE TO THE LIVE DATE at module load — never
- * hardcoded — so the demo's "expired 6 days ago" / "expiring in 9 days"
- * relationships hold no matter what day the demo runs (lesson: MIS-78 BASE_DATE
- * drift silently broke Scene 3 as days passed).
+ * All dates are computed RELATIVE TO THE LIVE DATE at call time — never
+ * hardcoded and never anchored to module-load time — so the demo's
+ * "expired 6 days ago" / "expiring in 9 days" relationships hold no matter
+ * what day the demo runs or how long the server has been up (lesson: MIS-78
+ * BASE_DATE drift silently broke Scene 3 as days passed; MIS-270 fixed the
+ * same pattern for module-level NOW).
  */
 
 // ---------------------------------------------------------------------------
-// Date helpers — anchored to "now" so relative cert windows never drift.
-// Exported because compliance.js and the seed reuse the same anchor.
+// Date helpers — fresh on every call so cert windows and shift dates never
+// drift while the server is running. Exported because compliance.js and the
+// seed reuse the same helpers.
 // ---------------------------------------------------------------------------
-const NOW = new Date();
 
 export function isoDate(d) {
   return d.toISOString().slice(0, 10);
 }
 export function daysFromNow(n) {
-  const d = new Date(NOW);
+  const d = new Date();
   d.setDate(d.getDate() + n);
   return isoDate(d);
 }
 export function monthsFromNow(n) {
-  const d = new Date(NOW);
+  const d = new Date();
   d.setMonth(d.getMonth() + n);
   return isoDate(d);
 }
@@ -43,98 +45,109 @@ export function monthsFromNow(n) {
 // cert windows:
 //   rsaExpiry / rgExpiry / foodSafetyExpiry  — ISO date or null (= not held)
 //   '__MISSING__'                            — role requires it but none on file
+//
+// buildStaff() is the FACTORY — call it fresh at runtime so cert dates and
+// relative windows are always today-relative, not boot-time-relative.
+// STAFF (the static export) is for the seed CLI which runs once per boot.
 // ---------------------------------------------------------------------------
-export const STAFF = [
-  // --- Management ---------------------------------------------------------
-  s('STW-001', 'Rachel',  'Drummond', 'Venue Manager',           4, 'FT',
-    { rsa: monthsFromNow(20), rg: monthsFromNow(20), phone: '0407 112 884' }),
-  s('STW-002', 'Aaron',   'Whitfield', 'Assistant Venue Manager', 4, 'FT',
-    { rsa: monthsFromNow(15), rg: monthsFromNow(15), phone: '0408 220 113' }),
 
-  // --- Duty Managers / MOD (3) -------------------------------------------
-  s('STW-003', 'James',   'Kovacs',   'Duty Manager',            5, 'FT',
-    { rsa: monthsFromNow(11), rg: monthsFromNow(11), phone: '0412 556 901',
-      onShiftTonight: true }),
-  s('STW-004', 'Priya',   'Naidoo',   'Duty Manager',            5, 'FT',
-    { rsa: monthsFromNow(8), rg: monthsFromNow(8), phone: '0413 778 220',
-      // Fair Work flag: double shift, no break logged.
-      fairWorkFlag: 'Rostered double shift (10:00–02:00 then 09:00 next day) with no break logged' }),
-  s('STW-005', 'Connor',  'Bligh',    'Duty Manager',            5, 'PT',
-    { rsa: monthsFromNow(6), rg: monthsFromNow(6), phone: '0414 009 551' }),
+/** Build the 28-person staff list with dates relative to RIGHT NOW (MIS-270). */
+export function buildStaff() {
+  return [
+    // --- Management ---------------------------------------------------------
+    s('STW-001', 'Rachel',  'Drummond', 'Venue Manager',           4, 'FT',
+      { rsa: monthsFromNow(20), rg: monthsFromNow(20), phone: '0407 112 884' }),
+    s('STW-002', 'Aaron',   'Whitfield', 'Assistant Venue Manager', 4, 'FT',
+      { rsa: monthsFromNow(15), rg: monthsFromNow(15), phone: '0408 220 113' }),
 
-  // --- Bar Attendants (5) -------------------------------------------------
-  s('STW-006', 'Liam',    "O'Connor", 'Bar Attendant',           7, 'PT',
-    // CRITICAL: RSA expired 6 days ago.
-    { rsa: daysFromNow(-6), phone: '0415 330 887', onShiftTonight: true }),
-  s('STW-007', 'Chloe',   'Nguyen',   'Bar Attendant',           7, 'CAS',
-    // CRITICAL: RSA expired yesterday.
-    { rsa: daysFromNow(-1), phone: '0416 442 119', onShiftTonight: true }),
-  s('STW-008', 'Mateo',   'Rossi',    'Bar Attendant',           7, 'PT',
-    { rsa: monthsFromNow(9), phone: '0417 661 230', onShiftTonight: true }),
-  s('STW-009', 'Holly',   'Fraser',   'Bar Attendant',           7, 'CAS',
-    { rsa: monthsFromNow(13), phone: '0418 552 770' }),
-  s('STW-010', 'Daniel',  'Okafor',   'Bar Attendant',           7, 'PT',
-    { rsa: monthsFromNow(4), phone: '0419 883 441' }),
+    // --- Duty Managers / MOD (3) -------------------------------------------
+    s('STW-003', 'James',   'Kovacs',   'Duty Manager',            5, 'FT',
+      { rsa: monthsFromNow(11), rg: monthsFromNow(11), phone: '0412 556 901',
+        onShiftTonight: true }),
+    s('STW-004', 'Priya',   'Naidoo',   'Duty Manager',            5, 'FT',
+      { rsa: monthsFromNow(8), rg: monthsFromNow(8), phone: '0413 778 220',
+        // Fair Work flag: double shift, no break logged.
+        fairWorkFlag: 'Rostered double shift (10:00–02:00 then 09:00 next day) with no break logged' }),
+    s('STW-005', 'Connor',  'Bligh',    'Duty Manager',            5, 'PT',
+      { rsa: monthsFromNow(6), rg: monthsFromNow(6), phone: '0414 009 551' }),
 
-  // --- Gaming Attendants (4) ---------------------------------------------
-  s('STW-011', 'Sarah',   'Chen',     'Gaming Attendant',        7, 'FT',
-    // Demo login (gaming@steward.demo). Clean certs. Machine 14 area.
-    { rsa: monthsFromNow(14), rg: monthsFromNow(14), phone: '0420 114 558',
-      onShiftTonight: true, floorArea: 'Gaming — M001–M015' }),
-  s('STW-012', 'Marcus',  'Forsyth',  'Gaming Attendant',        7, 'FT',
-    // CRITICAL BREACH: RG lapsed 3 days ago, rostered on the gaming floor tonight.
-    { rsa: monthsFromNow(10), rg: daysFromNow(-3), phone: '0421 667 092',
-      onShiftTonight: true, floorArea: 'Gaming — M030–M045' }),
-  s('STW-013', 'Bianca',  'Lombardi', 'Gaming Attendant',        7, 'PT',
-    { rsa: monthsFromNow(7), rg: monthsFromNow(7), phone: '0422 330 614' }),
-  s('STW-014', 'Tom',     'Hargreave','Gaming Attendant',        7, 'CAS',
-    { rsa: monthsFromNow(5), rg: monthsFromNow(5), phone: '0423 905 277' }),
+    // --- Bar Attendants (5) -------------------------------------------------
+    s('STW-006', 'Liam',    "O'Connor", 'Bar Attendant',           7, 'PT',
+      // CRITICAL: RSA expired 6 days ago.
+      { rsa: daysFromNow(-6), phone: '0415 330 887', onShiftTonight: true }),
+    s('STW-007', 'Chloe',   'Nguyen',   'Bar Attendant',           7, 'CAS',
+      // CRITICAL: RSA expired yesterday.
+      { rsa: daysFromNow(-1), phone: '0416 442 119', onShiftTonight: true }),
+    s('STW-008', 'Mateo',   'Rossi',    'Bar Attendant',           7, 'PT',
+      { rsa: monthsFromNow(9), phone: '0417 661 230', onShiftTonight: true }),
+    s('STW-009', 'Holly',   'Fraser',   'Bar Attendant',           7, 'CAS',
+      { rsa: monthsFromNow(13), phone: '0418 552 770' }),
+    s('STW-010', 'Daniel',  'Okafor',   'Bar Attendant',           7, 'PT',
+      { rsa: monthsFromNow(4), phone: '0419 883 441' }),
 
-  // --- Waiters / Floor (3) -----------------------------------------------
-  s('STW-015', 'Ava',     'Thompson', 'Waiter / Floor Staff',    7, 'CAS',
-    // WARNING: RSA expiring in 9 days.
-    { rsa: daysFromNow(9), phone: '0424 118 553', onShiftTonight: true }),
-  s('STW-016', 'Noah',    'Petrov',   'Waiter / Floor Staff',    7, 'PT',
-    { rsa: monthsFromNow(12), phone: '0425 660 901' }),
-  s('STW-017', 'Isla',    'Murray',   'Waiter / Floor Staff',    7, 'CAS',
-    { rsa: monthsFromNow(3), phone: '0426 774 338', onShiftTonight: true }),
+    // --- Gaming Attendants (4) ---------------------------------------------
+    s('STW-011', 'Sarah',   'Chen',     'Gaming Attendant',        7, 'FT',
+      // Demo login (gaming@steward.demo). Clean certs. Machine 14 area.
+      { rsa: monthsFromNow(14), rg: monthsFromNow(14), phone: '0420 114 558',
+        onShiftTonight: true, floorArea: 'Gaming — M001–M015' }),
+    s('STW-012', 'Marcus',  'Forsyth',  'Gaming Attendant',        7, 'FT',
+      // CRITICAL BREACH: RG lapsed 3 days ago, rostered on the gaming floor tonight.
+      { rsa: monthsFromNow(10), rg: daysFromNow(-3), phone: '0421 667 092',
+        onShiftTonight: true, floorArea: 'Gaming — M030–M045' }),
+    s('STW-013', 'Bianca',  'Lombardi', 'Gaming Attendant',        7, 'PT',
+      { rsa: monthsFromNow(7), rg: monthsFromNow(7), phone: '0422 330 614' }),
+    s('STW-014', 'Tom',     'Hargreave','Gaming Attendant',        7, 'CAS',
+      { rsa: monthsFromNow(5), rg: monthsFromNow(5), phone: '0423 905 277' }),
 
-  // --- Kitchen (3) --------------------------------------------------------
-  s('STW-018', 'Gordon',  'Mehta',    'Head Chef',               7, 'FT',
-    { foodSafety: monthsFromNow(10), phone: '0427 991 220', onShiftTonight: true }),
-  s('STW-019', 'Sokha',   'Pich',     'Kitchen Hand',            7, 'CAS',
-    // WARNING: food safety certificate expired.
-    { foodSafety: daysFromNow(-12), phone: '0428 220 667', onShiftTonight: true }),
-  s('STW-020', 'Reza',    'Aziz',     'Kitchen Hand',            7, 'PT',
-    { foodSafety: monthsFromNow(8), phone: '0429 553 118' }),
+    // --- Waiters / Floor (3) -----------------------------------------------
+    s('STW-015', 'Ava',     'Thompson', 'Waiter / Floor Staff',    7, 'CAS',
+      // WARNING: RSA expiring in 9 days.
+      { rsa: daysFromNow(9), phone: '0424 118 553', onShiftTonight: true }),
+    s('STW-016', 'Noah',    'Petrov',   'Waiter / Floor Staff',    7, 'PT',
+      { rsa: monthsFromNow(12), phone: '0425 660 901' }),
+    s('STW-017', 'Isla',    'Murray',   'Waiter / Floor Staff',    7, 'CAS',
+      { rsa: monthsFromNow(3), phone: '0426 774 338', onShiftTonight: true }),
 
-  // --- TAB / Keno (2) -----------------------------------------------------
-  s('STW-021', 'Wayne',   'Dempsey',  'TAB/Keno Operator',       7, 'PT',
-    { rsa: monthsFromNow(6), phone: '0430 117 449' }),
-  s('STW-022', 'Grace',   'Sullivan', 'TAB/Keno Operator',       7, 'CAS',
-    { rsa: monthsFromNow(16), phone: '0431 882 005' }),
+    // --- Kitchen (3) --------------------------------------------------------
+    s('STW-018', 'Gordon',  'Mehta',    'Head Chef',               7, 'FT',
+      { foodSafety: monthsFromNow(10), phone: '0427 991 220', onShiftTonight: true }),
+    s('STW-019', 'Sokha',   'Pich',     'Kitchen Hand',            7, 'CAS',
+      // WARNING: food safety certificate expired.
+      { foodSafety: daysFromNow(-12), phone: '0428 220 667', onShiftTonight: true }),
+    s('STW-020', 'Reza',    'Aziz',     'Kitchen Hand',            7, 'PT',
+      { foodSafety: monthsFromNow(8), phone: '0429 553 118' }),
 
-  // --- Security (2) -------------------------------------------------------
-  s('STW-023', 'Boris',   'Volkov',   'Security',                7, 'PT',
-    { rsa: monthsFromNow(9), phone: '0432 660 773' }),
-  s('STW-024', 'Sam',     'Atkinson', 'Security',                7, 'CAS',
-    { rsa: monthsFromNow(11), phone: '0433 119 558' }),
+    // --- TAB / Keno (2) -----------------------------------------------------
+    s('STW-021', 'Wayne',   'Dempsey',  'TAB/Keno Operator',       7, 'PT',
+      { rsa: monthsFromNow(6), phone: '0430 117 449' }),
+    s('STW-022', 'Grace',   'Sullivan', 'TAB/Keno Operator',       7, 'CAS',
+      { rsa: monthsFromNow(16), phone: '0431 882 005' }),
 
-  // --- Cleaners (2) -------------------------------------------------------
-  s('STW-025', 'Maria',   'Goncalves','Cleaner',                 7, 'PT',
-    { phone: '0434 770 226' }),
-  s('STW-026', 'Pedro',   'Alves',    'Cleaner',                 7, 'CAS',
-    { phone: '0435 663 901' }),
+    // --- Security (2) -------------------------------------------------------
+    s('STW-023', 'Boris',   'Volkov',   'Security',                7, 'PT',
+      { rsa: monthsFromNow(9), phone: '0432 660 773' }),
+    s('STW-024', 'Sam',     'Atkinson', 'Security',                7, 'CAS',
+      { rsa: monthsFromNow(11), phone: '0433 119 558' }),
 
-  // --- Functions (1) ------------------------------------------------------
-  s('STW-027', 'Lauren',  'Beck',     'Functions Coordinator',   7, 'FT',
-    { rsa: monthsFromNow(18), phone: '0436 220 884' }),
+    // --- Cleaners (2) -------------------------------------------------------
+    s('STW-025', 'Maria',   'Goncalves','Cleaner',                 7, 'PT',
+      { phone: '0434 770 226' }),
+    s('STW-026', 'Pedro',   'Alves',    'Cleaner',                 7, 'CAS',
+      { phone: '0435 663 901' }),
 
-  // --- Bottle Shop / Retail (1) — covers the retail revenue stream; makes 28
-  s('STW-028', 'Jordan',  'Mills',    'Bottle Shop Attendant',   7, 'CAS',
-    // GAP: role serves packaged liquor and requires an RSA, but none is on file.
-    { rsa: '__MISSING__', phone: '0437 558 110' }),
-];
+    // --- Functions (1) ------------------------------------------------------
+    s('STW-027', 'Lauren',  'Beck',     'Functions Coordinator',   7, 'FT',
+      { rsa: monthsFromNow(18), phone: '0436 220 884' }),
+
+    // --- Bottle Shop / Retail (1) — covers the retail revenue stream; makes 28
+    s('STW-028', 'Jordan',  'Mills',    'Bottle Shop Attendant',   7, 'CAS',
+      // GAP: role serves packaged liquor and requires an RSA, but none is on file.
+      { rsa: '__MISSING__', phone: '0437 558 110' }),
+  ];
+}
+
+// Static export kept for src/demo/seed.js (runs once as a CLI — stale dates fine).
+export const STAFF = buildStaff();
 
 /**
  * Build a staff record. Keeps the table above readable; `extra` carries certs,
@@ -172,11 +185,12 @@ const SHIFT_END = '02:00';
 const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export function getCurrentShift() {
-  const onShift = STAFF.filter((p) => p.flags.onShiftTonight);
+  const now = new Date();
+  const onShift = buildStaff().filter((p) => p.flags.onShiftTonight);
   return {
     venue: 'The Steward Hotel',
-    dayOfWeek: DAY_NAMES[NOW.getDay()],
-    shiftDate: isoDate(NOW),
+    dayOfWeek: DAY_NAMES[now.getDay()],
+    shiftDate: isoDate(now),
     shiftStart: SHIFT_START,
     shiftEnd: SHIFT_END,
     rosteredCount: onShift.length,
@@ -193,7 +207,7 @@ export function getCurrentShift() {
       {
         type: 'sick_call_unfilled',
         severity: 'warning',
-        detail: `Holly Fraser (Bar Attendant) called in sick at 16:10. Replacement not yet rostered — bar running one short for ${DAY_NAMES[NOW.getDay()]} peak.`,
+        detail: `Holly Fraser (Bar Attendant) called in sick at 16:10. Replacement not yet rostered — bar running one short for ${DAY_NAMES[now.getDay()]} peak.`,
         externalStaffId: 'STW-009',
       },
       {

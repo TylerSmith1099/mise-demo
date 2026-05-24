@@ -58,14 +58,16 @@ export async function buildShiftSummary(q, { venueId }) {
   ).rows[0];
   if (!venue) return null;
 
-  // Staffing: everyone currently on, plus gaming-floor cover vs the venue min.
+  // Staffing: count active shifts (status='active') so the figure is live and
+  // does not depend on the seed having set a static shift_status snapshot on
+  // the staff table (MIS-270 fix — "0 on now" when snapshot was stale).
   const staffing = (
     await q(
       `SELECT
-         COUNT(*) FILTER (WHERE shift_status = 'on')                            AS on_now,
-         COUNT(*) FILTER (WHERE shift_status = 'on' AND department = 'gaming')  AS gaming_on_floor
-       FROM staff
-       WHERE venue_id = $1 AND deleted_at IS NULL`,
+         COUNT(DISTINCT sh.staff_id)                                              AS on_now,
+         COUNT(DISTINCT sh.staff_id) FILTER (WHERE sh.department = 'gaming')     AS gaming_on_floor
+       FROM shifts sh
+       WHERE sh.venue_id = $1 AND sh.status = 'active' AND sh.deleted_at IS NULL`,
       [venueId],
     )
   ).rows[0];
