@@ -274,6 +274,7 @@ export function complianceRouter({ delayMs = ACTIVATION_DELAY_MS } = {}) {
               AND acknowledged_at IS NULL
               AND deleted_at IS NULL
             ORDER BY CASE severity WHEN 'critical' THEN 0 ELSE 1 END,
+                     CASE event_type WHEN 'rg_cert_lapsed_on_floor' THEN 0 ELSE 1 END,
                      created_at DESC`,
           [venueId],
         );

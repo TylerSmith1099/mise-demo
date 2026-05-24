@@ -37,21 +37,36 @@ async function main() {
   const venueId  = DEMO_VENUE_ID;
 
   await withClientContext(clientId, async (q) => {
-    // Idempotency guard — skip if shifts already exist for this venue.
-    const { rows: existing } = await q(
-      `SELECT 1 FROM shifts WHERE venue_id = $1 AND deleted_at IS NULL LIMIT 1`,
-      [venueId],
-    );
-    if (existing.length) {
-      console.log('[extras-seed] shifts already seeded — skipping');
-      return;
-    }
-
-    // Update venue: set gaming floor minimum and EGM count for Scene 3.
+    // Always ensure venue gaming config is correct — runs even on reseed so it
+    // survives the date-drift case where shifts are deleted and recreated.
     await q(
       `UPDATE venues SET gaming_min_attendants = 2, egm_count = 45 WHERE venue_id = $1`,
       [venueId],
     );
+
+    // Date-aware idempotency: skip only if today's (BASE_DATE, Brisbane) shifts exist.
+    // If shifts exist but are from a prior calendar day, delete them and reseed for today.
+    // This is the fix for the BASE_DATE drift bug (MIS-262 / MIS-78): the extras seed
+    // previously skipped on any existing shifts, leaving yesterday's timestamps in the DB
+    // and causing "0 on now" / empty gaming floor on day N+1.
+    const tomorrow = addDays(BASE_DATE, 1);
+    const { rows: todayCheck } = await q(
+      `SELECT 1 FROM shifts WHERE venue_id = $1
+       AND shift_start >= $2::timestamptz AND shift_start < $3::timestamptz
+       AND deleted_at IS NULL LIMIT 1`,
+      [venueId, `${BASE_DATE}T00:00:00+10:00`, `${tomorrow}T00:00:00+10:00`],
+    );
+    if (todayCheck.length) {
+      console.log(`[extras-seed] today's shifts (${BASE_DATE}) already seeded — skipping`);
+      return;
+    }
+    // No shifts for today → purge stale data from a previous calendar day.
+    const { rowCount: rDeleted } = await q(`DELETE FROM runsheet_items WHERE client_id = $1`, [clientId]);
+    const { rowCount: sDeleted } = await q(`DELETE FROM shifts WHERE venue_id = $1`, [venueId]);
+    await q(`DELETE FROM pnl_summary WHERE venue_id = $1`, [venueId]);
+    if (sDeleted > 0) {
+      console.log(`[extras-seed] purged ${sDeleted} stale shifts + ${rDeleted} runsheet items — reseeding for ${BASE_DATE}`);
+    }
 
     // Look up all staff for this venue by email.
     const { rows: staffRows } = await q(
@@ -108,10 +123,19 @@ async function main() {
       status: 'active', rate: 41.50,
     });
 
-    // Gaming: only Sarah Chen on the floor today (1 attendant, venue min = 2 → understaffed).
+    // Gaming floor tonight: Sarah Chen + Marcus Forsyth both active.
+    // Two attendants ≥ venue min 2 → the understaffing check does NOT fire.
+    // The Scene 3 hero is the RG-cert-lapse (Marcus's cert lapsed 3 days ago,
+    // but he is still rostered on the floor — that is the compliance breach).
     await insertShift({
       staffId: sarahId, role: 'Gaming Attendant', dept: 'gaming',
-      dayOffset: 0, startH: 11, startM: 30, endH: 20, endM: 30,
+      dayOffset: 0, startH: 11, startM: 30, endH: 23,
+      status: 'active', rate: 28.40,
+    });
+    // Marcus Forsyth — RG cert lapsed, still on gaming floor (M030–M045).
+    await insertShift({
+      staffId: marcusId, role: 'Gaming Attendant', dept: 'gaming',
+      dayOffset: 0, startH: 16, endH: 23,
       status: 'active', rate: 28.40,
     });
 
@@ -198,6 +222,35 @@ async function main() {
         [clientId, dmShiftId, task, due, category, completedAt, completedAt ? dmId : null, i],
       );
     }
+
+    // -------------------------------------------------------------------------
+    // STAFF DEPARTMENT + SHIFT STATUS
+    // shift-summary-api queries staff.department (gaming-floor cover) and
+    // staff.shift_status (on_now count). Neither is set by src/demo/seed.js, so
+    // we update them here after every (re-)seed.
+    // -------------------------------------------------------------------------
+    await q(`
+      UPDATE staff SET department = CASE
+        WHEN role_name ILIKE '%gaming%'                                         THEN 'gaming'
+        WHEN role_name ILIKE '%bar%'                                            THEN 'beverage'
+        WHEN role_name ILIKE '%chef%' OR role_name ILIKE '%kitchen%'
+          OR role_name ILIKE '%waiter%' OR role_name ILIKE '%bistro%'
+          OR role_name ILIKE '%function%'                                       THEN 'food'
+        WHEN role_name ILIKE '%bottle%'                                         THEN 'bottle_shop'
+        ELSE 'management'
+      END
+      WHERE venue_id = $1 AND deleted_at IS NULL`, [venueId]);
+
+    // Mark tonight's active roster as 'on'; everyone else 'rostered'.
+    await q(
+      `UPDATE staff SET shift_status = 'rostered' WHERE venue_id = $1 AND deleted_at IS NULL`,
+      [venueId],
+    );
+    await q(
+      `UPDATE staff SET shift_status = 'on'
+       WHERE staff_id = ANY($1::uuid[]) AND deleted_at IS NULL`,
+      [[dmId, sarahId, marcusId, liamId, chloeId, mateoId, gordonId, sokhaId, avaId, islaId]],
+    );
 
     // -------------------------------------------------------------------------
     // PNL SUMMARY — 7 trading days (for Reports screen, Scene Venue Manager)

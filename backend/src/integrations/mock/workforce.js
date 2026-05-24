@@ -164,17 +164,18 @@ function s(externalId, firstName, lastName, role, roleTier, employmentType, extr
 }
 
 // ---------------------------------------------------------------------------
-// Current shift — Friday night. 10 on across floor/bar/gaming/kitchen.
+// Current shift — tonight. 10 on across floor/bar/gaming/kitchen.
 // One called in sick, gap unfilled. Marcus Forsyth (lapsed RG) is on the floor.
 // ---------------------------------------------------------------------------
 const SHIFT_START = '17:00';
 const SHIFT_END = '02:00';
+const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
 
 export function getCurrentShift() {
   const onShift = STAFF.filter((p) => p.flags.onShiftTonight);
   return {
     venue: 'The Steward Hotel',
-    dayOfWeek: 'Friday',
+    dayOfWeek: DAY_NAMES[NOW.getDay()],
     shiftDate: isoDate(NOW),
     shiftStart: SHIFT_START,
     shiftEnd: SHIFT_END,
