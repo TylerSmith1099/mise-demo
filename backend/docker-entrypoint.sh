@@ -15,6 +15,8 @@ node scripts/migrate.js
 if [ "$SEED_ON_BOOT" = "1" ]; then
   echo "[entrypoint] seeding Steward demo accounts…"
   node src/demo/seed.js
+  echo "[entrypoint] seeding Steward extras (shifts, runsheet, pnl)…"
+  node scripts/seed-steward-extras.js
   echo "[entrypoint] ingesting legislation…"
   node scripts/ingest-legislation.js
 fi

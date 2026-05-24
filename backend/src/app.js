@@ -19,6 +19,7 @@ import { complianceRouter } from './compliance-monitor.js';
 import { demoRouter } from './api/routes/demo.js';
 import { reservationsRouter } from './reservations-api.js';
 import { revenueIntelligenceRouter } from './revenue-intelligence-api.js';
+import { reportsRouter } from './reports-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -124,6 +125,10 @@ export function createApp(config) {
   // Reservations (MIS-243): /api/reservations + /api/reservations/:date.
   // All roles — no tier restriction per feature spec.
   api.use('/', reservationsRouter());
+
+  // Reports (MIS-253): /api/reports — 7-day P&L summary from pnl_summary table.
+  // Tier 4 (Venue Manager) only.
+  api.use('/', reportsRouter());
 
   app.use('/api', api);
 

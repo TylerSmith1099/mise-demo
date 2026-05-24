@@ -1,15 +1,15 @@
-// ComplianceBanner — MIS-44 / Demo Scene 3.
+// ComplianceBanner -- MIS-44 / Demo Scene 3.
 //
 // The blocking compliance alert banner. Pinned to the very top of the screen
 // (above the TopBar) whenever the Compliance Monitor has an active alert for the
 // Duty Manager's venue. Severity drives the colour: Critical = red, Warning =
-// amber (brand spec). It CANNOT be dismissed by tapping away — the only way to
+// amber (brand spec). It CANNOT be dismissed by tapping away -- the only way to
 // clear it is to type an acknowledgement / logged action, which persists to
 // compliance_events (acknowledged_at + acknowledged_by) via the parent's
 // onAcknowledge handler.
 //
 // Data shape (props.alert): { eventId, severity, description, createdAt }
-//   onAcknowledge(eventId, note) -> Promise — parent calls the ack endpoint.
+//   onAcknowledge(eventId, note) -> Promise -- parent calls the ack endpoint.
 import React, { useState } from 'react';
 
 const SEVERITY = {
@@ -32,6 +32,7 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
   const [note, setNote] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState(null);
+  const [acked, setAcked] = useState(false);
 
   if (!alert) return null;
   const sev = SEVERITY[alert.severity] || SEVERITY.critical;
@@ -49,12 +50,14 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
     setError(null);
     try {
       await onAcknowledge(alert.eventId, note.trim());
-      // Parent removes the alert on success; local state resets via unmount.
+      // Show confirmation for 2s while parent delays removing this alert.
+      setAcked(true);
+      setBusy(false);
     } catch (err) {
       setError(
         err?.status === 400
           ? 'Type the action you took before acknowledging.'
-          : 'Couldn’t log the acknowledgement. Try again.',
+          : "Couldn't log the acknowledgement. Try again.",
       );
       setBusy(false);
     }
@@ -72,7 +75,7 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
 
       <div className="px-4 py-3">
         <div className="flex items-start gap-3">
-          {/* Severity badge — solid, impossible to miss in a dark room. */}
+          {/* Severity badge -- solid, impossible to miss in a dark room. */}
           <span
             className={`mt-0.5 shrink-0 rounded ${sev.bar} px-2 py-1 font-data text-[11px] font-bold tracking-wider text-charcoal`}
           >
@@ -87,8 +90,18 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
           </div>
         </div>
 
-        {/* Acknowledgement — the ONLY way out. No close/dismiss control exists. */}
-        {!open ? (
+        {/* Post-ACK confirmation -- shown for ~2s while parent removes the alert. */}
+        {acked ? (
+          <div className="mt-3 flex items-center gap-2 rounded-lg border border-mint/40 bg-mint/10 px-4 py-3">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+              <path d="m5 12 4.5 4.5L19 7" stroke="#00E87A" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            <span className="text-sm font-semibold text-mint">Action logged -- alert clearing</span>
+          </div>
+        ) : null}
+
+        {/* Acknowledgement -- the ONLY way out. No close/dismiss control exists. */}
+        {!acked && !open ? (
           <button
             type="button"
             onClick={() => setOpen(true)}
@@ -96,10 +109,10 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
           >
             Acknowledge &amp; log action
           </button>
-        ) : (
+        ) : !acked ? (
           <div className="mt-3">
             <label htmlFor="ack-note" className="text-xs font-semibold text-cream/80">
-              Type the action you’ve taken (required to clear this alert)
+              Type the action you have taken (required to clear this alert)
             </label>
             <textarea
               id="ack-note"
@@ -128,11 +141,11 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
                   canConfirm ? `${sev.bar}` : 'bg-cream/30'
                 }`}
               >
-                {busy ? 'Logging…' : 'Confirm acknowledgement'}
+                {busy ? 'Logging...' : 'Confirm acknowledgement'}
               </button>
             </div>
           </div>
-        )}
+        ) : null}
       </div>
     </section>
   );

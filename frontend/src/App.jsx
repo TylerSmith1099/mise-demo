@@ -19,6 +19,8 @@ import Composer from './components/Composer.jsx';
 import ComplianceBanner from './components/ComplianceBanner.jsx';
 import BottomNav from './components/BottomNav.jsx';
 import Runsheet from './components/Runsheet.jsx';
+import RevenueIntelligence from './components/RevenueIntelligence.jsx';
+import ReportsScreen from './components/ReportsScreen.jsx';
 
 const HANDOVER_INTENT = /handover/i;
 const MANAGER_MAX_TIER = 5;
@@ -74,7 +76,9 @@ export default function App() {
 
   const onAcknowledge = useCallback(async (eventId, note) => {
     await acknowledgeAlert({ eventId, note });
-    setAlerts((a) => a.filter((x) => x.eventId !== eventId));
+    // 2s grace period so the ComplianceBanner can show its "Action logged" confirmation
+    // before the next alert (if any) mounts in its place.
+    setTimeout(() => setAlerts((a) => a.filter((x) => x.eventId !== eventId)), 2000);
   }, []);
 
   // Resolve session identity.
@@ -243,8 +247,20 @@ export default function App() {
         </main>
       )}
 
+      {tab === 'revenue' && (
+        <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
+          <RevenueIntelligence onAuthError={dropToLogin} />
+        </main>
+      )}
+
+      {tab === 'reports' && (
+        <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
+          <ReportsScreen onAuthError={dropToLogin} />
+        </main>
+      )}
+
       {/* Placeholder screens for tabs not yet built — on-brand, readable */}
-      {['compliance', 'incidents', 'shift', 'bookings', 'labour', 'alerts', 'revenue', 'reports'].includes(tab) && (
+      {['compliance', 'incidents', 'shift', 'bookings', 'labour', 'alerts'].includes(tab) && (
         <ComingSoon label={tab} />
       )}
 

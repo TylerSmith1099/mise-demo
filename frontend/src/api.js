@@ -128,6 +128,14 @@ export function fetchReservations(date) {
   return request(path);
 }
 
+// ---- Reports (MIS-253) ----------------------------------------------------
+// Venue Manager only (Tier 4). 7-day P&L summary from pnl_summary table.
+// Shape: { periodLabel, departments: [{ department, revenue, labourCost, labourPct,
+//   netGamingRevenue?, meterTurnover? }] }
+export function fetchReports() {
+  return request('/api/reports');
+}
+
 // ---- Compliance Monitor (MIS-44) ------------------------------------------
 // Arm the monitor; the backend runs Check 4 against live roster ~10s later.
 export function activateComplianceMonitor() {
