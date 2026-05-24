@@ -186,7 +186,12 @@ const DAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Frid
 
 export function getCurrentShift() {
   const now = new Date();
-  const onShift = buildStaff().filter((p) => p.flags.onShiftTonight);
+  const allStaff = buildStaff();
+  const onShift = allStaff.filter((p) => p.flags.onShiftTonight);
+  const marcus = allStaff.find((p) => p.externalStaffId === 'STW-012');
+  const marcusRgDaysAgo = marcus?.certifications.rg
+    ? Math.round((now - new Date(`${marcus.certifications.rg}T00:00:00`)) / 86_400_000)
+    : 3;
   return {
     venue: 'The Steward Hotel',
     dayOfWeek: DAY_NAMES[now.getDay()],
@@ -213,7 +218,7 @@ export function getCurrentShift() {
       {
         type: 'rg_lapsed_on_floor',
         severity: 'critical',
-        detail: 'Marcus Forsyth (Gaming Attendant) is rostered on the gaming floor (M030–M045) but his RG certification lapsed 3 days ago.',
+        detail: `Marcus Forsyth (Gaming Attendant) is rostered on the gaming floor (M030–M045) but his RG certification lapsed ${marcusRgDaysAgo} days ago.`,
         externalStaffId: 'STW-012',
       },
     ],

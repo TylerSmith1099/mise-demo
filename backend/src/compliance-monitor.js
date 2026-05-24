@@ -84,19 +84,20 @@ export async function runUnderstaffingCheck({ clientId, venueId }) {
     const onFloor = shiftRows.length;
     const minAttendants = venue.gaming_min_attendants;
     const shortBy = minAttendants - onFloor;
-    if (shortBy <= 0) return null; // adequately staffed — no alert
 
-    // Idempotency: reuse an already-open Critical understaffing alert.
-    const { rows: existing } = await q(
-      `SELECT event_id, event_type, severity, description, created_at, acknowledged_at
-         FROM compliance_events
-        WHERE venue_id = $1 AND event_type = $2 AND severity = 'critical'
-          AND acknowledged_at IS NULL AND deleted_at IS NULL
-        ORDER BY created_at DESC LIMIT 1`,
-      [venueId, UNDERSTAFFING_EVENT_TYPE],
-    );
-    if (existing.length) return existing[0];
+    if (shortBy <= 0) {
+      // Floor is adequately staffed — retire any open understaffing alert that may
+      // have been created with stale/wrong numbers on a prior shift (MIS-304).
+      await q(
+        `UPDATE compliance_events SET deleted_at = NOW()
+           WHERE venue_id = $1 AND event_type = $2 AND severity = 'critical'
+             AND acknowledged_at IS NULL AND deleted_at IS NULL`,
+        [venueId, UNDERSTAFFING_EVENT_TYPE],
+      );
+      return null;
+    }
 
+    // Build description first so we can refresh a stale existing event.
     const tz = venue.timezone || 'Australia/Brisbane';
     // shiftRows may be empty (nobody on the floor at all) — guard the time read so
     // a fully-empty floor still fires a clean Critical alert instead of throwing.
@@ -114,6 +115,24 @@ export async function runUnderstaffingCheck({ clientId, venueId }) {
       `has ${onFloor} ${plural} on the floor (${names}) but the ${venue.egm_count}-machine ` +
       `floor requires a minimum of ${minAttendants}. ${shortBy} short. ` +
       `Roster a second gaming attendant or restrict the floor.`;
+
+    // Idempotency: reuse/refresh an already-open Critical understaffing alert.
+    const { rows: existing } = await q(
+      `SELECT event_id, event_type, severity, description, created_at, acknowledged_at
+         FROM compliance_events
+        WHERE venue_id = $1 AND event_type = $2 AND severity = 'critical'
+          AND acknowledged_at IS NULL AND deleted_at IS NULL
+        ORDER BY created_at DESC LIMIT 1`,
+      [venueId, UNDERSTAFFING_EVENT_TYPE],
+    );
+    if (existing.length) {
+      // Refresh description so staff names / counts reflect the current check (MIS-304).
+      await q(
+        `UPDATE compliance_events SET description = $2 WHERE event_id = $1`,
+        [existing[0].event_id, description],
+      );
+      return { ...existing[0], description };
+    }
 
     const { rows: ins } = await q(
       `INSERT INTO compliance_events

@@ -10,6 +10,7 @@
 
 import { initDb, withClientContext, closeDb } from '../src/db.js';
 import { loadConfig } from '../src/config.js';
+import { daysFromNow } from '../src/integrations/mock/workforce.js';
 
 const DEMO_CLIENT_ID = process.env.DEMO_CLIENT_ID || 'a0000000-0000-4000-8000-000000000001';
 const DEMO_VENUE_ID  = process.env.DEMO_VENUE_ID  || 'a0000000-0000-4000-8000-000000000002';
@@ -41,6 +42,15 @@ async function main() {
     // survives the date-drift case where shifts are deleted and recreated.
     await q(
       `UPDATE venues SET gaming_min_attendants = 2, egm_count = 45 WHERE venue_id = $1`,
+      [venueId],
+    );
+
+    // Retire any open gaming_understaffing events from a prior shift — they contain
+    // a stale roster snapshot and will show wrong numbers after a reseed (MIS-304).
+    await q(
+      `UPDATE compliance_events SET deleted_at = NOW()
+         WHERE venue_id = $1 AND event_type = 'gaming_understaffing'
+           AND acknowledged_at IS NULL AND deleted_at IS NULL`,
       [venueId],
     );
 
@@ -211,13 +221,17 @@ async function main() {
     // RUNSHEET — DM's active shift (day 0, Scene 2)
     // Two tasks pre-completed by DM to show real progress; rest pending.
     // -------------------------------------------------------------------------
+    const marcusRgExpiry = daysFromNow(-3);
+    const marcusRgDaysAgo = Math.round(
+      (Date.now() - new Date(`${marcusRgExpiry}T00:00:00`).getTime()) / 86_400_000,
+    );
     const runsheet = [
       // [task, due_by, category, completedAt | null]
       ['Floor walk + RSA signage check at open',                    '16:30', 'compliance',  bne(0, 16, 25)],
       ['Confirm a second gaming attendant or restrict the floor',   '17:00', 'gaming',      null],
       ['Follow-up outcome note on the 15:10 RSA refusal',           '18:00', 'compliance',  null],
       ['Confirm technician ETA for EGM fault',                      '18:30', 'gaming',      null],
-      ["Start Marcus Forsyth RG renewal (cert lapsed 3 days ago)",  '19:00', 'compliance',  null],
+      [`Start Marcus Forsyth RG renewal (cert lapsed ${marcusRgDaysAgo} days ago)`,  '19:00', 'compliance',  null],
       ['Bar float + till spot-check',                               '20:00', 'bar',         bne(0, 19, 58)],
       ['Bottle shop close & reconcile',                             '22:00', 'open_close',  null],
       ['Gaming room clean-down + lock-up',                          '23:45', 'open_close',  null],

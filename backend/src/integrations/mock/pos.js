@@ -130,13 +130,14 @@ export function getTradingSummary() {
 // Cash management.
 // ---------------------------------------------------------------------------
 export function getCashManagement() {
+  const dayName = new Date().toLocaleDateString('en-AU', { weekday: 'long', timeZone: 'Australia/Brisbane' });
   return {
     venue: 'The Steward Hotel',
     openingFloat: { bar: 2_500, gaming: 5_000 },
     currentTill: { bar: 8_240, gaming: 12_660 },
     lastCashUp: {
       at: hoursAgo(2.5),
-      note: 'Last cash-up 6pm — 2.5 hours ago. Overdue for a Friday night.',
+      note: `Last cash-up 6pm — 2.5 hours ago. Overdue for a ${dayName} night.`,
       overdue: true,
     },
     variance: {
