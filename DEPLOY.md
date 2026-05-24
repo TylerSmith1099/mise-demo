@@ -7,9 +7,32 @@ hardcoded backend host — the client uses relative `/auth` and `/api` paths).
 ## Artifacts
 
 - `Dockerfile` — Node 20 image; build context is this `MISE/` directory.
-- `backend/docker-entrypoint.sh` — migrate (always) → seed + ingest (if `SEED_ON_BOOT=1`) → start.
+- `backend/docker-entrypoint.sh` — migrate (always) → seed + ingest (if `SEED_ON_BOOT=1`) → demo extras (always, both tenants) → start.
 - `render.yaml` — Render Blueprint: provisions Postgres + web service, wires `DB_CONNECTION_STRING`, generates `JWT_SECRET`.
 - `railway.json` — Railway Dockerfile deploy config (add a Postgres plugin; set env vars in the dashboard).
+
+## Live Render service — IMPORTANT drift from the blueprint
+
+The live demo at https://mise-demo.onrender.com is configured as a **Node
+runtime** with an explicit dashboard **Start Command** — NOT the Docker runtime
+declared in `render.yaml`. Because of this, `docker-entrypoint.sh` does NOT run
+on the live service; the dashboard Start Command is authoritative. If you ever
+recreate the service from the blueprint it will run Docker (and
+`docker-entrypoint.sh`, which is kept in sync), but the current live service is
+Node. Keep these two paths in lockstep when changing boot behaviour.
+
+Live Start Command (Render dashboard → Settings → Start Command):
+
+```
+cd backend && node scripts/migrate.js && node src/demo/seed.js && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && node src/server.js
+```
+
+`scripts/seed-steward-extras.js` populates the data behind the Run Sheet, Revenue
+and Reports screens (shifts, runsheet_items, pnl_summary). It is idempotent and
+date-aware — it re-anchors shifts to the current Brisbane day on every boot so
+there is always an active shift for the demo. It uses **soft deletes**
+(`UPDATE ... SET deleted_at = NOW()`), never `DELETE`, because the `mise_app`
+role has no DELETE grant (see migration 005).
 
 ## Environment variables
 
@@ -35,7 +58,13 @@ are FIXED and idempotent across redeploys (overridable via `DEMO_CLIENT_ID` /
 - **Client ID:** `a0000000-0000-4000-8000-000000000001`
 - **Venue ID:** `a0000000-0000-4000-8000-000000000002`
 
-Password for all three accounts: `mise-demo-2026`
+The live demo is driven from a second tenant (The Steward Hotel) which the Start
+Command also seeds:
+
+- **Client ID:** `a4cba394-238e-47f5-a2b4-25e2cfccb85d`
+- **Venue ID:** `a6d8aee2-92de-4400-9ef0-a227d42496c1`
+
+Password for all accounts: `mise-demo-2026`
 
 - `gaming@steward.demo` — Gaming Attendant (Scene 1)
 - `dutymanager@steward.demo` — Duty Manager (Scene 2 + 3)
