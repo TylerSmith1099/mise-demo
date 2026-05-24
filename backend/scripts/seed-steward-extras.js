@@ -60,12 +60,22 @@ async function main() {
       console.log(`[extras-seed] today's shifts (${BASE_DATE}) already seeded — skipping`);
       return;
     }
-    // No shifts for today → purge stale data from a previous calendar day.
-    const { rowCount: rDeleted } = await q(`DELETE FROM runsheet_items WHERE client_id = $1`, [clientId]);
-    const { rowCount: sDeleted } = await q(`DELETE FROM shifts WHERE venue_id = $1`, [venueId]);
-    await q(`DELETE FROM pnl_summary WHERE venue_id = $1`, [venueId]);
+    // No shifts for today → soft-delete stale data from a previous calendar day.
+    // mise_app has SELECT/INSERT/UPDATE only (no DELETE); use deleted_at for purges.
+    const { rowCount: rDeleted } = await q(
+      `UPDATE runsheet_items SET deleted_at = NOW() WHERE client_id = $1 AND deleted_at IS NULL`,
+      [clientId],
+    );
+    const { rowCount: sDeleted } = await q(
+      `UPDATE shifts SET deleted_at = NOW() WHERE venue_id = $1 AND deleted_at IS NULL`,
+      [venueId],
+    );
+    await q(
+      `UPDATE pnl_summary SET deleted_at = NOW() WHERE venue_id = $1 AND deleted_at IS NULL`,
+      [venueId],
+    );
     if (sDeleted > 0) {
-      console.log(`[extras-seed] purged ${sDeleted} stale shifts + ${rDeleted} runsheet items — reseeding for ${BASE_DATE}`);
+      console.log(`[extras-seed] soft-deleted ${sDeleted} stale shifts + ${rDeleted} runsheet items — reseeding for ${BASE_DATE}`);
     }
 
     // Look up all staff for this venue by email.
