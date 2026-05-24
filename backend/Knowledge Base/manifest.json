@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-23T02:29:36.670Z",
+  "generatedAt": "2026-05-23T15:46:24.397Z",
   "embeddingModel": "mise-local-hashing-v1",
   "documents": [
     {
@@ -292,6 +292,213 @@
       "ingestedAt": "2026-05-23T02:29:36.670Z",
       "flags": [
         "DEPLOY FLAG — Legal-drafted summary; solicitor sign-off pending (Ops/Questions.md). Confirm thresholds/dates/mechanics and load full consolidated statute + AUSTRAC rules before production."
+      ]
+    },
+    {
+      "source": "Criterion SOP — Meter Read and Gaming Floor Log",
+      "idPrefix": "criterion-sop-meter-read",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 6,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.612Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Responsible Gambling Patron Interaction Script",
+      "idPrefix": "criterion-sop-rg-interaction-script",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 4,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.622Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Self-Exclusion Registration",
+      "idPrefix": "criterion-sop-self-exclusion",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 4,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.626Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Staff Certification RSA and RSG",
+      "idPrefix": "criterion-sop-staff-certs",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.637Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — RSA Refusal Language",
+      "idPrefix": "criterion-sop-rsa-refusal",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.643Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Cash Management, Bar Float, and Department Open/Close",
+      "idPrefix": "criterion-sop-cash-float",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.649Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Incident Reporting: Mandatory Notification Thresholds",
+      "idPrefix": "criterion-sop-incident-thresholds",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 6,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.656Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Aggressive Patron, Removal, and Barring",
+      "idPrefix": "criterion-sop-aggressive-patron",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.662Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "original non-client-IP industry procedure"
+      ]
+    },
+    {
+      "source": "Labour Benchmarks and Gaming RTV",
+      "idPrefix": "shared-labour-benchmarks",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.676Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "shared knowledge article (industry_standard layer)"
+      ]
+    },
+    {
+      "source": "Fair Work Act 2009 — Right to Disconnect",
+      "idPrefix": "shared-fair-work-right-to-disconnect",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 4,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.681Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "shared knowledge article (industry_standard layer)"
+      ]
+    },
+    {
+      "source": "CCTV Retention Guidance",
+      "idPrefix": "shared-cctv-retention",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.688Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "shared knowledge article (industry_standard layer)"
+      ]
+    },
+    {
+      "source": "OLGR — Role, Inspection Powers, and Compliance Context",
+      "idPrefix": "shared-olgr-context",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 3,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:43:42.694Z",
+      "flags": [
+        "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
+        "shared knowledge article (industry_standard layer)"
+      ]
+    },
+    {
+      "source": "Criterion SOP — EGM Clearance Procedure",
+      "idPrefix": "criterion-sop-egm-clearance",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 6,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:46:24.387Z",
+      "flags": [
+        "MIS-235: re-ingested with keyword-enriched headings (2026-05-24)"
+      ]
+    },
+    {
+      "source": "Criterion SOP — Shift Handover",
+      "idPrefix": "criterion-sop-shift-handover",
+      "clientId": "56babd0d-3974-48d8-96b2-8bb915969af3",
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 6,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:46:24.393Z",
+      "flags": [
+        "MIS-235: re-ingested with keyword-enriched headings (2026-05-24)"
+      ]
+    },
+    {
+      "source": "Hospitality Industry Award MA000009 — Pay Rates Reference",
+      "idPrefix": "shared-hospitality-award-rates",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-24",
+      "chunkCount": 5,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-23T15:46:24.397Z",
+      "flags": [
+        "MIS-235: re-ingested with keyword-enriched headings (2026-05-24)"
       ]
     }
   ],
