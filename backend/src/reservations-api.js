@@ -18,16 +18,18 @@ import { Router } from 'express';
 import {
   getReservationsForDate,
   getDemoSaturdayReservations,
-  DEMO_SAT,
 } from './integrations/mock/reservations.js';
 
 export function reservationsRouter() {
   const router = Router();
 
-  // Default: return the demo Saturday (Scene 2 primary view).
+  // Default: return today's reservations so the date is consistent with the
+  // shift header and handover (MIS-270). Uses the same rich Saturday booking
+  // data regardless of day so the demo content is always populated.
   router.get('/reservations', (_req, res) => {
+    const today = new Date().toISOString().slice(0, 10);
     const services = getDemoSaturdayReservations();
-    res.json({ date: DEMO_SAT, services });
+    res.json({ date: today, services });
   });
 
   // Date-parameterised: allows Mon/Fri views without changing the default.

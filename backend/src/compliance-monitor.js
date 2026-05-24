@@ -140,7 +140,15 @@ async function upsertEvent(q, { clientId, venueId, eventType, severity, descript
       ORDER BY created_at DESC LIMIT 1`,
     [venueId, eventType],
   );
-  if (existing.length) return existing[0];
+  if (existing.length) {
+    // Refresh description so cert dates / days counts stay current when the
+    // row was first inserted on a prior calendar day (MIS-270).
+    await q(
+      `UPDATE compliance_events SET description = $2 WHERE event_id = $1`,
+      [existing[0].event_id, description],
+    );
+    return { ...existing[0], description };
+  }
   const { rows: ins } = await q(
     `INSERT INTO compliance_events
        (client_id, venue_id, staff_id, event_type, severity, description)

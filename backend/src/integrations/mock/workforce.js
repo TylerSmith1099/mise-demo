@@ -193,7 +193,7 @@ export function getCurrentShift() {
       {
         type: 'sick_call_unfilled',
         severity: 'warning',
-        detail: 'Holly Fraser (Bar Attendant) called in sick at 16:10. Replacement not yet rostered — bar running one short for Friday peak.',
+        detail: `Holly Fraser (Bar Attendant) called in sick at 16:10. Replacement not yet rostered — bar running one short for ${DAY_NAMES[NOW.getDay()]} peak.`,
         externalStaffId: 'STW-009',
       },
       {

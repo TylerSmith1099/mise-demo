@@ -126,7 +126,7 @@ export function getDemoHandover() {
   for (const r of rgOnFloorExpired) {
     actionItems.push(`Pull ${r.name} off the gaming floor until their RG certification is renewed.`);
   }
-  if (sickGap) actionItems.push('Roster a replacement for the unfilled bar sick-call before the Friday peak.');
+  if (sickGap) actionItems.push(`Roster a replacement for the unfilled bar sick-call before the ${shift.dayOfWeek} peak.`);
   if (cash.lastCashUp?.overdue) actionItems.push('Complete the overdue cash-up.');
   if (amberRange) actionItems.push(`Clear gaming machines ${amberRange} (clearance overdue).`);
   if (inspection.inProgress) {
