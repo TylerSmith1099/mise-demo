@@ -15,11 +15,22 @@ node scripts/migrate.js
 if [ "$SEED_ON_BOOT" = "1" ]; then
   echo "[entrypoint] seeding Steward demo accounts…"
   node src/demo/seed.js
-  echo "[entrypoint] seeding Steward extras (shifts, runsheet, pnl)…"
-  node scripts/seed-steward-extras.js
   echo "[entrypoint] ingesting legislation…"
   node scripts/ingest-legislation.js
 fi
+
+# Demo data freshness — always run, even on a persistent DB with SEED_ON_BOOT
+# unset. The runsheet + reports screens depend on shifts/runsheet/pnl that only
+# seed-steward-extras creates, and it is safe to run on every boot: it is
+# idempotent (skips when today's shifts already exist) and self-heals date drift
+# by re-anchoring shifts to the current Brisbane day so there is always an active
+# shift for the demo. Run for the documented demo tenant ids; non-fatal so a
+# failure can never block server start.
+echo "[entrypoint] ensuring demo extras (shifts/runsheet/pnl) for current day…"
+DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 \
+  node scripts/seed-steward-extras.js || echo "[entrypoint] extras seed (a4cba394) skipped/failed — non-fatal"
+DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 \
+  node scripts/seed-steward-extras.js || echo "[entrypoint] extras seed (a0000000) skipped/failed — non-fatal"
 
 echo "[entrypoint] starting Mise server…"
 exec node src/server.js
