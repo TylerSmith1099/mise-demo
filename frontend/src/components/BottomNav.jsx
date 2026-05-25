@@ -22,7 +22,7 @@ const NAV_CONFIG = {
     { id: 'chat',       label: 'Chat',      Icon: ChatIcon },
     { id: 'run_sheet',  label: 'Run Sheet', Icon: ClipboardIcon },
     { id: 'bookings',   label: 'Bookings',  Icon: CalendarIcon },
-    { id: 'labour',     label: 'Labour',    Icon: UserGroupIcon },
+    { id: 'reports',    label: 'Reports',   Icon: ChartBarIcon },
     { id: 'alerts',     label: 'Alerts',    Icon: BellIcon },
   ],
   4: [ // Venue Manager
