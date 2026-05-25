@@ -1,0 +1,31 @@
+-- =============================================================================
+-- Migration 033 — sessions.venue_id nullable for multi-venue desktop roles
+--
+-- CONTEXT (Admin Homepage, MIS-412 / MIS-439)
+-- ------------------------------------------------------------
+-- Migration 001 declared sessions.venue_id NOT NULL on the assumption that
+-- every login carries a single venue. The multi-venue scope model introduced
+-- in migration 023 makes that false for desktop tiers 1–3 (Group Admin /
+-- Area Manager / General Manager), whose venue access is resolved from
+-- staff_venue_assignments rather than a home venue.
+--
+-- Migration 032 already relaxed staff.venue_id. Sessions must follow suit so
+-- that tier-1/2/3 staff can open sessions without a venue_id.
+--
+-- Single-venue mobile roles (tiers 4/5/7) continue to supply venue_id at
+-- login; this only RELAXES the constraint for area/group roles.
+--
+-- The composite FK (client_id, venue_id) -> venues uses PostgreSQL's default
+-- MATCH SIMPLE, so a NULL venue_id row is exempt from the FK check. A
+-- non-null venue_id continues to be validated intra-client.
+-- =============================================================================
+
+-- ---------------------------------------------------------------------------
+-- UP
+-- ---------------------------------------------------------------------------
+ALTER TABLE sessions ALTER COLUMN venue_id DROP NOT NULL;
+
+-- ---------------------------------------------------------------------------
+-- DOWN — only safe once all session rows carry non-null venue_id.
+-- ---------------------------------------------------------------------------
+-- ALTER TABLE sessions ALTER COLUMN venue_id SET NOT NULL;

@@ -19,6 +19,7 @@
     "@anthropic-ai/sdk": "^0.97.1",
     "express": "^4.21.2",
     "jsonwebtoken": "^9.0.2",
+    "pdfkit": "^0.18.0",
     "pg": "^8.21.0"
   }
 }

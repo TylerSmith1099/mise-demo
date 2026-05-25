@@ -61,7 +61,9 @@ export async function login(config, input) {
   const { clientId, venueId, email, password, sourceIp } = input;
   const attempt = { clientId, venueId, email, sourceIp };
 
-  if (!clientId || !venueId || !email || !password) {
+  // venueId is optional for area/group-level staff (tier 1–3) whose venue_id
+  // is null in the staff table. Venue-scoped staff (tier 4/5/7) must supply it.
+  if (!clientId || !email || !password) {
     await recordFailedLogin('missing_fields', attempt);
     throw new AuthError('missing_fields');
   }
@@ -91,7 +93,10 @@ export async function login(config, input) {
     await recordFailedLogin('inactive', { ...attempt, staffId: staff.staff_id });
     throw new AuthError('inactive');
   }
-  if (staff.venue_id !== venueId) {
+  // Only validate venue match for venue-scoped staff (staff.venue_id is non-null).
+  // Area/group-level staff (staff.venue_id null) have no home venue — their
+  // scope is resolved from staff_venue_assignments after login.
+  if (staff.venue_id !== null && staff.venue_id !== venueId) {
     await recordFailedLogin('venue_mismatch', { ...attempt, staffId: staff.staff_id });
     throw new AuthError('venue_mismatch');
   }

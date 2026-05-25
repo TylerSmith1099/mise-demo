@@ -33,8 +33,9 @@ async function buildConnectorMaps(config) {
   const pool = new pg.Pool({ connectionString: config.db.connectionString });
   let rows;
   try {
+    // integration_connections is client-scoped — no venue_id column (per migration 015).
     const result = await pool.query(
-      `SELECT id, client_id, venue_id, vendor, status
+      `SELECT id, client_id, vendor, status
          FROM integration_connections
         WHERE status = 'active'
           AND deleted_at IS NULL
@@ -53,7 +54,6 @@ async function buildConnectorMaps(config) {
     const base = {
       connectionId: row.id,
       clientId:     row.client_id,
-      venueId:      row.venue_id,
     };
 
     if (row.vendor === 'bepoz') {

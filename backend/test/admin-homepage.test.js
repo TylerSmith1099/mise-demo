@@ -215,7 +215,7 @@ describe('happy path — Duty Manager', () => {
   let dmToken;
 
   before(async () => {
-    const session = await login(ids.a.clientId, ids.a.venueId, 'alex@pinnacle.test', 'duty-5678');
+    const session = await login(ids.a.clientId, ids.a.venueId, 'dan@pinnacle.test', 'duty-5678');
     dmToken = session.token;
   });
 
@@ -275,7 +275,7 @@ describe('client isolation — staff from client B cannot read client A data', (
   let clientBToken;
 
   before(async () => {
-    const session = await login(ids.b.clientId, ids.b.venueId, 'sam@steward.test', 'other-0000');
+    const session = await login(ids.b.clientId, ids.b.venueId, 'otto@rival.test', 'other-0000');
     clientBToken = session.token;
   });
 
@@ -298,7 +298,7 @@ describe('client isolation — staff from client B cannot read client A data', (
 
   test('client B requesting client A venueId as query param gets 403', async () => {
     // Client B DM tries to narrow to client A venue via ?venueId=.
-    const session = await login(ids.b.clientId, ids.b.venueId, 'sam@steward.test', 'other-0000');
+    const session = await login(ids.b.clientId, ids.b.venueId, 'otto@rival.test', 'other-0000');
     const r = await get(`/api/admin/revenue/daily?venueId=${ids.a.venueId}`, session.token);
     // Either 403 (scope check) or 200 with empty data (RLS). Either is safe.
     if (r.status === 200) {
@@ -321,7 +321,7 @@ describe('intra-client scope — DM cannot read sibling venue', () => {
       return;
     }
 
-    const session = await login(ids.a.clientId, ids.a.venueId, 'alex@pinnacle.test', 'duty-5678');
+    const session = await login(ids.a.clientId, ids.a.venueId, 'dan@pinnacle.test', 'duty-5678');
 
     // DM requesting a sibling venue (venue2) gets 403.
     const r = await get(`/api/admin/revenue/daily?venueId=${adminIds.venue2Id}`, session.token);

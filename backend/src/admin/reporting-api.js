@@ -808,10 +808,15 @@ function sendCsv(res, { resolvedParams, metricLabel, unitLabel, generatedAt,
     : `date,${metricLabel} (${unitLabel})`;
 
   const rows = primary.points.map((p, i) => {
-    const val = metric === 'labour_pct' ? p.v : Math.round((p.v ?? 0) / 100 * 100) / 100;
+    const isCount = METRIC_DEFS[metric].unit === 'count';
+    const val = metric === 'labour_pct' ? p.v
+      : isCount ? (p.v ?? 0)
+      : Math.round((p.v ?? 0) / 100 * 100) / 100;
     if (comparisonResult) {
       const cp = comparisonResult.points[i];
-      const cval = cp ? (metric === 'labour_pct' ? cp.v : Math.round((cp.v ?? 0) / 100 * 100) / 100) : '';
+      const cval = cp ? (metric === 'labour_pct' ? cp.v
+        : isCount ? (cp.v ?? 0)
+        : Math.round((cp.v ?? 0) / 100 * 100) / 100) : '';
       return `${p.t},${val},${cp?.t || ''},${cval}`;
     }
     return `${p.t},${val}`;
@@ -919,9 +924,12 @@ function sendPdf(res, { resolvedParams, metricLabel, unitLabel, generatedAt,
     const bg = i % 2 === 0 ? null : '#F4F7FB';
     if (bg) doc.rect(48, doc.y - 2, doc.page.width - 96, ROW_H).fill(bg);
 
+    const isCount = METRIC_DEFS[metric].unit === 'count';
     const val = metric === 'labour_pct'
       ? (pt.v !== null ? pt.v.toFixed(2) + '%' : '—')
-      : (pt.v !== null ? '$' + (pt.v / 100).toLocaleString('en-AU', { minimumFractionDigits: 2 }) : '—');
+      : isCount
+        ? (pt.v !== null ? pt.v.toLocaleString('en-AU') : '—')
+        : (pt.v !== null ? '$' + (pt.v / 100).toLocaleString('en-AU', { minimumFractionDigits: 2 }) : '—');
 
     doc.fillColor(DARK).font('Courier').fontSize(8);
     doc.text(pt.t, COL_DATE + 4, doc.y + 2, { width: 140 });
@@ -932,7 +940,9 @@ function sendPdf(res, { resolvedParams, metricLabel, unitLabel, generatedAt,
       const cval = cp
         ? (metric === 'labour_pct'
           ? (cp.v !== null ? cp.v.toFixed(2) + '%' : '—')
-          : '$' + ((cp.v ?? 0) / 100).toLocaleString('en-AU', { minimumFractionDigits: 2 }))
+          : isCount
+            ? ((cp.v ?? 0)).toLocaleString('en-AU')
+            : '$' + ((cp.v ?? 0) / 100).toLocaleString('en-AU', { minimumFractionDigits: 2 }))
         : '—';
       doc.text(cval, COL_COMP, doc.y - 10, { width: 120 });
     }

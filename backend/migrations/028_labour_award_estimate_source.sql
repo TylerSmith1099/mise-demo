@@ -54,6 +54,12 @@ DECLARE
     venue_t  UUID := 'aaaaaaaa-0000-4000-8000-000000000098';
     cnt      INTEGER;
 BEGIN
+    -- Run AS mise_app: a superuser bypasses RLS (FORCE binds only the owner), so
+    -- this test is only meaningful as the app role. The runner is a member of
+    -- mise_app (granted in 005). See 023 for rationale.
+    SET LOCAL ROLE mise_app;
+
+    PERFORM set_config('app.current_client_id', client_t::text, true);
     INSERT INTO clients (client_id, client_name, white_label_name, status)
     VALUES (client_t, '_mig028_test', '_mig028_test', 'active')
     ON CONFLICT DO NOTHING;
@@ -90,7 +96,9 @@ BEGIN
         NULL; -- expected
     END;
 
-    -- Cleanup
+    -- Cleanup: back to migration runner (owner) for DELETE — mise_app has no DELETE grant.
+    RESET ROLE;
+    PERFORM set_config('app.current_client_id', client_t::text, true);
     DELETE FROM labour_actuals_daily WHERE client_id = client_t;
     DELETE FROM venues               WHERE client_id = client_t;
     DELETE FROM clients              WHERE client_id = client_t;

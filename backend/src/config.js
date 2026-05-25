@@ -13,7 +13,8 @@
 // This layer — and the staff/session data it reads and writes — MUST be deployed
 // only on AWS ap-southeast-2 (Sydney). No staff or session data leaves Australia.
 
-const MVP_ROLE_TIERS = Object.freeze([4, 5, 7]); // tiers 1–3 and 6 are post-demo
+// Tiers 1–3 added with admin desktop homepage (MIS-412); tier 6 still unimplemented.
+const MVP_ROLE_TIERS = Object.freeze([1, 2, 3, 4, 5, 7]);
 
 function required(name) {
   const v = process.env[name];

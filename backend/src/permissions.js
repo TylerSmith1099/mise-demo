@@ -57,6 +57,13 @@ export const PERMISSION_MAP = Object.freeze({
   'admin-labour':    Object.freeze([1, 2, 3, 4]),    // cost data not DM-facing by default
   'admin-incidents': Object.freeze([1, 2, 3, 4, 5]),
   'admin-stream':    Object.freeze([1, 2, 3, 4, 5]),
+
+  // Reporting & Filtering (MIS-429 / MIS-426 §3.2):
+  //   DM (tier 5) included but time-bounded to ≤7 days via resolveScope().maxLookbackDays.
+  //   Export is manager+ only (tier 2–4): a DM cannot export data off-platform.
+  //   Tier 7 (Gaming Attendant) has no reporting surface (MIS-426 §3.3).
+  'admin-reports':        Object.freeze([2, 3, 4, 5]),
+  'admin-reports-export': Object.freeze([2, 3, 4]),
 });
 
 /**

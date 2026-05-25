@@ -24,16 +24,22 @@ import { withClientContext } from '../db.js';
 
 const SINGLE_VENUE_TIERS = new Set([4, 5, 7]);
 
+// Duty Manager (tier 5) is time-bounded for reporting: MIS-426 §3.2.
+// Returns null for all other tiers (no lookback clamp).
+function maxLookbackDays(roleTier) {
+  return roleTier === 5 ? 7 : null;
+}
+
 /**
  * Resolve the caller's authorised venue set from their JWT claims.
  * @param {{ staffId: string, clientId: string, venueId: string|null, roleTier: number }} auth
- * @returns {Promise<{ venueIds: string[] }>}
+ * @returns {Promise<{ venueIds: string[], maxLookbackDays: number|null }>}
  */
 export async function resolveScope(auth) {
   // Single-venue mobile roles: scope comes directly from the JWT.
   if (SINGLE_VENUE_TIERS.has(auth.roleTier)) {
     if (!auth.venueId) throw new Error('resolveScope: venueId required for tier ' + auth.roleTier);
-    return { venueIds: [auth.venueId] };
+    return { venueIds: [auth.venueId], maxLookbackDays: maxLookbackDays(auth.roleTier) };
   }
 
   // Desktop multi-venue roles (tiers 1-3): expand via staff_venue_assignments.
@@ -77,7 +83,7 @@ export async function resolveScope(auth) {
     }
   }
 
-  return { venueIds: [...venueIdSet] };
+  return { venueIds: [...venueIdSet], maxLookbackDays: maxLookbackDays(auth.roleTier) };
 }
 
 /**
