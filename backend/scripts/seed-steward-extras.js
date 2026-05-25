@@ -38,10 +38,14 @@ async function main() {
   const venueId  = DEMO_VENUE_ID;
 
   await withClientContext(clientId, async (q) => {
-    // Always ensure venue gaming config is correct — runs even on reseed so it
-    // survives the date-drift case where shifts are deleted and recreated.
+    // Always ensure venue config is correct — idempotent, runs on every boot.
+    // venue_address is required by the first-aid emergency gate (MIS-391).
     await q(
-      `UPDATE venues SET gaming_min_attendants = 2, egm_count = 45 WHERE venue_id = $1`,
+      `UPDATE venues
+          SET gaming_min_attendants = 2,
+              egm_count             = 45,
+              venue_address         = COALESCE(venue_address, '47 Caxton Street, Petrie Terrace QLD 4000')
+        WHERE venue_id = $1`,
       [venueId],
     );
 

@@ -136,6 +136,43 @@ export function fetchReports() {
   return request('/api/reports');
 }
 
+// ---- Incidents (MIS-390) --------------------------------------------------
+// All MVP roles. Tier 7 sees own incidents only (server-enforced).
+// Shape: { incidents: [{ incidentId, incidentType, incidentLabel, severityLevel,
+//   severityLabel, severityColour, status, incidentAt, locationInVenue,
+//   description, reportedByName, routing: { obligations[], notifications[], ... } }] }
+export function fetchIncidents() {
+  return request('/api/incidents');
+}
+// Full incident detail including obligation rows + notification log.
+export function fetchIncidentDetail(incidentId) {
+  return request(`/api/incidents/${encodeURIComponent(incidentId)}`);
+}
+// Create a draft incident report (pre-populated from triage).
+export function createIncident(body) {
+  return request('/api/incidents', { method: 'POST', body });
+}
+// Submit a draft — triggers obligation creation + notification routing.
+export function submitIncident(incidentId) {
+  return request(`/api/incidents/${encodeURIComponent(incidentId)}/submit`, { method: 'POST' });
+}
+
+// ---- RSA Triage Coaching (MIS-389) ----------------------------------------
+// Sends completed triage answers; receives structured coaching + report template.
+export function sendRSACoaching({ triageAnswers, triageStartedAt }) {
+  return request('/api/rsa/coaching', {
+    method: 'POST',
+    body: { triageAnswers, triageStartedAt },
+  });
+}
+// Submit a completed incident report (demo stub — real persistence is MIS-390).
+export function submitRSAReport(reportData) {
+  return request('/api/rsa/report', {
+    method: 'POST',
+    body: reportData,
+  });
+}
+
 // ---- Compliance Monitor (MIS-44) ------------------------------------------
 // Arm the monitor; the backend runs Check 4 against live roster ~10s later.
 export function activateComplianceMonitor() {

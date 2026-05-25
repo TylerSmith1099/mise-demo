@@ -10,6 +10,7 @@ import {
   getToken, fetchSession, sendChat, logout, clearToken,
   fetchShiftSummary, fetchHandover, fetchReservations,
   activateComplianceMonitor, fetchComplianceAlerts, acknowledgeAlert,
+  sendRSACoaching, submitRSAReport,
 } from './api.js';
 import Login from './components/Login.jsx';
 import TopBar from './components/TopBar.jsx';
@@ -21,9 +22,23 @@ import BottomNav from './components/BottomNav.jsx';
 import Runsheet from './components/Runsheet.jsx';
 import RevenueIntelligence from './components/RevenueIntelligence.jsx';
 import ReportsScreen from './components/ReportsScreen.jsx';
+import IncidentsScreen from './components/IncidentsScreen.jsx';
+import FirstAidGate from './components/FirstAidGate.jsx';
+import RSATriage from './components/RSATriage.jsx';
 
 const HANDOVER_INTENT = /handover/i;
 const MANAGER_MAX_TIER = 5;
+const GAMING_ATTENDANT_TIER = 7;
+
+// First-aid trigger: matches messages that indicate a medical emergency. When
+// matched, the FirstAidGate intercepts the message before any AI content is
+// shown — the hard gate is the first thing staff sees (MIS-391, §6.4).
+const FIRST_AID_INTENT = /\b(first[\s-]?aid|medical emergency|someone (collapsed|fell|is unconscious|is not breathing|having a seizure)|CPR|cardiac arrest|unconscious|not breathing|anaphylaxis|allergic reaction|epipen|choking|choke|heart attack|overdose|bleeding heavily|major trauma|emergency response)\b/i;
+
+// RSA triage trigger: matches patron intoxication / service refusal situations.
+// When matched, RSATriage intercepts and runs the 5-question triage flow instead
+// of sending the message directly to the AI chat (MIS-389).
+const RSA_INTENT = /\b(intoxicat|drunk|had too much|service refus|refuse service|patron (needs? to|should) leave|ask(ing)? (them|him|her|a patron|the patron) to leave|patron who('?s| is) (drunk|slurring|unsteady|wasted)|rsa situation|rsa help|rsa|difficult patron|patron behav|trouble with a patron|patron trouble|patron problem|customer (seems?|is) (drunk|intoxicat|affected)|someone (seems?|is) intoxicat|they('?ve| have) had (too much|enough)|i think (they|he|she|this patron)('?s| is) (drunk|intoxicat|affected)|cut (them|him|her) off|cutting (them|him|her) off|refusing service)\b/i;
 const ALERT_POLL_MS = 2500;
 
 let msgSeq = 0;
@@ -44,6 +59,17 @@ export default function App() {
   const [tab, setTab] = useState('chat');
   const [menuOpen, setMenuOpen] = useState(false);
 
+  // First-aid gate state (MIS-391).
+  // gateQuery: the original message that triggered the gate.
+  // gateAnswer/gateCitations: populated once the user confirms 000 and the AI responds.
+  const [gateOpen, setGateOpen] = useState(false);
+  const [gateQuery, setGateQuery] = useState(null);
+  const [gateAnswer, setGateAnswer] = useState(null);
+  const [gateCitations, setGateCitations] = useState([]);
+
+  // RSA triage state (MIS-389): open when an RSA situation intent is detected.
+  const [rsaOpen, setRsaOpen] = useState(false);
+
   const dropToLogin = useCallback(() => {
     clearToken();
     setAuthed(false);
@@ -55,9 +81,15 @@ export default function App() {
     setReservations(null);
     setTab('chat');
     setMenuOpen(false);
+    setGateOpen(false);
+    setGateQuery(null);
+    setGateAnswer(null);
+    setGateCitations([]);
+    setRsaOpen(false);
   }, []);
 
   const isManager = session?.roleTier != null && session.roleTier <= MANAGER_MAX_TIER;
+  const isSharedStation = session?.roleTier === GAMING_ATTENDANT_TIER;
 
   // Compliance Monitor: arm on manager login, poll for Critical alerts.
   useEffect(() => {
@@ -113,8 +145,46 @@ export default function App() {
     return () => { live = false; };
   }, [authed, session, dropToLogin]);
 
+  // Called when the user confirms 000 is called — fetch the AI guidance.
+  const onGateConfirmed = useCallback(async () => {
+    if (!gateQuery) return;
+    try {
+      const res = await sendChat({ message: gateQuery, conversationId });
+      if (res.conversationId) setConversationId(res.conversationId);
+      setGateAnswer(res.answer);
+      setGateCitations(res.citations || []);
+    } catch (err) {
+      if (err.status === 401) { dropToLogin(); return; }
+      setGateAnswer('Unable to load guidance. Call 000 and follow the dispatcher\'s instructions.');
+    }
+  }, [gateQuery, conversationId, dropToLogin]);
+
+  const onGateDismiss = useCallback(() => {
+    setGateOpen(false);
+    setGateQuery(null);
+    setGateAnswer(null);
+    setGateCitations([]);
+  }, []);
+
   const onSend = useCallback(
     async (text) => {
+      // First-aid gate intercept (MIS-391): show the mandatory emergency-services
+      // gate before any guidance content. §6.4 — no bypass path.
+      if (FIRST_AID_INTENT.test(text)) {
+        setGateQuery(text);
+        setGateAnswer(null);
+        setGateCitations([]);
+        setGateOpen(true);
+        return;
+      }
+
+      // RSA triage intercept (MIS-389): patron intoxication / service refusal.
+      // Opens the 3-phase triage flow instead of sending to the AI directly.
+      if (RSA_INTENT.test(text)) {
+        setRsaOpen(true);
+        return;
+      }
+
       const userMsg = { id: nextId(), role: 'user', content: text, time: clock() };
       const pendingId = nextId();
       setMessages((m) => [...m, userMsg, { id: pendingId, role: 'mise', pending: true }]);
@@ -176,7 +246,7 @@ export default function App() {
         setSending(false);
       }
     },
-    [conversationId, dropToLogin, isManager],
+    [conversationId, dropToLogin, isManager, gateQuery],
   );
 
   const onLogout = useCallback(async () => {
@@ -222,10 +292,71 @@ export default function App() {
         onLogout={onLogout}
       />
 
-      {/* Compliance alert — pinned above all tabs, blocks until acknowledged */}
-      <ComplianceBanner alert={alerts[0]} onAcknowledge={onAcknowledge} />
+      {/* First-aid emergency gate — fullscreen overlay, §6.4: no bypass */}
+      {gateOpen && (
+        <FirstAidGate
+          venueAddress={session?.venueAddress || null}
+          answer={gateAnswer}
+          citations={gateCitations}
+          onConfirmed={onGateConfirmed}
+          onDismiss={onGateDismiss}
+        />
+      )}
+
+      {/* RSA triage — fullscreen overlay (MIS-389): 3-phase triage → coaching → report */}
+      {rsaOpen && (
+        <RSATriage
+          session={session}
+          onDismiss={() => setRsaOpen(false)}
+          onMedicalGate={() => {
+            // Medical trigger detected mid-triage: close RSA flow, open first-aid gate.
+            setRsaOpen(false);
+            setGateQuery('medical emergency');
+            setGateAnswer(null);
+            setGateCitations([]);
+            setGateOpen(true);
+          }}
+          onAuthError={dropToLogin}
+        />
+      )}
 
       <TopBar session={session} onMenuToggle={() => setMenuOpen((v) => !v)} />
+
+      {/* Shared-station mode strip — visible only for Gaming Attendant tier */}
+      {isSharedStation && (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: 6,
+            height: 28,
+            background: 'rgba(0, 200, 232, 0.08)',
+            borderBottom: '1px solid rgba(0, 200, 232, 0.25)',
+            flexShrink: 0,
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <path d="M8 21h8M12 17v4"/>
+          </svg>
+          <span
+            style={{
+              fontFamily: "'IBM Plex Mono', monospace",
+              fontSize: 10,
+              fontWeight: 600,
+              letterSpacing: '0.1em',
+              textTransform: 'uppercase',
+              color: 'var(--cyan)',
+            }}
+          >
+            Shared Station Mode
+          </span>
+        </div>
+      )}
+
+      {/* Compliance alert — pinned above all tabs, blocks until acknowledged */}
+      <ComplianceBanner alert={alerts[0]} onAcknowledge={onAcknowledge} />
 
       {/* Tabbed body */}
       {tab === 'chat' && (
@@ -259,8 +390,14 @@ export default function App() {
         </main>
       )}
 
+      {tab === 'incidents' && (
+        <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden">
+          <IncidentsScreen onAuthError={dropToLogin} roleTier={session?.roleTier} />
+        </main>
+      )}
+
       {/* Placeholder screens for tabs not yet built — on-brand, readable */}
-      {['compliance', 'incidents', 'shift', 'bookings', 'labour', 'alerts'].includes(tab) && (
+      {['compliance', 'shift', 'bookings', 'labour', 'alerts'].includes(tab) && (
         <ComingSoon label={tab} />
       )}
 

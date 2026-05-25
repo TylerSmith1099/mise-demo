@@ -69,9 +69,9 @@ export async function seedStewardDemo() {
       [clientId, 'Pinnacle Hotel Group', 'Pinnacle Assist'],
     );
     await q(
-      `INSERT INTO venues (venue_id, client_id, venue_name, state, timezone)
-       VALUES ($1, $2, $3, 'QLD', 'Australia/Brisbane')`,
-      [venueId, clientId, 'The Steward Hotel'],
+      `INSERT INTO venues (venue_id, client_id, venue_name, state, timezone, venue_address)
+       VALUES ($1, $2, $3, 'QLD', 'Australia/Brisbane', $4)`,
+      [venueId, clientId, 'The Steward Hotel', '47 Caxton Street, Petrie Terrace QLD 4000'],
     );
 
     const demoEmailFor = (extId) =>

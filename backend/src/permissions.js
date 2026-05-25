@@ -42,6 +42,9 @@ export const PERMISSION_MAP = Object.freeze({
   // Staff directory — Coordinator / admin only.
   staff:           Object.freeze([4]),
 
+  // Incident Reports — all MVP roles; tier 7 sees own incidents only (enforced in route).
+  incidents:       Object.freeze([4, 5, 7]),
+
   // Revenue Intelligence — Duty Manager and Venue Manager (not floor staff).
   'revenue-intelligence': Object.freeze([4, 5]),
 });

@@ -189,6 +189,7 @@ export function chatRouter(config) {
           `SELECT c.white_label_name,
                   v.venue_name,
                   v.state        AS venue_state,
+                  v.venue_address,
                   s.first_name,
                   s.last_name
              FROM venues v
@@ -204,6 +205,7 @@ export function chatRouter(config) {
         whiteLabelName: row.white_label_name,
         venueName: row.venue_name,
         venueState: row.venue_state,
+        venueAddress: row.venue_address || null,
         role: roleAtLogin,
         roleTier,
         staffName: `${row.first_name} ${row.last_name}`.trim(),

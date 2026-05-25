@@ -20,6 +20,8 @@ import { demoRouter } from './api/routes/demo.js';
 import { reservationsRouter } from './reservations-api.js';
 import { revenueIntelligenceRouter } from './revenue-intelligence-api.js';
 import { reportsRouter } from './reports-api.js';
+import { incidentRouter } from './incident-api.js';
+import { rsaRouter } from './rsa-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -129,6 +131,14 @@ export function createApp(config) {
   // Reports (MIS-253): /api/reports — 7-day P&L summary from pnl_summary table.
   // Tier 4 (Venue Manager) only.
   api.use('/', reportsRouter());
+
+  // Incident Reporting Matrix (MIS-390): /api/incidents — create, list, detail, submit.
+  // Tiers 4/5/7. Routing matrix: incident type → obligations + notifications.
+  api.use('/', incidentRouter());
+
+  // RSA Triage Coaching (MIS-389): /api/rsa/coaching + /api/rsa/report.
+  // All authenticated roles — floor staff and managers.
+  api.use('/', rsaRouter(config));
 
   app.use('/api', api);
 

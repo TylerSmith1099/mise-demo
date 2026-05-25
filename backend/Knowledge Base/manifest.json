@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-24T14:37:04.341Z",
+  "generatedAt": "2026-05-25T11:32:44.170Z",
   "embeddingModel": "mise-local-hashing-v1",
   "documents": [
     {
@@ -830,6 +830,149 @@
       "flags": [
         "MIS-235: gap-analysis authored content (non-client-IP); ingested 2026-05-24",
         "shared knowledge article (industry_standard layer)"
+      ]
+    },
+    {
+      "source": "Hospitality Conflict De-escalation — Voice, Posture, and Approach",
+      "idPrefix": "shared-conflict-de-escalation",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 10,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:43.989Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Intoxication Assessment — Observable Indicators and Approach",
+      "idPrefix": "shared-intoxication-assessment",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 8,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.012Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Difficult Patron Management — Asking to Leave, Security, Refusal",
+      "idPrefix": "shared-difficult-patron-management",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 8,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.031Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Interpersonal Coaching for Junior Staff — Confidence and Escalation Language",
+      "idPrefix": "shared-interpersonal-coaching-junior-staff",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 7,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.050Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Armed Robbery Response — Compliance, Documentation, and Staff Safety",
+      "idPrefix": "shared-armed-robbery-response",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 9,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.077Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Threat and Extortion — Verbal, Written, Who to Call, Documentation",
+      "idPrefix": "shared-threat-and-extortion",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 8,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.095Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Welfare and Empathy Under High Stress — Tone, Phrasing, and Staff Debriefing",
+      "idPrefix": "shared-welfare-and-empathy-high-stress",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 9,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.117Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "OLGR QLD — Incident Reporting: Liquor Act 1992 and Gaming Machine Act 1991",
+      "idPrefix": "shared-olgr-incident-reporting-qld",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 9,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.133Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "AUSTRAC AML/CTF Reporting — SMR, TTR, Tipping-Off, Gaming Pub Reference",
+      "idPrefix": "shared-aml-ctf-austrac-reporting",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 9,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.143Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "In-House Incident Reporting — Standard Format and Field Requirements",
+      "idPrefix": "shared-in-house-incident-reporting",
+      "clientId": null,
+      "venueState": null,
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 8,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.153Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
+      ]
+    },
+    {
+      "source": "Incident-Type to Reporting-Obligation Matrix — QLD Venues (OLGR + AUSTRAC + In-House)",
+      "idPrefix": "shared-incident-reporting-obligations-matrix",
+      "clientId": null,
+      "venueState": "QLD",
+      "lastUpdated": "2026-05-25",
+      "chunkCount": 7,
+      "embeddingModel": "mise-local-hashing-v1",
+      "ingestedAt": "2026-05-25T11:32:44.170Z",
+      "flags": [
+        "MIS-392: R&D Officer MIS-377 knowledge enrichment (conflict, emergency, incident-reporting); ingested 2026-05-25"
       ]
     }
   ],
