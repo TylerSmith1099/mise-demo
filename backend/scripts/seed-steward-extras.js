@@ -70,10 +70,7 @@ async function main() {
        AND deleted_at IS NULL LIMIT 1`,
       [venueId, `${BASE_DATE}T00:00:00+10:00`, `${tomorrow}T00:00:00+10:00`],
     );
-    if (todayCheck.length) {
-      console.log(`[extras-seed] today's shifts (${BASE_DATE}) already seeded — skipping`);
-      return;
-    }
+    if (!todayCheck.length) {
     // No shifts for today → soft-delete stale data from a previous calendar day.
     // mise_app has SELECT/INSERT/UPDATE only (no DELETE); use deleted_at for purges.
     const { rowCount: rDeleted } = await q(
@@ -316,14 +313,19 @@ async function main() {
         Math.round((totLab / totRev) * 1000) / 10],
     );
 
+      console.log(`[extras-seed] done — shifts, runsheet, pnl_summary seeded for venue ${venueId}`);
+    } else {
+      console.log(`[extras-seed] today's shifts (${BASE_DATE}) already seeded — skipping shift reseed`);
+    }
+
     // -------------------------------------------------------------------------
-    // REVENUE_DAILY + LABOUR_ACTUALS_DAILY — 7 trading days of demo data for
-    // the Admin Desktop Homepage KPIs (MIS-430). Uses ON CONFLICT DO NOTHING
-    // so the seed is safe to re-run once migrations 024/025 land.
+    // REVENUE_DAILY + LABOUR_ACTUALS_DAILY — always runs on every boot.
+    // ON CONFLICT DO NOTHING ensures idempotency; fresh BASE_DATE rows are
+    // inserted so MobileReportingScreen always has data for "this week" (MIS-450).
     // Graceful: if the tables don't exist yet, the seed skips this block.
     // -------------------------------------------------------------------------
     try {
-      const revBase   = 482_000; // ~$4,820 today (net, cents)
+      const revBase      = 482_000; // ~$4,820 today (net, cents)
       const forecastBase = 510_000; // ~$5,100 forecast
       const labHoursBase = 42.0;
       const labCostBase  = 117_600; // 42 hrs × ~$28/hr avg (cents)
@@ -372,8 +374,6 @@ async function main() {
         console.warn('[extras-seed] revenue/labour seed warning:', revLabErr.message);
       }
     }
-
-    console.log(`[extras-seed] done — shifts, runsheet, pnl_summary seeded for venue ${venueId}`);
   });
 
   await closeDb();
