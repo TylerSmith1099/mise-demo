@@ -117,7 +117,8 @@ CREATE INDEX idx_incident_reports_status        ON incident_reports (client_id, 
 -- incident_reporting_obligations — one row per external or internal obligation
 -- auto-created on incident submission based on incident_type (see mapping doc).
 -- obligation_type values:
---   olgr_notifiable   — OLGR serious assault/death/gaming/self-exclusion breach
+--   olgr_notifiable   — OLGR inspectable record / RG Code recording duty (gaming + self-exclusion);
+--                       NOT for crimes (assault/death/robbery) — those are police-primary; OLGR downstream
 --   austrac_ttr       — Threshold Transaction Report ($10k+ cash)
 --   austrac_smr       — Suspicious Matter Report
 --   worksafe_notifiable — WorkSafe QLD (death / serious injury / dangerous incident)

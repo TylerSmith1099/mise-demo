@@ -19,6 +19,10 @@ function bearer(req) {
   const h = req.headers.authorization || '';
   const [scheme, value] = h.split(' ');
   if (scheme === 'Bearer' && value) return value.trim();
+  // SSE fallback: EventSource cannot set headers, so the token is passed as
+  // ?token= query param. Only used by /api/admin/stream; treated identically
+  // to the Authorization header — same validation, same claims.
+  if (req.query && typeof req.query.token === 'string') return req.query.token;
   return null;
 }
 

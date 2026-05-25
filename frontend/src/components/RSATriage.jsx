@@ -899,7 +899,7 @@ export default function RSATriage({ session, onDismiss, onMedicalGate, onAuthErr
             style={{
               background: 'none', border: 'none', padding: '6px 4px',
               color: C.cream60, cursor: 'pointer',
-              minWidth: 36, minHeight: 36,
+              minWidth: 44, minHeight: 44,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               fontSize: 20, lineHeight: 1,
             }}
@@ -933,7 +933,7 @@ export default function RSATriage({ session, onDismiss, onMedicalGate, onAuthErr
           style={{
             background: 'none', border: 'none', padding: 8,
             color: C.cream60, cursor: 'pointer',
-            minWidth: 36, minHeight: 36,
+            minWidth: 44, minHeight: 44,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             fontSize: 20, lineHeight: 1,
           }}

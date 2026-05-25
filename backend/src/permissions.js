@@ -5,13 +5,14 @@
 // module reads a tier from request body, query params, or conversation context.
 //
 // Tier scale (full system; MVP activates 4, 5, 7):
-//   1  Super Admin / System           — post-MVP
-//   2  Regional Manager               — post-MVP
-//   3  General Manager                — post-MVP
-//   4  Venue Coordinator / Admin      — MVP
+//   1  Mise System / Super Admin      — internal only; never issued as a client login
+//   2  Group Admin                    — desktop; whole client group (all venues)
+//   3  Area Manager                   — desktop; a venue cluster
+//   4  Venue Manager                  — desktop+MVP; single venue
 //   5  Duty Manager                   — MVP
 //   6  Supervisor                     — post-MVP
 //   7  Gaming Attendant               — MVP
+// Canonical names locked by MIS-415 (CTO+HoP, 2026-05-25).
 //
 // Resource permissions are expressed as a minimum tier CEILING: the resource is
 // accessible to callers whose roleTier is IN the allowed set, not above/below a
@@ -47,6 +48,15 @@ export const PERMISSION_MAP = Object.freeze({
 
   // Revenue Intelligence — Duty Manager and Venue Manager (not floor staff).
   'revenue-intelligence': Object.freeze([4, 5]),
+
+  // ---- Admin Desktop Homepage (MIS-412) — tiers 1-3 activated for desktop roles ----
+  // Tier numbering: 1=Group Admin/Super Admin, 2=Area Manager/Regional, 3=General Manager
+  // 4=Venue Coordinator, 5=Duty Manager. Tier 7 (Gaming Attendant) excluded from admin.
+  'admin-homepage':  Object.freeze([1, 2, 3, 4, 5]),
+  'admin-revenue':   Object.freeze([1, 2, 3, 4, 5]),
+  'admin-labour':    Object.freeze([1, 2, 3, 4]),    // cost data not DM-facing by default
+  'admin-incidents': Object.freeze([1, 2, 3, 4, 5]),
+  'admin-stream':    Object.freeze([1, 2, 3, 4, 5]),
 });
 
 /**

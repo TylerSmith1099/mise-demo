@@ -1,0 +1,31 @@
+-- =============================================================================
+-- Migration 032 — staff.venue_id nullable for multi-venue desktop roles
+--
+-- CONTEXT (Admin Homepage, MIS-409 / MIS-411 / MIS-431 CTO review)
+-- ----------------------------------------------------------------
+-- Migration 001 declared staff.venue_id NOT NULL on the (then-correct) MVP
+-- assumption that every staff member belongs to exactly one venue. The
+-- multi-venue scope model introduced in 023 (venue_clusters /
+-- staff_venue_assignments) makes that false for desktop tiers 1–3
+-- (Group Admin / Area Manager / General Manager): their venue access is
+-- resolved from staff_venue_assignments, NOT from a single home venue, so
+-- staff.venue_id must be allowed to be NULL for them.
+--
+-- Single-venue mobile roles (tiers 4/5/7) continue to set venue_id and remain
+-- unaffected — this only RELAXES the constraint, never tightens it.
+--
+-- The composite FK (client_id, venue_id) -> venues uses MATCH SIMPLE, so a NULL
+-- venue_id row is exempt from the FK check while a populated one is still
+-- enforced intra-client. RLS, client_id NOT NULL, and all other guarantees are
+-- unchanged.
+-- =============================================================================
+
+-- ---------------------------------------------------------------------------
+-- UP
+-- ---------------------------------------------------------------------------
+ALTER TABLE staff ALTER COLUMN venue_id DROP NOT NULL;
+
+-- ---------------------------------------------------------------------------
+-- DOWN (rollback) — only safe once every staff row has a non-null venue_id.
+-- ---------------------------------------------------------------------------
+-- ALTER TABLE staff ALTER COLUMN venue_id SET NOT NULL;

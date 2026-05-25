@@ -1,10 +1,10 @@
-// App — top-level state machine for the Mise mobile client (Option A nav, MIS-230).
+// App — top-level state machine for the Mise client.
 //   1. No token            -> <Login>.
 //   2. Token, loading      -> brand splash while GET /api/session resolves.
-//   3. Authenticated       -> <TopBar> + tabbed body + <BottomNav> + <SlideOut>.
+//   3. Admin tiers (1-4):  -> <AdminDesktopHomepageContainer> (full-screen desktop UI)
+//   4. Staff tiers (5, 7): -> <TopBar> + tabbed body + <BottomNav> + <SlideOut>.
 // Navigation is role-specific from roleTier in the verified JWT (immutable).
-// A 401 anywhere drops back to login. Layout is 100dvh column — only the active
-// body scrolls; top bar and bottom nav are sticky.
+// A 401 anywhere drops back to login.
 import React, { useCallback, useEffect, useState } from 'react';
 import {
   getToken, fetchSession, sendChat, logout, clearToken,
@@ -25,6 +25,18 @@ import ReportsScreen from './components/ReportsScreen.jsx';
 import IncidentsScreen from './components/IncidentsScreen.jsx';
 import FirstAidGate from './components/FirstAidGate.jsx';
 import RSATriage from './components/RSATriage.jsx';
+import AdminDesktopHomepageContainer from './components/AdminDesktopHomepageContainer.jsx';
+
+// Admin desktop tiers: 1=Group Admin, 2=Area Manager, 3=General Manager,
+// 4=Venue Coordinator/Venue Manager — oversight roles whose primary surface
+// is the desktop homepage.
+// Tier 5 (Duty Manager) and tier 7 (Gaming Attendant) stay on the mobile shell:
+// the DM runs shift handover / runsheet on a phone during shifts (demo Scene 2),
+// so routing tier 5 to the full-screen desktop view would break that flow.
+// CTO ruling (MIS-431): role-scope/venue isolation is verified at the API + RLS
+// layer (backend `admin-homepage` permission still permits tier 5) and via QA on
+// the endpoints — it does not require forcing the DM's default UI to desktop.
+const ADMIN_DESKTOP_TIERS = new Set([1, 2, 3, 4]);
 
 const HANDOVER_INTENT = /handover/i;
 const MANAGER_MAX_TIER = 5;
@@ -149,7 +161,12 @@ export default function App() {
   const onGateConfirmed = useCallback(async () => {
     if (!gateQuery) return;
     try {
-      const res = await sendChat({ message: gateQuery, conversationId });
+      // Expand short trigger phrases so RAG retrieves first-aid content rather
+      // than gambling-adjacent chunks (MIS-421 QA finding).
+      const ragMessage = gateQuery.trim().length < 50
+        ? `first aid emergency: ${gateQuery.trim()}`
+        : gateQuery;
+      const res = await sendChat({ message: ragMessage, conversationId });
       if (res.conversationId) setConversationId(res.conversationId);
       setGateAnswer(res.answer);
       setGateCitations(res.citations || []);
@@ -279,6 +296,16 @@ export default function App() {
           M
         </div>
       </div>
+    );
+  }
+
+  // Admin desktop: full-screen, no mobile shell constraints.
+  if (session?.roleTier != null && ADMIN_DESKTOP_TIERS.has(session.roleTier)) {
+    return (
+      <AdminDesktopHomepageContainer
+        session={session}
+        onAuthError={dropToLogin}
+      />
     );
   }
 

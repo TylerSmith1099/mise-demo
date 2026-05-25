@@ -140,19 +140,28 @@ DECLARE
     client_b UUID := '22222222-2222-2222-2222-222222222222';
     cnt      INTEGER;
 BEGIN
-    -- Seed two test clients (bypassing RLS as superuser/owner)
-    INSERT INTO clients (client_id, client_name, white_label_name, status)
-    VALUES
-        (client_a, '_rls_test_a', '_rls_test_a', 'active'),
-        (client_b, '_rls_test_b', '_rls_test_b', 'active')
-    ON CONFLICT DO NOTHING;
+    -- Run the verification AS mise_app. This is the role the app uses at runtime
+    -- and the only role for which this test is meaningful: a superuser bypasses
+    -- RLS entirely (FORCE binds the table owner, never a superuser), so a
+    -- superuser-connected migration runner (common locally/CI) would make every
+    -- cross-client read trivially "leak" and false-fail the assertions below.
+    -- The migration runner is a member of mise_app (granted in 005), so SET ROLE
+    -- is permitted on managed Postgres (Render) and locally alike.
+    SET LOCAL ROLE mise_app;
 
-    -- Insert a cluster for client_a
+    -- Seed each client's fixtures under that client's own context so WITH CHECK
+    -- is satisfied (mise_app is subject to RLS — no owner/superuser bypass).
+    PERFORM set_config('app.current_client_id', client_a::text, true);
+    INSERT INTO clients (client_id, client_name, white_label_name, status)
+    VALUES (client_a, '_rls_test_a', '_rls_test_a', 'active');
     INSERT INTO venue_clusters (cluster_id, client_id, cluster_name)
     VALUES ('aaaaaaaa-0000-0000-0000-000000000001', client_a, 'Test Cluster A');
 
-    -- ---- Test 1: client_b cannot read client_a's venue_clusters ----
     PERFORM set_config('app.current_client_id', client_b::text, true);
+    INSERT INTO clients (client_id, client_name, white_label_name, status)
+    VALUES (client_b, '_rls_test_b', '_rls_test_b', 'active');
+
+    -- ---- Test 1: client_b cannot read client_a's venue_clusters ----
     SELECT COUNT(*) INTO cnt FROM venue_clusters WHERE client_id = client_a;
     IF cnt <> 0 THEN
         RAISE EXCEPTION 'RLS FAIL: client_b saw % venue_clusters rows belonging to client_a', cnt;
@@ -160,31 +169,34 @@ BEGIN
 
     -- ---- Test 2: client_b cannot insert into venue_clusters for client_a ----
     BEGIN
-        PERFORM set_config('app.current_client_id', client_b::text, true);
         INSERT INTO venue_clusters (client_id, cluster_name)
         VALUES (client_a, 'Injection attempt');
         RAISE EXCEPTION 'RLS FAIL: client_b wrote a venue_clusters row for client_a (WITH CHECK did not fire)';
-    EXCEPTION WHEN check_violation OR others THEN
-        NULL; -- expected: WITH CHECK rejected it
+    EXCEPTION WHEN insufficient_privilege OR check_violation THEN
+        NULL; -- expected: RLS WITH CHECK rejected it
     END;
 
     -- ---- Test 3: client_b cannot read client_a's staff_venue_assignments ----
-    PERFORM set_config('app.current_client_id', client_b::text, true);
     SELECT COUNT(*) INTO cnt FROM staff_venue_assignments WHERE client_id = client_a;
     IF cnt <> 0 THEN
         RAISE EXCEPTION 'RLS FAIL: client_b saw % staff_venue_assignments rows for client_a', cnt;
     END IF;
 
     -- ---- Test 4: client_b cannot read client_a's venue_cluster_members ----
-    PERFORM set_config('app.current_client_id', client_b::text, true);
     SELECT COUNT(*) INTO cnt FROM venue_cluster_members WHERE client_id = client_a;
     IF cnt <> 0 THEN
         RAISE EXCEPTION 'RLS FAIL: client_b saw % venue_cluster_members rows for client_a', cnt;
     END IF;
 
-    -- Cleanup test fixtures (hard delete allowed in migration scripts)
-    DELETE FROM venue_clusters  WHERE client_id IN (client_a, client_b);
-    DELETE FROM clients         WHERE client_id IN (client_a, client_b);
+    -- Cleanup. Back to the migration runner (owner/superuser) which can DELETE
+    -- (mise_app has no DELETE grant — soft-delete only); scope each delete to its
+    -- client so it works whether or not the runner bypasses RLS.
+    RESET ROLE;
+    PERFORM set_config('app.current_client_id', client_a::text, true);
+    DELETE FROM venue_clusters WHERE client_id = client_a;
+    DELETE FROM clients        WHERE client_id = client_a;
+    PERFORM set_config('app.current_client_id', client_b::text, true);
+    DELETE FROM clients        WHERE client_id = client_b;
 
     RAISE NOTICE 'Migration 023 RLS tests PASSED';
 END

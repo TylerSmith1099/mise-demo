@@ -240,3 +240,48 @@ function _normaliseRateType(raw) {
   if (s.includes('ordinary') || s.includes('base') || s.includes('standard')) return 'ordinary';
   return 'other';
 }
+
+// ---------------------------------------------------------------------------
+// RevenueSignal — POS daily revenue record (BEPOZ / H&L / SwiftPOS)
+// ---------------------------------------------------------------------------
+
+/**
+ * @typedef {Object} RevenueSignal
+ * @property {string}  id            — connector-scoped unique id (vendor:venueId:businessDate)
+ * @property {string}  venueId       — Mise venue UUID
+ * @property {string}  businessDate  — venue-local trading date (YYYY-MM-DD)
+ * @property {number}  grossCents    — gross revenue in integer cents (never float)
+ * @property {number}  netCents      — net revenue in integer cents
+ * @property {number}  txnCount      — transaction count
+ * @property {string}  source        — vendor slug: 'bepoz' | 'hl' | 'swiftpos' | 'manual' | 'seed'
+ * @property {string}  syncedAt      — ISO 8601 UTC
+ * @property {boolean} isStale
+ */
+
+/**
+ * @param {object} fields
+ * @returns {RevenueSignal}
+ */
+export function makeRevenueSignal(fields) {
+  const required = ['id', 'venueId', 'businessDate', 'source'];
+  for (const key of required) {
+    if (fields[key] == null || fields[key] === '') {
+      throw new Error(`makeRevenueSignal: missing required field "${key}"`);
+    }
+  }
+
+  const VALID_SOURCES = new Set(['bepoz', 'hl', 'swiftpos', 'manual', 'seed']);
+
+  return Object.freeze({
+    id:           String(fields.id),
+    venueId:      String(fields.venueId),
+    businessDate: String(fields.businessDate),
+    grossCents:   Number.isFinite(fields.grossCents) ? Math.round(fields.grossCents) : 0,
+    netCents:     Number.isFinite(fields.netCents)   ? Math.round(fields.netCents)   : 0,
+    txnCount:     Number.isFinite(fields.txnCount)   ? Math.round(fields.txnCount)   : 0,
+    source:       VALID_SOURCES.has(fields.source) ? fields.source : 'manual',
+    syncedAt:     fields.syncedAt || new Date().toISOString(),
+    isStale:      Boolean(fields.isStale),
+    _type:        'RevenueSignal',
+  });
+}

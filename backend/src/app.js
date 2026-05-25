@@ -22,6 +22,7 @@ import { revenueIntelligenceRouter } from './revenue-intelligence-api.js';
 import { reportsRouter } from './reports-api.js';
 import { incidentRouter } from './incident-api.js';
 import { rsaRouter } from './rsa-api.js';
+import { adminHomepageRouter } from './admin/homepage-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -139,6 +140,10 @@ export function createApp(config) {
   // RSA Triage Coaching (MIS-389): /api/rsa/coaching + /api/rsa/report.
   // All authenticated roles — floor staff and managers.
   api.use('/', rsaRouter(config));
+
+  // Admin Desktop Homepage (MIS-412): /api/admin/homepage + section endpoints + SSE stream.
+  // Tiers 1-5 (desktop roles + venue-level staff). Tier 7 excluded from admin surface.
+  api.use('/', adminHomepageRouter());
 
   app.use('/api', api);
 

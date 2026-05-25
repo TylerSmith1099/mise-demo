@@ -107,25 +107,28 @@ DECLARE
     venue_a  UUID    := '77777777-0000-0000-0000-000000000001';
     cnt      INTEGER;
 BEGIN
-    -- Seed test fixtures (owner role bypasses RLS)
+    -- Run AS mise_app: a superuser bypasses RLS (FORCE binds only the owner), so
+    -- a superuser-connected runner would false-fail these cross-client reads.
+    -- The runner is a member of mise_app (granted in 005). See 023 for rationale.
+    SET LOCAL ROLE mise_app;
+
+    -- Seed under client_a's context so WITH CHECK is satisfied (no owner bypass).
+    PERFORM set_config('app.current_client_id', client_a::text, true);
     INSERT INTO clients (client_id, client_name, white_label_name, status)
-    VALUES
-        (client_a, '_rls_hourly_test_a', '_rls_hourly_test_a', 'active'),
-        (client_b, '_rls_hourly_test_b', '_rls_hourly_test_b', 'active')
-    ON CONFLICT DO NOTHING;
-
+    VALUES (client_a, '_rls_hourly_test_a', '_rls_hourly_test_a', 'active');
     INSERT INTO venues (venue_id, client_id, venue_name, state, timezone)
-    VALUES (venue_a, client_a, '_rls_hourly_venue', 'QLD', 'Australia/Brisbane')
-    ON CONFLICT DO NOTHING;
-
+    VALUES (venue_a, client_a, '_rls_hourly_venue', 'QLD', 'Australia/Brisbane');
     INSERT INTO revenue_hourly
         (client_id, venue_id, business_date, hour_local, gross_revenue_cents,
          net_revenue_cents, transaction_count, source)
     VALUES
         (client_a, venue_a, '2026-01-15', 12, 25000, 23500, 18, 'seed');
 
-    -- Test 1: client_b cannot read client_a's hourly revenue rows
     PERFORM set_config('app.current_client_id', client_b::text, true);
+    INSERT INTO clients (client_id, client_name, white_label_name, status)
+    VALUES (client_b, '_rls_hourly_test_b', '_rls_hourly_test_b', 'active');
+
+    -- Test 1: client_b cannot read client_a's hourly revenue rows
     SELECT COUNT(*) INTO cnt FROM revenue_hourly WHERE client_id = client_a;
     IF cnt <> 0 THEN
         RAISE EXCEPTION 'RLS FAIL mig029: client_b saw % revenue_hourly rows for client_a', cnt;
@@ -133,21 +136,24 @@ BEGIN
 
     -- Test 2: client_b cannot write a revenue_hourly row for client_a
     BEGIN
-        PERFORM set_config('app.current_client_id', client_b::text, true);
         INSERT INTO revenue_hourly
             (client_id, venue_id, business_date, hour_local, gross_revenue_cents,
              net_revenue_cents, transaction_count, source)
         VALUES
             (client_a, venue_a, '2026-01-15', 13, 12000, 11000, 8, 'seed');
         RAISE EXCEPTION 'RLS FAIL mig029: client_b wrote a revenue_hourly row for client_a';
-    EXCEPTION WHEN check_violation OR others THEN
-        NULL; -- expected
+    EXCEPTION WHEN insufficient_privilege OR check_violation THEN
+        NULL; -- expected: RLS WITH CHECK rejected it
     END;
 
-    -- Cleanup
-    DELETE FROM revenue_hourly WHERE client_id IN (client_a, client_b);
-    DELETE FROM venues          WHERE client_id IN (client_a, client_b);
-    DELETE FROM clients         WHERE client_id IN (client_a, client_b);
+    -- Cleanup as the migration runner (mise_app has no DELETE grant).
+    RESET ROLE;
+    PERFORM set_config('app.current_client_id', client_a::text, true);
+    DELETE FROM revenue_hourly WHERE client_id = client_a;
+    DELETE FROM venues         WHERE client_id = client_a;
+    DELETE FROM clients        WHERE client_id = client_a;
+    PERFORM set_config('app.current_client_id', client_b::text, true);
+    DELETE FROM clients        WHERE client_id = client_b;
 
     RAISE NOTICE 'Migration 029 RLS tests PASSED';
 END

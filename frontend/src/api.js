@@ -173,6 +173,51 @@ export function submitRSAReport(reportData) {
   });
 }
 
+// ---- Admin Desktop Homepage (MIS-430) ----------------------------------------
+// Composable homepage payload: shifts, incidents, reports, compliance, revenue, labour.
+export function fetchAdminHomepage() {
+  return request('/api/admin/homepage');
+}
+// Live-section section endpoints (incremental refresh).
+export function fetchAdminShiftsOnFloor() {
+  return request('/api/admin/shifts/on-floor');
+}
+export function fetchAdminRevenue({ from, to, venueId } = {}) {
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  if (venueId) params.set('venueId', venueId);
+  const qs = params.toString();
+  return request(`/api/admin/revenue/daily${qs ? '?' + qs : ''}`);
+}
+export function fetchAdminLabour({ from, to, venueId } = {}) {
+  const params = new URLSearchParams();
+  if (from) params.set('from', from);
+  if (to) params.set('to', to);
+  if (venueId) params.set('venueId', venueId);
+  const qs = params.toString();
+  return request(`/api/admin/labour/daily${qs ? '?' + qs : ''}`);
+}
+// Open an SSE connection to the admin live stream.
+// Returns an EventSource. Caller must call .close() on cleanup.
+export function openAdminStream(onEvent) {
+  const token = getToken();
+  const url = `/api/admin/stream${token ? '?token=' + encodeURIComponent(token) : ''}`;
+  const es = new EventSource(url);
+  const handler = (e) => {
+    try {
+      const data = JSON.parse(e.data);
+      onEvent({ type: e.type, ...data });
+    } catch {
+      // malformed event — ignore
+    }
+  };
+  ['incident:new', 'incident:updated', 'staff:clock_in', 'staff:clock_out', 'compliance:alert_new'].forEach(
+    (evt) => es.addEventListener(evt, handler),
+  );
+  return es;
+}
+
 // ---- Compliance Monitor (MIS-44) ------------------------------------------
 // Arm the monitor; the backend runs Check 4 against live roster ~10s later.
 export function activateComplianceMonitor() {

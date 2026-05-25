@@ -128,7 +128,7 @@ function buildDeterministicCoaching(answers, severity) {
       splitSituation: isGroup
         ? 'Step aside with the person who needs to leave, away from the rest of the group. A brief, low-key word is better than a public moment. Check back with the group warmly once they\'re on their way.'
         : null,
-      escalation: 'If they push back even once, let your supervisor know right away. They can step in as the \'manager who made the decision\' so you\'re not carrying it alone. Any sign of aggression → supervisor call immediately.',
+      escalation: '1. First pushback → let your supervisor know right away.\n2. They can step in as the "manager who made the decision" — you\'re not carrying this alone.\n3. Any sign of aggression → supervisor call immediately.',
       whatNotToDo: [
         'Don\'t offer a concession ("just one more", "just finish this") — the decision is made',
         'Don\'t repeat the refusal more than twice — after two, escalate',
@@ -203,7 +203,7 @@ For situations where there are multiple people involved (group or paired), popul
 
 Communication mode rules:
 - L1 (Routine): Full sentences, conversational, warm throughout. Include the WHY alongside the what. 150-250 words total.
-- L2 (Elevated): Open with ONE warm sentence, then numbered key steps. Shorter sentences. 80-130 words total.
+- L2 (Elevated): Open with ONE warm sentence, then numbered key steps. Shorter sentences. Use numbered list format in "escalation" too (1. … 2. … 3. …). 80-130 words total.
 - L3 (High): Begin with "Hard moment. Act now." — then numbered steps only. Step 1 MUST be escalation. 50-80 words total.
 
 Guidelines:

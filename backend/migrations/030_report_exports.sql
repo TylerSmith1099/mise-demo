@@ -108,30 +108,31 @@ DECLARE
     cnt      INTEGER;
     sample_filter JSONB := '{"metric":"revenue","grain":"day","range":{"from":"2026-04-01","to":"2026-04-30"}}'::jsonb;
 BEGIN
-    -- Seed test fixtures (owner role bypasses RLS)
+    -- Run AS mise_app: a superuser bypasses RLS (FORCE binds only the owner), so
+    -- a superuser-connected runner would false-fail these cross-client reads.
+    -- The runner is a member of mise_app (granted in 005). See 023 for rationale.
+    SET LOCAL ROLE mise_app;
+
+    -- Seed under client_a's context so WITH CHECK is satisfied (no owner bypass).
+    PERFORM set_config('app.current_client_id', client_a::text, true);
     INSERT INTO clients (client_id, client_name, white_label_name, status)
-    VALUES
-        (client_a, '_rls_exports_test_a', '_rls_exports_test_a', 'active'),
-        (client_b, '_rls_exports_test_b', '_rls_exports_test_b', 'active')
-    ON CONFLICT DO NOTHING;
-
+    VALUES (client_a, '_rls_exports_test_a', '_rls_exports_test_a', 'active');
     INSERT INTO venues (venue_id, client_id, venue_name, state, timezone)
-    VALUES (venue_a, client_a, '_rls_exports_venue', 'QLD', 'Australia/Brisbane')
-    ON CONFLICT DO NOTHING;
-
+    VALUES (venue_a, client_a, '_rls_exports_venue', 'QLD', 'Australia/Brisbane');
     INSERT INTO staff (staff_id, client_id, venue_id, first_name, last_name,
                        email, role_tier, role_name, status)
     VALUES (staff_a, client_a, venue_a, '_Test', '_User',
-            '_rls_exports@test.internal', 3, 'Area Manager', 'active')
-    ON CONFLICT DO NOTHING;
-
+            '_rls_exports@test.internal', 3, 'Area Manager', 'active');
     INSERT INTO report_exports
         (client_id, staff_id, format, filter_params, scope_kind, venue_count, status)
     VALUES
         (client_a, staff_a, 'csv', sample_filter, 'venue', 1, 'completed');
 
-    -- Test 1: client_b cannot read client_a's export audit rows
     PERFORM set_config('app.current_client_id', client_b::text, true);
+    INSERT INTO clients (client_id, client_name, white_label_name, status)
+    VALUES (client_b, '_rls_exports_test_b', '_rls_exports_test_b', 'active');
+
+    -- Test 1: client_b cannot read client_a's export audit rows
     SELECT COUNT(*) INTO cnt FROM report_exports WHERE client_id = client_a;
     IF cnt <> 0 THEN
         RAISE EXCEPTION 'RLS FAIL mig030: client_b saw % report_exports rows for client_a', cnt;
@@ -139,21 +140,24 @@ BEGIN
 
     -- Test 2: client_b cannot write an export audit row for client_a
     BEGIN
-        PERFORM set_config('app.current_client_id', client_b::text, true);
         INSERT INTO report_exports
             (client_id, staff_id, format, filter_params, scope_kind, venue_count, status)
         VALUES
             (client_a, staff_a, 'pdf', sample_filter, 'venue', 1, 'completed');
         RAISE EXCEPTION 'RLS FAIL mig030: client_b wrote a report_exports row for client_a';
-    EXCEPTION WHEN check_violation OR others THEN
-        NULL; -- expected
+    EXCEPTION WHEN insufficient_privilege OR check_violation THEN
+        NULL; -- expected: RLS WITH CHECK rejected it
     END;
 
-    -- Cleanup
-    DELETE FROM report_exports WHERE client_id IN (client_a, client_b);
-    DELETE FROM staff           WHERE client_id IN (client_a, client_b);
-    DELETE FROM venues          WHERE client_id IN (client_a, client_b);
-    DELETE FROM clients         WHERE client_id IN (client_a, client_b);
+    -- Cleanup as the migration runner (mise_app has no DELETE grant).
+    RESET ROLE;
+    PERFORM set_config('app.current_client_id', client_a::text, true);
+    DELETE FROM report_exports WHERE client_id = client_a;
+    DELETE FROM staff          WHERE client_id = client_a;
+    DELETE FROM venues         WHERE client_id = client_a;
+    DELETE FROM clients        WHERE client_id = client_a;
+    PERFORM set_config('app.current_client_id', client_b::text, true);
+    DELETE FROM clients        WHERE client_id = client_b;
 
     RAISE NOTICE 'Migration 030 RLS tests PASSED';
 END

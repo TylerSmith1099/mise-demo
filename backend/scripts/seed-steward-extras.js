@@ -316,6 +316,63 @@ async function main() {
         Math.round((totLab / totRev) * 1000) / 10],
     );
 
+    // -------------------------------------------------------------------------
+    // REVENUE_DAILY + LABOUR_ACTUALS_DAILY — 7 trading days of demo data for
+    // the Admin Desktop Homepage KPIs (MIS-430). Uses ON CONFLICT DO NOTHING
+    // so the seed is safe to re-run once migrations 024/025 land.
+    // Graceful: if the tables don't exist yet, the seed skips this block.
+    // -------------------------------------------------------------------------
+    try {
+      const revBase   = 482_000; // ~$4,820 today (net, cents)
+      const forecastBase = 510_000; // ~$5,100 forecast
+      const labHoursBase = 42.0;
+      const labCostBase  = 117_600; // 42 hrs × ~$28/hr avg (cents)
+      const labBudget    = 44.0;
+
+      for (let dayOffset = 0; dayOffset < 7; dayOffset++) {
+        const d = new Date(BASE_DATE);
+        d.setDate(d.getDate() - dayOffset);
+        const bizDate = d.toISOString().slice(0, 10);
+        // Vary revenue ±8% day-to-day so the chart isn't flat.
+        const factor = 1 + (Math.sin(dayOffset * 1.7) * 0.08);
+        const netRev  = Math.round(revBase * factor);
+        const grossRev = Math.round(netRev * 1.1);
+        const forecast = Math.round(forecastBase * (1 + (Math.sin(dayOffset * 0.9) * 0.04)));
+
+        await q(
+          `INSERT INTO revenue_daily
+             (client_id, venue_id, business_date,
+              gross_revenue_cents, net_revenue_cents,
+              forecast_revenue_cents, source, is_stale, synced_at)
+           VALUES ($1,$2,$3,$4,$5,$6,'seed',false,NOW())
+           ON CONFLICT (client_id, venue_id, business_date, source) DO NOTHING`,
+          [clientId, venueId, bizDate, grossRev, netRev, forecast],
+        );
+
+        const labHrs  = +(labHoursBase + (Math.sin(dayOffset * 1.3) * 2.5)).toFixed(2);
+        const labCost = Math.round(labCostBase * (labHrs / labHoursBase));
+        const budgetCost = Math.round(labCostBase * (labBudget / labHoursBase));
+
+        await q(
+          `INSERT INTO labour_actuals_daily
+             (client_id, venue_id, business_date,
+              worked_hours, labour_cost_cents,
+              budgeted_hours, budgeted_cost_cents,
+              source, is_stale, synced_at)
+           VALUES ($1,$2,$3,$4,$5,$6,$7,'seed',false,NOW())
+           ON CONFLICT (client_id, venue_id, business_date, source) DO NOTHING`,
+          [clientId, venueId, bizDate, labHrs, labCost, labBudget, budgetCost],
+        );
+      }
+      console.log('[extras-seed] revenue_daily + labour_actuals_daily seeded (7 days)');
+    } catch (revLabErr) {
+      if (revLabErr.code === '42P01') {
+        console.warn('[extras-seed] revenue_daily/labour_actuals_daily not yet migrated — skipping');
+      } else {
+        console.warn('[extras-seed] revenue/labour seed warning:', revLabErr.message);
+      }
+    }
+
     console.log(`[extras-seed] done — shifts, runsheet, pnl_summary seeded for venue ${venueId}`);
   });
 
