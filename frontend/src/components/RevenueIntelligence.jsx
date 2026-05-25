@@ -51,7 +51,7 @@ function fmtMoney(n) {
 }
 
 function statusDot(status) {
-  return <span aria-hidden="true" style={{ color: statusColor(status), fontSize: 10 }}>●</span>;
+  return <span aria-hidden="true" style={{ color: statusColor(status), fontSize: 12 }}>●</span>;
 }
 
 function earlyLabel(status) {
@@ -81,20 +81,20 @@ function CompactRow({ dept, isRtv }) {
       {/* Status dot */}
       <span className="text-center">
         {early ? (
-          <span className="font-data text-[10px]" style={{ color: '#F5EFE466' }}>○</span>
+          <span className="font-data text-[12px]" style={{ color: '#F5EFE466' }}>○</span>
         ) : (
           statusDot(dept.status)
         )}
       </span>
 
       {/* Benchmark label */}
-      <span className="truncate text-[11px]" style={{ color: '#F5EFE499' }}>
+      <span className="truncate text-[12px]" style={{ color: '#F5EFE499' }}>
         {dept.benchmark.label}
       </span>
 
       {/* Trend — IBM Plex Mono */}
       <span
-        className="font-data text-[11px] text-right"
+        className="font-data text-[12px] text-right"
         style={{ color: trendColor(dept.trend?.delta) }}
       >
         {early ? '—' : trendLabel(dept.trend)}
@@ -118,16 +118,16 @@ function CombinedRow({ combined }) {
       </span>
       <span className="text-center">
         {early ? (
-          <span className="font-data text-[10px]" style={{ color: '#F5EFE466' }}>○</span>
+          <span className="font-data text-[12px]" style={{ color: '#F5EFE466' }}>○</span>
         ) : (
           statusDot(fAndB.status)
         )}
       </span>
-      <span className="truncate text-[11px]" style={{ color: '#F5EFE499' }}>
+      <span className="truncate text-[12px]" style={{ color: '#F5EFE499' }}>
         {fAndB.benchmark.label}
       </span>
       <span
-        className="font-data text-[11px] text-right"
+        className="font-data text-[12px] text-right"
         style={{ color: trendColor(fAndB.trend?.delta) }}
       >
         {early ? '—' : trendLabel(fAndB.trend)}
@@ -150,11 +150,11 @@ function ExpandedBlock({ dept, onDrillDown }) {
         <span className="text-[13px] font-semibold text-cream/90">{dept.label}</span>
         <span className="flex items-center gap-1.5">
           {early ? (
-            <span className="font-data text-[10px]" style={{ color: '#F5EFE466' }}>Early shift</span>
+            <span className="font-data text-[12px]" style={{ color: '#F5EFE466' }}>Early shift</span>
           ) : (
             <>
               {statusDot(dept.status)}
-              <span className="font-data text-[11px] uppercase tracking-wide" style={{ color: statusColor(dept.status) }}>
+              <span className="font-data text-[12px] uppercase tracking-wide" style={{ color: statusColor(dept.status) }}>
                 {dept.status}
               </span>
             </>
@@ -252,7 +252,7 @@ function CombinedExpandedBlock({ combined, depts, onDrillDown }) {
         <span className="text-[13px] font-semibold text-cream/90">Food + Beverage Combined</span>
         <span className="flex items-center gap-1.5">
           {statusDot(fAndB.status)}
-          <span className="font-data text-[11px] uppercase tracking-wide" style={{ color: statusColor(fAndB.status) }}>
+          <span className="font-data text-[12px] uppercase tracking-wide" style={{ color: statusColor(fAndB.status) }}>
             {fAndB.status}
           </span>
         </span>
@@ -279,11 +279,11 @@ function CombinedExpandedBlock({ combined, depts, onDrillDown }) {
         {/* Sub-line: Bar and Food individual status */}
         {bar && food && (
           <div className="mt-1 flex items-center gap-3 rounded-lg px-2 py-1.5" style={{ background: '#2f2620' }}>
-            <span className="text-[11px] text-cream/60">
+            <span className="text-[12px] text-cream/60">
               Bar: <span className="font-data" style={{ color: statusColor(bar.status) }}>{fmtPct(bar.labourPct)}</span>
               {' '}{statusDot(bar.status)}
             </span>
-            <span className="text-[11px] text-cream/60">
+            <span className="text-[12px] text-cream/60">
               Food: <span className="font-data" style={{ color: statusColor(food.status) }}>{fmtPct(food.labourPct)}</span>
               {' '}{statusDot(food.status)}
             </span>
@@ -355,11 +355,11 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
               <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: '#2f2620' }}>
                 <div>
                   <span className="text-[13px] text-cream/90">{s.name}</span>
-                  <span className="ml-2 text-[11px] text-cream/50">{s.role}</span>
+                  <span className="ml-2 text-[12px] text-cream/50">{s.role}</span>
                 </div>
                 <div className="text-right">
-                  <span className="font-data text-[11px] text-cream/60">{s.hoursRemaining}h rem.</span>
-                  <span className="font-data ml-2 text-[11px] text-cream/50">${s.hourlyRate}/hr</span>
+                  <span className="font-data text-[12px] text-cream/60">{s.hoursRemaining}h rem.</span>
+                  <span className="font-data ml-2 text-[12px] text-cream/50">${s.hourlyRate}/hr</span>
                 </div>
               </div>
             ))}
@@ -389,7 +389,7 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
         {/* To-reach-benchmark section (RED/AMBER only) */}
         {dept.drillDown && !isGreenDept && (
           <div className="flex flex-col gap-1.5 mb-4 rounded-xl border px-3 py-3" style={{ borderColor: '#E8502066' }}>
-            <p className="text-[11px] text-amber mb-1">To reach ≤{dept.benchmark.value}% benchmark by end of shift:</p>
+            <p className="text-[12px] text-amber mb-1">To reach ≤{dept.benchmark.value}% benchmark by end of shift:</p>
             <DrillLine label="Max remaining labour spend" value={fmtMoney(dept.drillDown.maxRemainingSpend)} colored="amber" />
             <DrillLine label="Current burn rate" value={`~${fmtMoney(dept.drillDown.currentBurnRatePerHour)}/hr`} />
           </div>
@@ -515,13 +515,13 @@ export default function RevenueIntelligence({ onAuthError }) {
           aria-expanded={expanded}
         >
           <span
-            className="text-[11px] tracking-widest"
+            className="text-[12px] tracking-widest"
             style={{ color: '#B8863A', fontVariant: 'small-caps', textTransform: 'uppercase' }}
           >
             Revenue Intelligence
           </span>
           <span
-            className="font-data text-[11px] transition-transform duration-150"
+            className="font-data text-[12px] transition-transform duration-150"
             style={{ color: '#B8863A', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', display: 'inline-block' }}
             aria-hidden="true"
           >

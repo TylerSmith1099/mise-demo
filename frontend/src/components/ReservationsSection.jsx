@@ -39,7 +39,7 @@ function fmtTime(t) {
 function VipBadge() {
   return (
     <span
-      className="inline-flex items-center gap-1 rounded bg-gold/20 px-1.5 py-0.5 font-data text-[10px] font-semibold text-gold"
+      className="inline-flex items-center gap-1 rounded bg-gold/20 px-1.5 py-0.5 font-data text-[12px] font-semibold text-gold"
       aria-label="VIP guest"
     >
       ★ VIP
@@ -64,7 +64,7 @@ function ChevronIcon({ open }) {
 
 function Label({ children }) {
   return (
-    <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">{children}</p>
+    <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">{children}</p>
   );
 }
 
@@ -79,12 +79,12 @@ function BookingRow({ booking }) {
             <span className="text-[13px] font-semibold text-cream/95">{booking.guestName}</span>
             {booking.vip && <VipBadge />}
             {booking.occasion && (
-              <span className="rounded bg-gold/10 px-1.5 py-0.5 font-data text-[10px] text-gold/80">
+              <span className="rounded bg-gold/10 px-1.5 py-0.5 font-data text-[12px] text-gold/80">
                 {booking.occasion}
               </span>
             )}
           </div>
-          <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 font-data text-[11px] text-cream/50">
+          <div className="mt-0.5 flex flex-wrap gap-x-3 gap-y-0.5 font-data text-[12px] text-cream/50">
             <span>{booking.pax} pax</span>
             {booking.tableNumber && <span>{booking.tableNumber}</span>}
             {booking.dietary?.length > 0 && (
@@ -118,7 +118,7 @@ function TimeSlotRow({ slot }) {
         <span className="flex-1 text-left text-[13px] text-cream/85">
           {slot.pax} pax · {slot.bookingCount} {slot.bookingCount === 1 ? 'booking' : 'bookings'}
         </span>
-        {hasVip && <span className="shrink-0 font-data text-[10px] text-gold">★</span>}
+        {hasVip && <span className="shrink-0 font-data text-[12px] text-gold">★</span>}
         <ChevronIcon open={open} />
       </button>
 
@@ -151,7 +151,7 @@ function ServiceCard({ service }) {
       >
         <div className="flex-1">
           <p className="text-sm font-bold text-cream/95">{serviceName}</p>
-          <p className="font-data text-[11px] text-cream/45">{win}</p>
+          <p className="font-data text-[12px] text-cream/45">{win}</p>
           <p className="mt-1 font-data text-[13px] text-cyan">{totalBookedPax} pax booked</p>
 
           {walkInPrediction && (
@@ -162,7 +162,7 @@ function ServiceCard({ service }) {
               </span>{' '}
               based on last week's trend{' '}
               <span
-                className="inline-flex h-4 w-4 cursor-default items-center justify-center rounded-full border border-cream/25 font-data text-[9px] text-cream/40"
+                className="inline-flex h-5 w-5 cursor-default items-center justify-center rounded-full border border-cream/25 font-data text-[12px] text-cream/40"
                 title={walkInPrediction.confidenceLabel}
                 aria-label={walkInPrediction.confidenceLabel}
               >
@@ -219,7 +219,7 @@ export default function ReservationsSection({ reservations }) {
     >
       {/* Section header */}
       <div>
-        <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">
+        <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">
           Reservations
         </p>
         <h3 className="text-sm font-bold text-gold">

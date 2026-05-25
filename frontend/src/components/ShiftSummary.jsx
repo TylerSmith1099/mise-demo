@@ -40,10 +40,10 @@ export default function ShiftSummary({ summary, staffName, reservations, onAskHa
     >
       {/* Header */}
       <div>
-        <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">
+        <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">
           Opening summary
         </p>
-        <h2 className="text-lg font-bold text-gold">
+        <h2 className="font-display text-lg font-bold text-gold">
           {first ? `G'day, ${first}.` : "G'day."}
         </h2>
       </div>
@@ -77,7 +77,7 @@ export default function ShiftSummary({ summary, staffName, reservations, onAskHa
           </span>
         </Row>
         {/* Label the denominator: % is of NET gaming revenue (RTV), never EGM meter. */}
-        <p className="mt-0.5 text-[11px] text-cream/40">
+        <p className="mt-0.5 text-[12px] text-cream/40">
           of net gaming revenue (RTV)
         </p>
         {gamingLabour.flagged && (
@@ -90,7 +90,7 @@ export default function ShiftSummary({ summary, staffName, reservations, onAskHa
       {/* Open compliance incidents */}
       {openCompliance.length > 0 && (
         <Card>
-          <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">
+          <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">
             Open incidents
           </p>
           <ul className="mt-1.5 flex flex-col gap-1.5">
@@ -114,7 +114,7 @@ export default function ShiftSummary({ summary, staffName, reservations, onAskHa
       {/* Prior-shift handover highlights */}
       {priorHandover?.highlights?.length > 0 && (
         <Card>
-          <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">
+          <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">
             From last shift
           </p>
           <ul className="mt-1.5 flex flex-col gap-1 text-[13px] text-cream/75">

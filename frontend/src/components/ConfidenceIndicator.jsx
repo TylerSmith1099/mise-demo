@@ -22,8 +22,8 @@ export default function ConfidenceIndicator({ confidence, floor = 0.6, lowConfid
           strokeLinejoin="round"
         />
       </svg>
-      <span className="text-[11px] font-semibold text-amber">Low confidence — verify before acting</span>
-      <span className="ml-auto font-data text-[11px] text-amber/90">{pct}%</span>
+      <span className="text-[12px] font-semibold text-amber">Low confidence — verify before acting</span>
+      <span className="ml-auto font-data text-[12px] text-amber/90">{pct}%</span>
     </div>
   );
 }

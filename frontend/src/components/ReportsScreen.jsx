@@ -31,8 +31,8 @@ function fmt(n) {
 
 function pctColour(pct) {
   if (pct == null) return 'text-cream/60';
-  if (pct > 32) return 'text-red-400';
-  if (pct > 28) return 'text-yellow-400';
+  if (pct > 32) return 'text-red';
+  if (pct > 28) return 'text-amber';
   return 'text-mint';
 }
 
@@ -88,7 +88,7 @@ export default function ReportsScreen({ onAuthError }) {
     >
       <header className="flex items-baseline justify-between px-1">
         <div>
-          <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">Reports</p>
+          <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">Reports</p>
           <h2 className="font-data text-sm font-semibold text-gold">{periodLabel}</h2>
         </div>
         {total && (
@@ -132,7 +132,7 @@ export default function ReportsScreen({ onAuthError }) {
               </div>
 
               {d.department === 'gaming' && d.meterTurnover != null && (
-                <p className="mt-1.5 font-data text-[10px] text-cream/35">
+                <p className="mt-1.5 font-data text-[12px] text-cream/35">
                   Meter turnover {fmt(d.meterTurnover)} — not used as revenue base
                 </p>
               )}
@@ -164,7 +164,7 @@ export default function ReportsScreen({ onAuthError }) {
 function Stat({ label, value, colourClass = 'text-cream/80' }) {
   return (
     <div className="flex flex-col items-center gap-0.5">
-      <span className="font-data text-[10px] uppercase tracking-wider text-cream/35">{label}</span>
+      <span className="font-data text-[12px] uppercase tracking-wider text-cream/35">{label}</span>
       <span className={`font-data text-sm font-semibold ${colourClass}`}>{value}</span>
     </div>
   );

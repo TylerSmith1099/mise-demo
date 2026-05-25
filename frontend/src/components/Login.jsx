@@ -39,7 +39,7 @@ export default function Login({ onAuthenticated }) {
           <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-gold/50 font-data text-2xl font-bold text-gold">
             M
           </div>
-          <h1 className="mt-4 text-2xl font-bold tracking-tight text-gold">Mise</h1>
+          <h1 className="mt-4 font-display text-2xl font-bold tracking-tight text-gold">Mise</h1>
           <p className="mt-1 text-sm text-cream/60">Sign in to start your shift.</p>
         </div>
 
@@ -77,7 +77,7 @@ export default function Login({ onAuthenticated }) {
 function Field({ label, mono, ...props }) {
   return (
     <label className="flex flex-col gap-1">
-      <span className="text-[11px] font-semibold uppercase tracking-wider text-cream/45">{label}</span>
+      <span className="text-[12px] font-semibold uppercase tracking-wider text-cream/45">{label}</span>
       <input
         {...props}
         required

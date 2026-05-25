@@ -88,7 +88,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
           <p
             style={{
               fontFamily: "'DM Sans', system-ui, sans-serif",
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: 500,
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
@@ -102,7 +102,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
           <p
             style={{
               fontFamily: "'DM Sans', system-ui, sans-serif",
-              fontSize: 11,
+              fontSize: 12,
               color: 'var(--cream-40)',
               margin: 0,
             }}

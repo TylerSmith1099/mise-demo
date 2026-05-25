@@ -77,7 +77,7 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
         <div className="flex items-start gap-3">
           {/* Severity badge -- solid, impossible to miss in a dark room. */}
           <span
-            className={`mt-0.5 shrink-0 rounded ${sev.bar} px-2 py-1 font-data text-[11px] font-bold tracking-wider text-charcoal`}
+            className={`mt-0.5 shrink-0 rounded ${sev.bar} px-2 py-1 font-data text-[12px] font-bold tracking-wider text-charcoal`}
           >
             {sev.label}
           </span>
@@ -85,7 +85,7 @@ export default function ComplianceBanner({ alert, onAcknowledge }) {
             <p className={`text-sm font-bold ${sev.text}`}>Compliance alert</p>
             <p className="mt-1 text-sm leading-snug text-cream">{alert.description}</p>
             {time && (
-              <p className="mt-1 font-data text-[11px] text-cyan">Detected {time}</p>
+              <p className="mt-1 font-data text-[12px] text-cyan">Detected {time}</p>
             )}
           </div>
         </div>

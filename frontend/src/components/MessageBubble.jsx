@@ -15,7 +15,7 @@ import Handover from './Handover.jsx';
 
 function Time({ time }) {
   if (!time) return null;
-  return <span className="mt-1 block font-data text-[10px] text-cream/35">{time}</span>;
+  return <span className="mt-1 block font-data text-[12px] text-cream/35">{time}</span>;
 }
 
 export default function MessageBubble({ msg }) {

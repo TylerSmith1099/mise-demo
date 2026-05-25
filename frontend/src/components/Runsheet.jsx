@@ -140,7 +140,7 @@ export default function Runsheet({ onAuthError, roleTier }) {
 
       <header className="flex items-baseline justify-between px-1">
         <div>
-          <p className="font-data text-[10px] uppercase tracking-wider text-cream/40">
+          <p className="font-data text-[12px] uppercase tracking-wider text-cream/40">
             {shiftLabel ? `${shiftLabel} shift` : 'Shift runsheet'}
           </p>
           {shiftDate && (
@@ -205,12 +205,12 @@ export default function Runsheet({ onAuthError, roleTier }) {
                   </span>
                 </span>
                 {item.done && item.completedAt ? (
-                  <span className="font-data text-[11px] text-mint">
+                  <span className="font-data text-[12px] text-mint">
                     Done {hhmm(item.completedAt)}
                     {item.completedBy ? ` · ${item.completedBy.split(' ')[0]}` : ''}
                   </span>
                 ) : item.dueAt ? (
-                  <span className="font-data text-[11px] text-cream/40">Due {hhmm(item.dueAt)}</span>
+                  <span className="font-data text-[12px] text-cream/40">Due {hhmm(item.dueAt)}</span>
                 ) : null}
               </span>
             </button>

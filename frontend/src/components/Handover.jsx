@@ -18,7 +18,7 @@ function fmtDate(d) {
 function Section({ label, children }) {
   return (
     <div className="border-t border-hairline pt-2.5">
-      <p className="mb-1.5 font-data text-[10px] uppercase tracking-wider text-cream/40">
+      <p className="mb-1.5 font-data text-[12px] uppercase tracking-wider text-cream/40">
         {label}
       </p>
       {children}
@@ -65,10 +65,10 @@ export default function Handover({ handover }) {
       {/* Who → who */}
       <div>
         <p className="text-sm font-bold text-gold">Shift handover</p>
-        <p className="font-data text-[11px] text-cyan">
+        <p className="font-data text-[12px] text-cyan">
           {fromRole} → {toRole}
         </p>
-        <p className="font-data text-[10px] text-cream/45">
+        <p className="font-data text-[12px] text-cream/45">
           {fmtDate(shiftDate)}
           {author ? ` · ${author}` : ''}
         </p>
@@ -97,7 +97,7 @@ export default function Handover({ handover }) {
           <ol className="flex flex-col gap-1.5">
             {actionItems.map((t, i) => (
               <li key={i} className="flex items-start gap-2">
-                <span className="mt-[1px] grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gold/20 font-data text-[11px] font-bold text-gold">
+                <span className="mt-[1px] grid h-5 w-5 shrink-0 place-items-center rounded-full bg-gold/20 font-data text-[12px] font-bold text-gold">
                   {i + 1}
                 </span>
                 <span className="text-[13px] leading-snug text-cream/90">{t}</span>

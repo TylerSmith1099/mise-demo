@@ -106,7 +106,7 @@ export default function BottomNav({ roleTier, active, onChange, alertCount = 0 }
                     background: 'var(--red)',
                     color: 'var(--charcoal)',
                     fontFamily: "'IBM Plex Mono', monospace",
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: 700,
                     lineHeight: 1,
                     padding: '2px 4px',
@@ -123,9 +123,9 @@ export default function BottomNav({ roleTier, active, onChange, alertCount = 0 }
             <span
               style={{
                 fontFamily: "'DM Sans', system-ui, sans-serif",
-                fontSize: 9,
+                fontSize: 12,
                 fontWeight: 500,
-                letterSpacing: '0.06em',
+                letterSpacing: '0.04em',
                 textTransform: 'uppercase',
                 color: isActive ? 'var(--gold)' : 'var(--cream-40)',
                 lineHeight: 1,

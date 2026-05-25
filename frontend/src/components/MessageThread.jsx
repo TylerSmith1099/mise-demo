@@ -54,7 +54,7 @@ function EmptyState({ session }) {
       <p className="mt-1 text-sm text-cream/60">
         Ask me anything about your shift, RG obligations, or venue procedure.
       </p>
-      <p className="mt-4 font-data text-[11px] uppercase tracking-wider text-cream/35">
+      <p className="mt-4 font-data text-[12px] uppercase tracking-wider text-cream/35">
         {role}
       </p>
     </div>
