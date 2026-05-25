@@ -26,6 +26,7 @@ import IncidentsScreen from './components/IncidentsScreen.jsx';
 import FirstAidGate from './components/FirstAidGate.jsx';
 import RSATriage from './components/RSATriage.jsx';
 import AdminDesktopHomepageContainer from './components/AdminDesktopHomepageContainer.jsx';
+import MobileReportingScreen from './components/MobileReportingScreen.jsx';
 
 // Admin desktop tiers: 1=Group Admin, 2=Area Manager, 3=General Manager,
 // 4=Venue Coordinator/Venue Manager — oversight roles whose primary surface
@@ -413,7 +414,12 @@ export default function App() {
 
       {tab === 'reports' && (
         <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
-          <ReportsScreen onAuthError={dropToLogin} />
+          {/* DM (tier 5) gets the live reporting screen; tier 7 sees legacy P&L summary */}
+          {session?.roleTier === 5 ? (
+            <MobileReportingScreen onAuthError={dropToLogin} />
+          ) : (
+            <ReportsScreen onAuthError={dropToLogin} />
+          )}
         </main>
       )}
 

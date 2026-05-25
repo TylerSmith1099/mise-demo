@@ -218,6 +218,39 @@ export function openAdminStream(onEvent) {
   return es;
 }
 
+// ---- Reporting & Filtering (MIS-429) -----------------------------------------
+// POST /api/admin/reports/query — single endpoint for mobile + desktop.
+// Role scope is derived from verified JWT server-side; never sent in body.
+// params: { metric, grain, range: {from, to}, comparison: {mode, alignment}, scope: {venueIds}, view }
+export function queryAdminReport(params) {
+  return request('/api/admin/reports/query', { method: 'POST', body: params });
+}
+
+// POST /api/admin/reports/export — returns a blob (CSV or PDF).
+// Tier 5 (DM) cannot call this — server enforces via admin-reports-export permission.
+export async function exportAdminReport(params) {
+  const token = getToken();
+  const res = await fetch('/api/admin/reports/export', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    },
+    body: JSON.stringify(params),
+  });
+  if (!res.ok) {
+    const data = await res.json().catch(() => ({}));
+    const err = new Error(data?.error || `export_failed_${res.status}`);
+    err.status = res.status;
+    throw err;
+  }
+  const blob = await res.blob();
+  const disposition = res.headers.get('content-disposition') || '';
+  const match = disposition.match(/filename="([^"]+)"/);
+  const filename = match ? match[1] : 'reporting_export';
+  return { blob, filename };
+}
+
 // ---- Compliance Monitor (MIS-44) ------------------------------------------
 // Arm the monitor; the backend runs Check 4 against live roster ~10s later.
 export function activateComplianceMonitor() {

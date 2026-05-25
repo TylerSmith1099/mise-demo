@@ -23,6 +23,7 @@ import { reportsRouter } from './reports-api.js';
 import { incidentRouter } from './incident-api.js';
 import { rsaRouter } from './rsa-api.js';
 import { adminHomepageRouter } from './admin/homepage-api.js';
+import { reportingRouter } from './admin/reporting-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -144,6 +145,10 @@ export function createApp(config) {
   // Admin Desktop Homepage (MIS-412): /api/admin/homepage + section endpoints + SSE stream.
   // Tiers 1-5 (desktop roles + venue-level staff). Tier 7 excluded from admin surface.
   api.use('/', adminHomepageRouter());
+
+  // Reporting & Filtering (MIS-429): /api/admin/reports/query + /export.
+  // Tiers 2-5 for query; tiers 2-4 for export (DM cannot export).
+  api.use('/', reportingRouter());
 
   app.use('/api', api);
 

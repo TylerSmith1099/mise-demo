@@ -17,6 +17,7 @@
 
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AdminDesktopHomepage from './AdminDesktopHomepage.jsx';
+import AdminReportingScreen from './AdminReportingScreen.jsx';
 import { fetchAdminHomepage, openAdminStream } from '../api.js';
 
 const REFRESH_MS = 5 * 60 * 1000; // 5-minute revenue/labour poll
@@ -327,6 +328,7 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
   const [rawData, setRawData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [activeNav, setActiveNav] = useState('Dashboard');
   const sseRef = useRef(null);
   const refreshTimerRef = useRef(null);
 
@@ -437,12 +439,25 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
   if (error) return <ErrorScreen message={error} onRetry={load} />;
   if (!rawData) return <LoadingScreen />;
 
+  // Reports nav section renders its own full-page layout.
+  if (activeNav === 'Reports') {
+    return (
+      <AdminReportingScreen
+        session={session}
+        onNavChange={setActiveNav}
+        onAuthError={onAuthError}
+      />
+    );
+  }
+
   const props = transformToProps(rawData, session);
 
   return (
     <AdminDesktopHomepage
       {...props}
+      activeNav={activeNav}
       onVenueChange={handleVenueChange}
+      onNavChange={setActiveNav}
     />
   );
 }

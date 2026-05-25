@@ -421,6 +421,7 @@ export default function AdminDesktopHomepage({
   venues          = [{ id: 'waterford', name: 'The Waterford Hotel' }],
   selectedVenueId = 'waterford',
   onVenueChange   = () => {},
+  onNavChange     = () => {},
 }) {
   const [now, setNow] = useState(new Date());
 
@@ -451,6 +452,7 @@ export default function AdminDesktopHomepage({
     return (
       <button
         className="nav-item transition"
+        onClick={() => onNavChange(label)}
         style={{
           display:        'flex',
           alignItems:     'center',
