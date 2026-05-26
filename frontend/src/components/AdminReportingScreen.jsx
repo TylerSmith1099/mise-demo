@@ -17,16 +17,16 @@ import { queryAdminReport, exportAdminReport } from '../api.js';
 
 // ─── Design tokens (mirrors AdminDesktopHomepage.jsx) ───────────────────────
 const T = {
-  bg:         '#1C1612',
-  card:       '#251E18',
-  sidebar:    '#140F0B',
-  text:       '#F5EFE4',
-  textMuted:  'rgba(245,239,228,0.45)',
-  textDim:    'rgba(245,239,228,0.25)',
-  gold:       '#B8863A',
-  goldBorder: 'rgba(184,134,58,0.18)',
-  goldLight:  'rgba(184,134,58,0.12)',
-  goldActive: 'rgba(184,134,58,0.22)',
+  bg:         '#090F1A',
+  card:       '#0E1E32',
+  sidebar:    '#0E2A45',
+  text:       '#E0EEFF',
+  textMuted:  'rgba(122,170,208,0.85)',
+  textDim:    'rgba(58,96,144,1.0)',
+  gold:       '#2E6BAE',
+  goldBorder: 'rgba(46,107,174,0.18)',
+  goldLight:  'rgba(46,107,174,0.12)',
+  goldActive: 'rgba(46,107,174,0.22)',
   cyan:       '#00C8E8',
   mint:       '#00E87A',
   red:        '#E85050',
@@ -162,7 +162,7 @@ function LineChart({ primary, comparison, unit, height = 220 }) {
       {/* Grid lines */}
       {yLabels.map(({ y }, i) => (
         <line key={i} x1={PAD.left} y1={y} x2={W - PAD.right} y2={y}
-          stroke="rgba(184,134,58,0.10)" strokeWidth="1" />
+          stroke="rgba(46,107,174,0.15)" strokeWidth="1" />
       ))}
 
       {/* Y-axis labels */}
@@ -202,7 +202,7 @@ function LineChart({ primary, comparison, unit, height = 220 }) {
             pts.map((p, i) => `L ${xScale(i)},${yScale(p.v ?? minV)}`).join(' ') +
             ` L ${xScale(N - 1)},${PAD.top + chartH} L ${xScale(0)},${PAD.top + chartH} Z`
           }
-          fill="rgba(184,134,58,0.07)"
+          fill="rgba(46,107,174,0.07)"
         />
       )}
 

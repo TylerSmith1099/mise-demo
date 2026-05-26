@@ -35,7 +35,7 @@ export default function Login({ onAuthenticated }) {
       style={{
         paddingTop: 'var(--safe-top)',
         paddingBottom: 'var(--safe-bottom)',
-        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(46,107,174,0.25) 0%, transparent 60%), var(--charcoal)',
+        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(46,107,174,0.35) 0%, transparent 60%), var(--charcoal)',
       }}
     >
       <div className="mx-auto w-full max-w-[340px]">
@@ -44,7 +44,7 @@ export default function Login({ onAuthenticated }) {
             className="mx-auto grid h-14 w-14 place-items-center rounded-2xl font-data text-2xl font-bold text-gold"
             style={{
               border: '1px solid rgba(46,107,174,0.5)',
-              background: 'linear-gradient(135deg, rgba(14,42,69,0.8) 0%, rgba(28,22,18,0.6) 100%)',
+              background: 'linear-gradient(135deg, rgba(14,42,69,0.8) 0%, rgba(9,15,26,0.6) 100%)',
               boxShadow: '0 0 24px rgba(46,107,174,0.15)',
             }}
           >
@@ -75,7 +75,7 @@ export default function Login({ onAuthenticated }) {
           <button
             type="submit"
             disabled={busy}
-            className="mt-1 grid min-h-[48px] place-items-center rounded-2xl bg-gold text-base font-semibold text-charcoal transition-opacity disabled:opacity-40"
+            className="mt-1 grid min-h-[48px] place-items-center rounded-2xl bg-gold text-base font-semibold text-cream transition-opacity disabled:opacity-40"
           >
             {busy ? 'Signing in…' : 'Sign in'}
           </button>

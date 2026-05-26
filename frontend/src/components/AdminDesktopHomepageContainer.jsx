@@ -357,17 +357,17 @@ function LoadingScreen() {
   return (
     <div style={{
       height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#1C1612', flexDirection: 'column', gap: 16,
+      background: '#090F1A', flexDirection: 'column', gap: 16,
     }}>
       <div style={{
-        width: 56, height: 56, border: '1px solid rgba(184,134,58,0.5)', borderRadius: 8,
+        width: 56, height: 56, border: '1px solid rgba(46,107,174,0.5)', borderRadius: 8,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         fontFamily: "'Space Grotesk', system-ui, sans-serif",
-        fontSize: 24, fontWeight: 700, color: '#B8863A',
+        fontSize: 24, fontWeight: 700, color: '#2E6BAE',
       }}>M</div>
       <p style={{
         fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13,
-        color: 'rgba(245,239,228,0.45)', margin: 0,
+        color: 'rgba(122,170,208,0.8)', margin: 0,
       }}>Loading dashboard…</p>
     </div>
   );
@@ -377,7 +377,7 @@ function ErrorScreen({ message, onRetry }) {
   return (
     <div style={{
       height: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
-      background: '#1C1612', flexDirection: 'column', gap: 16,
+      background: '#090F1A', flexDirection: 'column', gap: 16,
     }}>
       <p style={{
         fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14,
@@ -387,8 +387,8 @@ function ErrorScreen({ message, onRetry }) {
         onClick={onRetry}
         style={{
           fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13,
-          background: 'transparent', border: '1px solid rgba(184,134,58,0.4)',
-          color: '#B8863A', borderRadius: 4, padding: '8px 20px', cursor: 'pointer',
+          background: 'transparent', border: '1px solid rgba(46,107,174,0.4)',
+          color: '#2E6BAE', borderRadius: 4, padding: '8px 20px', cursor: 'pointer',
         }}
       >
         Retry

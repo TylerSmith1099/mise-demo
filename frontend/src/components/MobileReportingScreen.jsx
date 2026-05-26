@@ -69,7 +69,7 @@ function MobileLineChart({ primary, comparison, unit }) {
   const allVals = [...pts, ...cpts].map((p) => p.v).filter((v) => v != null);
   if (allVals.length === 0) {
     return (
-      <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(245,239,228,0.35)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(122,170,208,0.6)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>
         No data
       </div>
     );
@@ -101,11 +101,11 @@ function MobileLineChart({ primary, comparison, unit }) {
       {/* Grid */}
       {[minV, yMid, maxV].map((v, i) => (
         <line key={i} x1={PAD.left} y1={ys(v)} x2={W - PAD.right} y2={ys(v)}
-          stroke="rgba(184,134,58,0.10)" strokeWidth="1" />
+          stroke="rgba(46,107,174,0.15)" strokeWidth="1" />
       ))}
       {[minV, yMid, maxV].map((v, i) => (
         <text key={i} x={PAD.left - 4} y={ys(v) + 4}
-          fill="rgba(245,239,228,0.35)" fontSize="12" textAnchor="end"
+          fill="rgba(122,170,208,0.7)" fontSize="12" textAnchor="end"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtValue(v, unit)}
         </text>
@@ -114,7 +114,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       {/* X-labels */}
       {xLabels.map(({ t, x }, i) => (
         <text key={i} x={x} y={H - 4}
-          fill="rgba(245,239,228,0.35)" fontSize="12" textAnchor="middle"
+          fill="rgba(122,170,208,0.7)" fontSize="12" textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtDate(t.slice(0, 10))}
         </text>
@@ -123,7 +123,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       {/* Comparison line */}
       {cpts.length > 0 && (
         <polyline points={polyPts(cpts)} fill="none"
-          stroke="rgba(245,239,228,0.20)" strokeWidth="1.5" strokeDasharray="4,3" />
+          stroke="rgba(46,107,174,0.30)" strokeWidth="1.5" strokeDasharray="4,3" />
       )}
 
       {/* Area fill */}
@@ -132,14 +132,14 @@ function MobileLineChart({ primary, comparison, unit }) {
           d={`M ${xs(0)},${ys(pts[0]?.v ?? minV)} ` +
             pts.map((p, i) => `L ${xs(i)},${ys(p.v ?? minV)}`).join(' ') +
             ` L ${xs(N - 1)},${PAD.top + cH} L ${xs(0)},${PAD.top + cH} Z`}
-          fill="rgba(184,134,58,0.08)"
+          fill="rgba(46,107,174,0.08)"
         />
       )}
 
       {/* Primary line */}
       {pts.length > 0 && (
         <polyline points={polyPts(pts)} fill="none"
-          stroke="#B8863A" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
+          stroke="#2E6BAE" strokeWidth="2" strokeLinejoin="round" strokeLinecap="round" />
       )}
     </svg>
   );
@@ -152,13 +152,13 @@ function KpiCell({ label, value, delta }) {
   return (
     <div style={{
       minWidth: 140,
-      background: 'rgba(37,30,24,0.8)',
-      border: '1px solid rgba(184,134,58,0.18)',
+      background: 'rgba(14,30,50,0.8)',
+      border: '1px solid rgba(46,107,174,0.18)',
       borderRadius: 10,
       padding: '12px 16px',
       flexShrink: 0,
     }}>
-      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(245,239,228,0.45)', marginBottom: 4 }}>
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(122,170,208,0.8)', marginBottom: 4 }}>
         {label}
       </div>
       <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 18, fontWeight: 600, color: '#00C8E8' }}>
@@ -182,9 +182,9 @@ function TimeChip({ label, active, onClick }) {
       style={{
         padding: '8px 14px',
         borderRadius: 20,
-        border: `1px solid ${active ? '#B8863A' : 'rgba(184,134,58,0.22)'}`,
-        background: active ? 'rgba(184,134,58,0.18)' : 'transparent',
-        color: active ? '#B8863A' : 'rgba(245,239,228,0.55)',
+        border: `1px solid ${active ? '#2E6BAE' : 'rgba(46,107,174,0.22)'}`,
+        background: active ? 'rgba(46,107,174,0.18)' : 'transparent',
+        color: active ? '#5A9BD4' : 'rgba(122,170,208,0.6)',
         fontFamily: "'DM Sans', sans-serif",
         fontWeight: active ? 500 : 400,
         fontSize: 13,
@@ -365,9 +365,9 @@ export default function MobileReportingScreen({ onAuthError }) {
             <MobileLineChart primary={data.primary} comparison={data.comparison} unit={unit} />
             {/* Legend */}
             <div style={{ display: 'flex', gap: 12, marginTop: 8 }}>
-              <LegendDot color="#B8863A" label="This period" />
+              <LegendDot color="#2E6BAE" label="This period" />
               {data.comparison?.points?.length > 0 && (
-                <LegendDot color="rgba(245,239,228,0.25)" label="Prev period" dashed />
+                <LegendDot color="rgba(122,170,208,0.25)" label="Prev period" dashed />
               )}
             </div>
             {data.meta?.partlyEstimated && (
@@ -390,7 +390,7 @@ function LegendDot({ color, label, dashed }) {
           stroke={color} strokeWidth="2"
           strokeDasharray={dashed ? '4,3' : 'none'} />
       </svg>
-      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(245,239,228,0.45)' }}>
+      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(224,238,255,0.45)' }}>
         {label}
       </span>
     </div>

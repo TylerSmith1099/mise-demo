@@ -33,7 +33,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
       style={{
         position: 'fixed',
         inset: 0,
-        background: 'rgba(28, 22, 18, 0.85)',
+        background: 'rgba(9, 15, 26, 0.85)',
         zIndex: 200,
         display: 'flex',
         justifyContent: 'flex-end',
@@ -45,7 +45,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
         style={{
           width: 240,
           height: '100%',
-          background: '#231e19',
+          background: '#0E1E32',
           borderLeft: '1px solid var(--gold-25)',
           display: 'flex',
           flexDirection: 'column',

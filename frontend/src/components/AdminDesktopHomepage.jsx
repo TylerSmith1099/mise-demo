@@ -14,17 +14,17 @@ import React, { useState, useEffect } from 'react';
 
 // ─── Design tokens ───────────────────────────────────────────────────────────
 const T = {
-  bg:         '#1C1612',
-  card:       '#251E18',
-  cardHover:  '#2C2219',
-  sidebar:    '#140F0B',
-  text:       '#F5EFE4',
-  textMuted:  'rgba(245,239,228,0.45)',
-  textDim:    'rgba(245,239,228,0.25)',
-  gold:       '#B8863A',
-  goldBorder: 'rgba(184,134,58,0.18)',
-  goldLight:  'rgba(184,134,58,0.12)',
-  goldActive: 'rgba(184,134,58,0.22)',
+  bg:         '#090F1A',
+  card:       '#0E1E32',
+  cardHover:  '#162840',
+  sidebar:    '#0E2A45',
+  text:       '#E0EEFF',
+  textMuted:  'rgba(122,170,208,0.85)',
+  textDim:    'rgba(58,96,144,1.0)',
+  gold:       '#2E6BAE',
+  goldBorder: 'rgba(46,107,174,0.18)',
+  goldLight:  'rgba(46,107,174,0.12)',
+  goldActive: 'rgba(46,107,174,0.22)',
   cyan:       '#00C8E8',
   mint:       '#00E87A',
   red:        '#E85050',
@@ -58,7 +58,7 @@ const GLOBAL_CSS = `
 
   body { background: ${T.bg}; color: ${T.text}; font-family: ${FONTS.ui}; }
 
-  :focus-visible { outline: 2px solid rgba(184,134,58,0.5); outline-offset: 2px; }
+  :focus-visible { outline: 2px solid rgba(46,107,174,0.5); outline-offset: 2px; }
 
   @keyframes pulse-red {
     0%,100% { box-shadow: 0 0 0 0 rgba(232,80,80,0.4); }
@@ -80,12 +80,12 @@ const GLOBAL_CSS = `
   .panel-row:hover { background: rgba(255,255,255,0.02); }
   .kpi-card:hover  { border-color: ${T.gold}; }
   .venue-sel:hover { border-color: ${T.gold}; }
-  .venue-sel:focus { outline: 2px solid rgba(184,134,58,0.3); }
+  .venue-sel:focus { outline: 2px solid rgba(46,107,174,0.3); }
   .bell-btn:hover  { background: ${T.goldLight}; }
   .btn-primary:hover  { opacity: 0.90; }
-  .btn-primary:focus  { outline: 2px solid rgba(184,134,58,0.4); }
+  .btn-primary:focus  { outline: 2px solid rgba(46,107,174,0.4); }
   .btn-secondary:hover { border-color: ${T.gold}; background: ${T.goldLight}; }
-  .btn-secondary:focus { outline: 2px solid rgba(184,134,58,0.3); }
+  .btn-secondary:focus { outline: 2px solid rgba(46,107,174,0.3); }
   .action-btn:hover { background: ${T.goldLight}; }
   .action-btn:focus { outline: 1px solid ${T.gold}; }
 
@@ -175,7 +175,7 @@ function StaffRow({ member }) {
     <div className="panel-row transition" style={{
       display: 'flex', alignItems: 'center', gap: 8,
       padding: '6px 16px',
-      borderBottom: `1px solid rgba(184,134,58,0.06)`,
+      borderBottom: `1px solid rgba(46,107,174,0.08)`,
     }}>
       <StaffAvatar name={member.name} size={24} />
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -200,7 +200,7 @@ function IncidentRow({ incident }) {
       style={{
         display: 'flex', alignItems: 'flex-start', gap: 8,
         padding: '8px 16px',
-        borderBottom: `1px solid rgba(184,134,58,0.06)`,
+        borderBottom: `1px solid rgba(46,107,174,0.08)`,
       }}
     >
       <SeverityBadge level={incident.severity} />
@@ -222,7 +222,7 @@ function ComplianceRow({ alert }) {
     <div className="panel-row transition" style={{
       display: 'flex', alignItems: 'flex-start', gap: 8,
       padding: '7px 16px',
-      borderBottom: `1px solid rgba(184,134,58,0.06)`,
+      borderBottom: `1px solid rgba(46,107,174,0.08)`,
     }}>
       <span style={{ fontSize: 12, color: isRed ? T.red : T.amber, flexShrink: 0 }}>{isRed ? '🔴' : '⚠'}</span>
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -243,7 +243,7 @@ function PendingActionRow({ item }) {
     <div className="panel-row transition" style={{
       display: 'flex', alignItems: 'flex-start', gap: 8,
       padding: '7px 16px',
-      borderBottom: `1px solid rgba(184,134,58,0.06)`,
+      borderBottom: `1px solid rgba(46,107,174,0.08)`,
     }}>
       <div style={{ width: 6, height: 6, borderRadius: '50%', background: dotColor, flexShrink: 0, marginTop: 4 }} />
       <div style={{ flex: 1, minWidth: 0 }}>
@@ -282,7 +282,7 @@ function TimelineItem({ event, isLast }) {
       <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flexShrink: 0, width: 14 }}>
         <div style={{
           width: s.size, height: s.size, borderRadius: '50%', background: s.color, flexShrink: 0,
-          ...(event.state === 'now' ? { boxShadow: '0 0 0 3px rgba(184,134,58,0.25)' } : {}),
+          ...(event.state === 'now' ? { boxShadow: '0 0 0 3px rgba(46,107,174,0.25)' } : {}),
         }} />
         {!isLast && <div style={{ width: 1, flex: 1, background: T.goldBorder, marginTop: 3 }} />}
       </div>
@@ -416,8 +416,8 @@ function GreetingLine({ line }) {
         fontFamily: FONTS.mono, fontSize: 9, fontWeight: 600,
         letterSpacing: '0.08em', textTransform: 'uppercase',
         color: T.gold,
-        background: 'rgba(184,134,58,0.12)',
-        border: '1px solid rgba(184,134,58,0.28)',
+        background: 'rgba(46,107,174,0.12)',
+        border: '1px solid rgba(46,107,174,0.28)',
         padding: '2px 7px', borderRadius: 3,
         marginTop: 3, whiteSpace: 'nowrap',
       }}>
@@ -571,7 +571,7 @@ export default function AdminDesktopHomepage({
         {/* ── Sidebar ── */}
         <aside className="sidebar" style={{
           width: 200, flexShrink: 0,
-          background: 'linear-gradient(180deg, #0E2A45 0%, #140F0B 40%)',
+          background: 'linear-gradient(180deg, #0E2A45 0%, #090F1A 40%)',
           borderRight: '1px solid rgba(46,107,174,0.3)',
           display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden',
         }}>
@@ -612,7 +612,7 @@ export default function AdminDesktopHomepage({
           {/* ── Top Bar ── */}
           <header style={{
             height: 56, flexShrink: 0,
-            background: 'linear-gradient(135deg, #0E2A45 0%, #251E18 60%)',
+            background: 'linear-gradient(135deg, #0E2A45 0%, #0E1E32 60%)',
             borderBottom: 'rgba(46,107,174,0.3) 1px solid',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '0 24px', gap: 12,
@@ -634,7 +634,7 @@ export default function AdminDesktopHomepage({
             ) : drillInVenueName ? (
               <div style={{
                 display: 'flex', alignItems: 'center', gap: 8,
-                background: 'rgba(184,134,58,0.07)', border: `1px solid ${T.goldBorder}`,
+                background: 'rgba(46,107,174,0.07)', border: `1px solid ${T.goldBorder}`,
                 borderRadius: 4, padding: '6px 14px',
               }}>
                 <span style={{ fontFamily: FONTS.ui, fontWeight: 500, fontSize: 13, color: T.text }}>

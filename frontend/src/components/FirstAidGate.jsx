@@ -73,10 +73,10 @@ const DISPATCHER_SCRIPT = (address) => [
 
 // Shared colour tokens from the app brand system.
 const C = {
-  charcoal:  'var(--charcoal, #1c1c1e)',
-  gold:      'var(--gold, #b8863a)',
-  cream:     'var(--cream, #f5f0e8)',
-  cream60:   'var(--cream-60, rgba(245,240,232,0.6))',
+  charcoal:  'var(--charcoal, #090F1A)',
+  gold:      'var(--gold, #2E6BAE)',
+  cream:     'var(--cream, #E0EEFF)',
+  cream60:   'var(--cream-60, rgba(224,238,255,0.6))',
   red:       '#E85050',
   redBg:     'rgba(232,80,80,0.08)',
   redBorder: 'rgba(232,80,80,0.35)',
@@ -84,7 +84,7 @@ const C = {
   amberBg:   'rgba(232,160,32,0.08)',
   amberBorder:'rgba(232,160,32,0.35)',
   surface:   'rgba(255,255,255,0.04)',
-  border:    'rgba(245,239,228,0.12)',
+  border:    'rgba(46,107,174,0.20)',
 };
 
 const serif  = "'Space Grotesk', system-ui, sans-serif";

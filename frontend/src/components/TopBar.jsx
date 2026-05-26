@@ -12,7 +12,7 @@ export default function TopBar({ session, onMenuToggle }) {
     <header
       style={{
         height: 44,
-        background: 'linear-gradient(135deg, #0E2A45 0%, #1C1612 60%)',
+        background: 'linear-gradient(135deg, #0E2A45 0%, #090F1A 60%)',
         borderBottom: '1px solid rgba(46, 107, 174, 0.35)',
         display: 'flex',
         alignItems: 'center',

@@ -57,7 +57,7 @@ export default function Composer({ onSend, disabled }) {
           onClick={submit}
           disabled={!canSend}
           aria-label="Send message"
-          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gold text-charcoal transition-opacity disabled:opacity-30"
+          className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-gold text-cream transition-opacity disabled:opacity-30"
         >
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
             <path

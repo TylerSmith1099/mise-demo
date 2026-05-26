@@ -19,7 +19,7 @@ export default function Citations({ citations }) {
           <li key={`${c.source}-${c.section}-${i}`} className="flex items-start gap-2">
             <span
               className="mt-[3px] h-1.5 w-1.5 shrink-0 rounded-full"
-              style={{ background: c.shared ? '#00C8E8' : '#B8863A' }}
+              style={{ background: c.shared ? '#00C8E8' : '#B87A3C' }}
               aria-hidden="true"
             />
             <div className="min-w-0 flex-1">

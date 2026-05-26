@@ -485,7 +485,7 @@ function Field({ label, value, multiline }) {
 function StatusChip({ status, small }) {
   const map = {
     draft:       { label: 'Draft',     bg: 'rgba(75,85,99,0.2)',   text: '#9ca3af' },
-    submitted:   { label: 'Submitted', bg: 'rgba(184,134,58,0.15)', text: 'var(--gold)' },
+    submitted:   { label: 'Submitted', bg: 'rgba(46,107,174,0.15)', text: 'var(--gold)' },
     acknowledged:{ label: 'Acknowledged', bg: 'rgba(0,232,122,0.12)', text: 'var(--mint)' },
   };
   const s = map[status] || { label: status, bg: 'rgba(75,85,99,0.2)', text: '#9ca3af' };

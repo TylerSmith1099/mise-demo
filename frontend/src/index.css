@@ -1,58 +1,96 @@
-/* Mise brand system — Deep Meridian (MIS-463).
+/* Mise brand system — Deep Meridian LOCKED (MIS-463 / MIS-514).
+   Source of truth: Mise-Brand-DeepMeridian-LOCKED-V1.html (board confirmed 2026-05-25).
    Tailwind v4: brand tokens declared in @theme become utilities
    (bg-charcoal, text-cream, text-gold, font-data, font-display, font-editorial). */
 @import 'tailwindcss';
 
 @theme {
-  /* Colours — Deep Meridian functional palette */
-  --color-charcoal: #1c1612; /* primary background — all screens */
-  --color-gold: #b8863a; /* headlines, accents, active states */
-  --color-cream: #f5efe4; /* body copy, primary text */
-  --color-cyan: #00c8e8; /* information / in-progress */
-  --color-mint: #00e87a; /* success / compliant */
-  --color-red: #e85050; /* alert / action required */
-  --color-amber: #e8a020; /* warning / approaching threshold */
+  /* ── Deep Meridian primary palette ───────────────────────────────────────── */
+  --color-charcoal:   #090f1a; /* bg — deep-space navy */
+  --color-gold:       #2e6bae; /* blue-main — primary accent, CTAs, active states */
+  --color-cream:      #e0eeff; /* text-primary — body copy, headings */
 
-  /* Functional surfaces */
-  --color-surface: #231e19; /* card / bubble background */
-  --color-surface-2: #2f2620;
-  --color-hairline: #3a2f26;
+  /* Data-layer status colours — identical in both brand systems */
+  --color-cyan:       #00c8e8; /* information / in-progress */
+  --color-mint:       #00e87a; /* success / compliant */
+  --color-red:        #e85050; /* alert / action required */
+  --color-amber:      #e8a020; /* warning / approaching threshold */
+
+  /* Surfaces */
+  --color-surface:    #0e1e32; /* surface-1 — card / bubble background */
+  --color-surface-2:  #162840; /* surface-2 — nested surfaces */
+  --color-surface-3:  #1e3854; /* surface-3 — deepest raised surface */
+  --color-hairline:   #1a3450; /* border / divider — blue-tinted */
+
+  /* Extended blue scale */
+  --color-blue-deep:  #0e2a45;
+  --color-blue-mid:   #1e4a7a;
+  --color-blue-main:  #2e6bae;
+  --color-blue-light: #5a9bd4;
+  --color-blue-bright:#8ac4f0;
+
+  /* Copper scale — warm secondary accent */
+  --color-copper-deep:  #5c3018;
+  --color-copper-mid:   #8b5c2a;
+  --color-copper-main:  #b87a3c;
+  --color-copper-light: #d4a060;
+  --color-copper-pale:  #eac88a;
+
+  /* Text scale */
+  --color-text-sub:    #7aaad0;
+  --color-text-muted:  #3a6090;
 
   /* Fonts — Deep Meridian four-family system */
-  --font-display: 'Space Grotesk', system-ui, sans-serif; /* screen titles, headings */
-  --font-editorial: 'Plus Jakarta Sans', system-ui, sans-serif; /* body copy, message text */
-  --font-sans: 'DM Sans', system-ui, -apple-system, sans-serif; /* UI labels, nav, buttons */
-  --font-data: 'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace; /* numbers, metrics, timestamps */
+  --font-display:   'Space Grotesk', system-ui, sans-serif;      /* screen titles, headings */
+  --font-editorial: 'Plus Jakarta Sans', system-ui, sans-serif;  /* body copy, message text */
+  --font-sans:      'DM Sans', system-ui, -apple-system, sans-serif; /* UI labels, nav, buttons */
+  --font-data:      'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace; /* numbers, metrics, timestamps */
 }
 
-/* Deep Meridian CSS custom properties */
+/* Deep Meridian CSS custom properties — LOCKED 2026-05-25 */
 :root {
-  --charcoal:    #1C1612;
-  --gold:        #B8863A;
-  --cream:       #F5EFE4;
+  /* Primary tokens (backwards-compat names → DM values) */
+  --charcoal:    #090F1A;
+  --gold:        #2E6BAE;
+  --cream:       #E0EEFF;
   --cyan:        #00C8E8;
   --mint:        #00E87A;
   --red:         #E85050;
   --amber:       #E8A020;
-  --gold-15:     rgba(184, 134, 58, 0.15);
-  --gold-25:     rgba(184, 134, 58, 0.25);
-  --gold-40:     rgba(184, 134, 58, 0.40);
-  --cream-60:    rgba(245, 239, 228, 0.60);
-  --cream-40:    rgba(245, 239, 228, 0.40);
-  --charcoal-90: rgba(28, 22, 18, 0.90);
 
-  /* Deep Meridian accent tokens — metallic blue + copper */
-  --dm-blue-deep:   #0E2A45;
-  --dm-blue-mid:    #1E4A7A;
-  --dm-blue-main:   #2E6BAE;
-  --dm-blue-light:  #5A9BD4;
-  --dm-copper-main: #B87A3C;
-  --dm-copper-mid:  #8B5C2A;
+  /* Alpha variants — blue-based */
+  --gold-15:     rgba(46, 107, 174, 0.15);
+  --gold-25:     rgba(46, 107, 174, 0.25);
+  --gold-40:     rgba(46, 107, 174, 0.40);
+  --cream-60:    rgba(224, 238, 255, 0.60);
+  --cream-40:    rgba(224, 238, 255, 0.40);
+  --charcoal-90: rgba(9, 15, 26, 0.90);
 
-  /* Aurora gradient — used in hero/header surfaces */
-  --dm-aurora: radial-gradient(ellipse 80% 60% at 25% 15%, #2E6BAE 0%, transparent 55%),
-               radial-gradient(ellipse 50% 40% at 75% 80%, #8B5C2A 0%, transparent 45%),
-               linear-gradient(165deg, #0E2A45 0%, #090F1A 50%, #0E1E32 100%);
+  /* Full Deep Meridian token set */
+  --blue-deep:    #0E2A45;
+  --blue-mid:     #1E4A7A;
+  --blue-main:    #2E6BAE;
+  --blue-light:   #5A9BD4;
+  --blue-bright:  #8AC4F0;
+  --copper-deep:  #5C3018;
+  --copper-mid:   #8B5C2A;
+  --copper-main:  #B87A3C;
+  --copper-light: #D4A060;
+  --copper-pale:  #EAC88A;
+  --surface-1:    #0E1E32;
+  --surface-2:    #162840;
+  --surface-3:    #1E3854;
+  --text-primary: #E0EEFF;
+  --text-sub:     #7AAAD0;
+  --text-muted:   #3A6090;
+
+  /* Aurora hero gradient */
+  --aurora:
+    radial-gradient(ellipse 80% 60% at 25% 15%, #2E6BAE 0%, transparent 55%),
+    radial-gradient(ellipse 50% 40% at 75% 80%, #8B5C2A 0%, transparent 45%),
+    radial-gradient(ellipse 60% 80% at 5%  90%, rgba(90,155,212,0.2) 0%, transparent 50%),
+    radial-gradient(ellipse 40% 30% at 90% 10%, rgba(184,122,60,0.15) 0%, transparent 40%),
+    linear-gradient(165deg, #0E2A45 0%, #090F1A 50%, #0E1E32 100%);
 }
 
 html,

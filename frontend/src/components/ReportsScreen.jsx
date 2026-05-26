@@ -16,7 +16,7 @@ const DEPT_COLOUR = {
   beverage:    '#00C8E8',
   food:        '#E8A020',
   gaming:      '#00E87A',
-  bottle_shop: '#B8863A',
+  bottle_shop: '#B87A3C',
   total:       '#E0D4B0',
 };
 
@@ -107,7 +107,7 @@ export default function ReportsScreen({ onAuthError }) {
                 <div className="flex items-center gap-2">
                   <span
                     className="h-2 w-2 shrink-0 rounded-full"
-                    style={{ background: DEPT_COLOUR[d.department] || '#B8863A' }}
+                    style={{ background: DEPT_COLOUR[d.department] || '#B87A3C' }}
                     aria-hidden="true"
                   />
                   <span className="text-[14px] font-semibold text-cream/90">

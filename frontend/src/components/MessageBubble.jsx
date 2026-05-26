@@ -25,7 +25,7 @@ export default function MessageBubble({ msg }) {
     return (
       <div className="mise-rise flex justify-end">
         <div className="max-w-[82%] rounded-2xl rounded-br-sm bg-gold px-3.5 py-2.5">
-          <p className="whitespace-pre-wrap break-words text-[15px] leading-snug text-charcoal">
+          <p className="whitespace-pre-wrap break-words text-[15px] leading-snug text-cream">
             {msg.content}
           </p>
           <Time time={msg.time} />

@@ -23,7 +23,7 @@ function hhmm(iso) {
 const CATEGORY_COLOUR = {
   compliance: '#E85050',
   gaming: '#00C8E8',
-  bar: '#B8863A',
+  bar: '#B87A3C',
   open_close: '#E8A020',
   open: '#00E87A',
 };
@@ -192,7 +192,7 @@ export default function Runsheet({ onAuthError, roleTier }) {
                   {item.category && (
                     <span
                       className="h-1.5 w-1.5 shrink-0 rounded-full"
-                      style={{ background: CATEGORY_COLOUR[item.category] || '#B8863A' }}
+                      style={{ background: CATEGORY_COLOUR[item.category] || '#B87A3C' }}
                       aria-hidden="true"
                     />
                   )}

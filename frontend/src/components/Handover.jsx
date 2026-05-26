@@ -33,7 +33,7 @@ function Bullets({ items, dotColor }) {
         <li key={i} className="flex items-start gap-2">
           <span
             className="mt-[6px] h-1.5 w-1.5 shrink-0 rounded-full"
-            style={{ background: dotColor || '#B8863A' }}
+            style={{ background: dotColor || '#B87A3C' }}
             aria-hidden="true"
           />
           <span className="text-[13px] leading-snug text-cream/90">{t}</span>

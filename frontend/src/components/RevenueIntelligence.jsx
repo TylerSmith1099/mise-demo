@@ -19,17 +19,17 @@ const STATUS_COLOR = {
   green: '#00E87A',
   amber: '#E8A020',
   red: '#E85050',
-  early: '#F5EFE499',
-  unavailable: '#F5EFE499',
+  early: '#E0EEFF66',
+  unavailable: '#E0EEFF66',
 };
 
 function statusColor(s) {
-  return STATUS_COLOR[s] ?? '#F5EFE499';
+  return STATUS_COLOR[s] ?? '#E0EEFF66';
 }
 
 // Trend: +X% = labour rising = bad (red). -X% = falling = good (mint).
 function trendColor(delta) {
-  if (delta == null || delta === 0) return '#F5EFE466';
+  if (delta == null || delta === 0) return '#E0EEFF40';
   return delta > 0 ? '#E85050' : '#00E87A';
 }
 
@@ -73,7 +73,7 @@ function CompactRow({ dept, isRtv }) {
       {/* Labour % — IBM Plex Mono, status colour */}
       <span
         className="font-data text-[14px] font-bold text-right"
-        style={{ color: early ? '#F5EFE499' : statusColor(dept.status) }}
+        style={{ color: early ? '#E0EEFF66' : statusColor(dept.status) }}
       >
         {early ? '—' : fmtPct(dept.labourPct)}
       </span>
@@ -81,14 +81,14 @@ function CompactRow({ dept, isRtv }) {
       {/* Status dot */}
       <span className="text-center">
         {early ? (
-          <span className="font-data text-[12px]" style={{ color: '#F5EFE466' }}>○</span>
+          <span className="font-data text-[12px]" style={{ color: '#E0EEFF40' }}>○</span>
         ) : (
           statusDot(dept.status)
         )}
       </span>
 
       {/* Benchmark label */}
-      <span className="truncate text-[12px]" style={{ color: '#F5EFE499' }}>
+      <span className="truncate text-[12px]" style={{ color: '#7AAAD0' }}>
         {dept.benchmark.label}
       </span>
 
@@ -112,18 +112,18 @@ function CombinedRow({ combined }) {
       <span className="truncate text-[13px] text-cream/90">F&B</span>
       <span
         className="font-data text-[14px] font-bold text-right"
-        style={{ color: early ? '#F5EFE499' : statusColor(fAndB.status) }}
+        style={{ color: early ? '#E0EEFF66' : statusColor(fAndB.status) }}
       >
         {early ? '—' : fmtPct(fAndB.labourPct)}
       </span>
       <span className="text-center">
         {early ? (
-          <span className="font-data text-[12px]" style={{ color: '#F5EFE466' }}>○</span>
+          <span className="font-data text-[12px]" style={{ color: '#E0EEFF40' }}>○</span>
         ) : (
           statusDot(fAndB.status)
         )}
       </span>
-      <span className="truncate text-[12px]" style={{ color: '#F5EFE499' }}>
+      <span className="truncate text-[12px]" style={{ color: '#7AAAD0' }}>
         {fAndB.benchmark.label}
       </span>
       <span
@@ -150,7 +150,7 @@ function ExpandedBlock({ dept, onDrillDown }) {
         <span className="text-[13px] font-semibold text-cream/90">{dept.label}</span>
         <span className="flex items-center gap-1.5">
           {early ? (
-            <span className="font-data text-[12px]" style={{ color: '#F5EFE466' }}>Early shift</span>
+            <span className="font-data text-[12px]" style={{ color: '#E0EEFF40' }}>Early shift</span>
           ) : (
             <>
               {statusDot(dept.status)}
@@ -162,7 +162,7 @@ function ExpandedBlock({ dept, onDrillDown }) {
         </span>
       </div>
 
-      <div className="h-px mb-2" style={{ background: '#3a2f26' }} />
+      <div className="h-px mb-2" style={{ background: '#1A3450' }} />
 
       {/* Figures */}
       <div className="flex flex-col gap-1">
@@ -183,7 +183,7 @@ function ExpandedBlock({ dept, onDrillDown }) {
           <span className="text-[12px] text-cream/60">Labour %</span>
           <span
             className="font-data text-[14px] font-bold"
-            style={{ color: early ? '#F5EFE499' : statusColor(dept.status) }}
+            style={{ color: early ? '#E0EEFF66' : statusColor(dept.status) }}
           >
             {early ? '— Early shift' : fmtPct(dept.labourPct)}
           </span>
@@ -257,7 +257,7 @@ function CombinedExpandedBlock({ combined, depts, onDrillDown }) {
           </span>
         </span>
       </div>
-      <div className="h-px mb-2" style={{ background: '#3a2f26' }} />
+      <div className="h-px mb-2" style={{ background: '#1A3450' }} />
       <div className="flex flex-col gap-1">
         <ExpandedLine label="F&B Labour" value={fmtMoney(fAndB.labourCost)} />
         <ExpandedLine label="F&B Revenue" value={fmtMoney(fAndB.revenue)} />
@@ -278,7 +278,7 @@ function CombinedExpandedBlock({ combined, depts, onDrillDown }) {
         )}
         {/* Sub-line: Bar and Food individual status */}
         {bar && food && (
-          <div className="mt-1 flex items-center gap-3 rounded-lg px-2 py-1.5" style={{ background: '#2f2620' }}>
+          <div className="mt-1 flex items-center gap-3 rounded-lg px-2 py-1.5" style={{ background: '#162840' }}>
             <span className="text-[12px] text-cream/60">
               Bar: <span className="font-data" style={{ color: statusColor(bar.status) }}>{fmtPct(bar.labourPct)}</span>
               {' '}{statusDot(bar.status)}
@@ -316,7 +316,7 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
       {/* Scrim */}
       <div
         className="fixed inset-0 z-40"
-        style={{ background: 'rgba(28,22,18,0.75)' }}
+        style={{ background: 'rgba(9,15,26,0.75)' }}
         onClick={onClose}
         aria-hidden="true"
       />
@@ -324,7 +324,7 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
       {/* Sheet */}
       <div
         className="fixed bottom-0 left-0 right-0 z-50 rounded-t-2xl px-4 pb-8 pt-4"
-        style={{ background: '#261e18', maxHeight: '80dvh', overflowY: 'auto' }}
+        style={{ background: '#0E1E32', maxHeight: '80dvh', overflowY: 'auto' }}
         role="dialog"
         aria-label={`${dept.label} drill-down`}
       >
@@ -345,14 +345,14 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
           </button>
         </div>
 
-        <div className="h-px mb-3" style={{ background: '#3a2f26' }} />
+        <div className="h-px mb-3" style={{ background: '#1A3450' }} />
 
         {/* Staff list */}
         <p className="mb-2 text-[12px] text-cream/50">Staff on shift now:</p>
         {dept.staffOnShift?.length > 0 ? (
           <div className="flex flex-col gap-2 mb-4">
             {dept.staffOnShift.map((s, i) => (
-              <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: '#2f2620' }}>
+              <div key={i} className="flex items-center justify-between rounded-lg px-3 py-2" style={{ background: '#162840' }}>
                 <div>
                   <span className="text-[13px] text-cream/90">{s.name}</span>
                   <span className="ml-2 text-[12px] text-cream/50">{s.role}</span>
@@ -369,7 +369,7 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
         )}
 
         {/* Current figures */}
-        <div className="flex flex-col gap-1.5 mb-4 rounded-xl border border-hairline px-3 py-3" style={{ background: '#1c1612' }}>
+        <div className="flex flex-col gap-1.5 mb-4 rounded-xl border border-hairline px-3 py-3" style={{ background: '#090F1A' }}>
           <DrillLine label="Current labour cost this shift" value={fmtMoney(dept.labourCost)} />
           <DrillLine
             label={dept.id === 'gaming' ? 'Net revenue (RTV) so far' : 'Revenue so far this shift'}
@@ -516,13 +516,13 @@ export default function RevenueIntelligence({ onAuthError }) {
         >
           <span
             className="text-[12px] tracking-widest"
-            style={{ color: '#B8863A', fontVariant: 'small-caps', textTransform: 'uppercase' }}
+            style={{ color: '#5A9BD4', fontVariant: 'small-caps', textTransform: 'uppercase' }}
           >
             Revenue Intelligence
           </span>
           <span
             className="font-data text-[12px] transition-transform duration-150"
-            style={{ color: '#B8863A', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', display: 'inline-block' }}
+            style={{ color: '#5A9BD4', transform: expanded ? 'rotate(180deg)' : 'rotate(0deg)', display: 'inline-block' }}
             aria-hidden="true"
           >
             ▼
@@ -531,7 +531,7 @@ export default function RevenueIntelligence({ onAuthError }) {
 
         <StatusSummary departments={departments} combined={combined} />
 
-        <div className="h-px my-2" style={{ background: '#3a2f26' }} />
+        <div className="h-px my-2" style={{ background: '#1A3450' }} />
 
         {!expanded ? (
           /* Compact view — all rows visible without scroll */

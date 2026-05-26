@@ -287,7 +287,7 @@ export default function App() {
       <div style={{ ...shell, alignItems: 'center', justifyContent: 'center' }}>
         <div style={{
           width: 56, height: 56,
-          border: '1px solid rgba(184, 134, 58, 0.5)',
+          border: '1px solid rgba(46, 107, 174, 0.5)',
           borderRadius: 8,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
           fontFamily: "'Space Grotesk', system-ui, sans-serif",

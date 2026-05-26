@@ -26,13 +26,13 @@ import { sendRSACoaching, submitRSAReport } from '../api.js';
 // Brand tokens — Deep Meridian system.
 // ---------------------------------------------------------------------------
 const C = {
-  charcoal:    'var(--charcoal, #1c1c1e)',
-  gold:        'var(--gold, #b8863a)',
-  goldBg:      'rgba(184,134,58,0.10)',
-  goldBorder:  'rgba(184,134,58,0.35)',
-  cream:       'var(--cream, #F5EFE4)',
-  cream60:     'var(--cream-60, rgba(245,239,228,0.6))',
-  cream20:     'rgba(245,239,228,0.20)',
+  charcoal:    'var(--charcoal, #090F1A)',
+  gold:        'var(--gold, #2E6BAE)',
+  goldBg:      'rgba(46,107,174,0.10)',
+  goldBorder:  'rgba(46,107,174,0.35)',
+  cream:       'var(--cream, #E0EEFF)',
+  cream60:     'var(--cream-60, rgba(224,238,255,0.6))',
+  cream20:     'rgba(224,238,255,0.20)',
   amber:       '#E8A020',
   amberBg:     'rgba(232,160,32,0.08)',
   amberBorder: 'rgba(232,160,32,0.35)',
@@ -40,7 +40,7 @@ const C = {
   redBg:       'rgba(232,80,80,0.08)',
   redBorder:   'rgba(232,80,80,0.35)',
   surface:     'rgba(255,255,255,0.04)',
-  border:      'rgba(245,239,228,0.12)',
+  border:      'rgba(46,107,174,0.20)',
 };
 const serif = "'Space Grotesk', system-ui, sans-serif";
 const slab  = "'Plus Jakarta Sans', system-ui, sans-serif";
@@ -189,7 +189,7 @@ function OptionButton({ label, selected, onClick, multiSelect }) {
     >
       <span style={{
         width: 20, height: 20, flexShrink: 0, marginTop: 1,
-        border: `2px solid ${selected ? C.gold : 'rgba(245,240,232,0.3)'}`,
+        border: `2px solid ${selected ? C.gold : 'rgba(224,238,255,0.3)'}`,
         borderRadius: multiSelect ? 4 : '50%',
         background: selected ? C.gold : 'transparent',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
@@ -329,7 +329,7 @@ function LoadingView() {
     }}>
       <div style={{
         width: 40, height: 40,
-        border: `2px solid rgba(184,134,58,0.3)`,
+        border: `2px solid rgba(46,107,174,0.3)`,
         borderTopColor: C.gold,
         borderRadius: '50%',
         animation: 'rsa-spin 0.8s linear infinite',
@@ -406,7 +406,7 @@ function CoachingView({ coaching, severity, sourceAttribution, hasError, onHandl
                 key={i}
                 style={{
                   padding: '10px 14px',
-                  background: 'rgba(184,134,58,0.06)',
+                  background: 'rgba(46,107,174,0.06)',
                   border: `1px solid ${C.goldBorder}`,
                   borderLeft: `3px solid ${C.gold}`,
                   borderRadius: 8,
@@ -621,7 +621,7 @@ function ReportView({ reportTemplate, coachingSummary, session, onSubmit, onSave
         <Label text="Outcome *" />
         <select value={outcome} onChange={(e) => setOutcome(e.target.value)} style={{ ...field, color: outcome ? C.cream : C.cream60 }}>
           {OUTCOME_OPTIONS.map((o) => (
-            <option key={o.value} value={o.value} style={{ background: '#1c1c1e', color: C.cream }}>
+            <option key={o.value} value={o.value} style={{ background: '#090F1A', color: C.cream }}>
               {o.label}
             </option>
           ))}
@@ -921,7 +921,7 @@ export default function RSATriage({ session, onDismiss, onMedicalGate, onAuthErr
             {TRIAGE_QUESTIONS.map((_, i) => (
               <div key={i} style={{
                 width: i === qIdx ? 16 : 6, height: 6, borderRadius: 3,
-                background: i < qIdx ? C.gold : i === qIdx ? C.gold : 'rgba(245,240,232,0.2)',
+                background: i < qIdx ? C.gold : i === qIdx ? C.gold : 'rgba(224,238,255,0.2)',
                 transition: 'width 0.2s, background 0.2s',
               }} />
             ))}
