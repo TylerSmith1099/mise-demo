@@ -388,7 +388,7 @@ function DrillDownSheet({ dept, onClose, onFlag }) {
 
         {/* To-reach-benchmark section (RED/AMBER only) */}
         {dept.drillDown && !isGreenDept && (
-          <div className="flex flex-col gap-1.5 mb-4 rounded-xl border px-3 py-3" style={{ borderColor: '#E8502066' }}>
+          <div className="flex flex-col gap-1.5 mb-4 rounded-xl border px-3 py-3" style={{ borderColor: 'rgba(232,80,80,0.40)' }}>
             <p className="text-[12px] text-amber mb-1">To reach ≤{dept.benchmark.value}% benchmark by end of shift:</p>
             <DrillLine label="Max remaining labour spend" value={fmtMoney(dept.drillDown.maxRemainingSpend)} colored="amber" />
             <DrillLine label="Current burn rate" value={`~${fmtMoney(dept.drillDown.currentBurnRatePerHour)}/hr`} />

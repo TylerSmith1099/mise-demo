@@ -162,7 +162,7 @@ function CriticalBanner({ venues, onJumpToVenue }) {
         style={{ width: 8, height: 8, borderRadius: '50%', background: T.red, flexShrink: 0 }}
         aria-hidden="true"
       />
-      <span style={{ flex: 1, fontFamily: FONTS.ui, fontSize: 13, color: '#ff8080', fontWeight: 500, minWidth: 200 }}>
+      <span style={{ flex: 1, fontFamily: FONTS.ui, fontSize: 13, color: T.red, fontWeight: 500, minWidth: 200 }}>
         <strong>{redVenues.length} venue{redVenues.length > 1 ? 's' : ''} in critical status</strong>
         <span style={{ color: T.textDim, fontWeight: 400 }}>{' '}— {first.name} has {reason}</span>
       </span>
@@ -387,7 +387,7 @@ function VenueRow({ venue, onDrillIn }) {
       <div style={{ paddingLeft: 20, display: 'flex', alignItems: 'flex-start' }}>
         <StatusDot status={venue.status} />
         <div>
-          <div style={{ fontFamily: FONTS.ui, fontSize: 13, fontWeight: 500, color: isRed ? '#ff8080' : T.text, lineHeight: 1.3 }}>
+          <div style={{ fontFamily: FONTS.ui, fontSize: 13, fontWeight: 500, color: isRed ? T.red : T.text, lineHeight: 1.3 }}>
             {venue.name}
           </div>
           <div style={{ fontFamily: FONTS.mono, fontSize: 10, color: T.textMute, marginTop: 1 }}>

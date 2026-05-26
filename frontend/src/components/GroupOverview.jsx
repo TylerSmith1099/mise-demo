@@ -428,7 +428,7 @@ function VenueTable({ venues, onDrillIn }) {
                     flexShrink: 0,
                   }}
                 />
-                <span style={{ fontFamily: FONTS.ui, fontWeight: 600, fontSize: 13, color: crit ? '#ff8080' : T.text }}>
+                <span style={{ fontFamily: FONTS.ui, fontWeight: 600, fontSize: 13, color: crit ? T.red : T.text }}>
                   {v.venueName}
                 </span>
               </div>
@@ -518,7 +518,7 @@ function VenueTable({ venues, onDrillIn }) {
                     flexShrink: 0,
                   }}
                 />
-                <span style={{ fontFamily: FONTS.ui, fontWeight: 600, fontSize: 13, color: crit ? '#ff8080' : T.text, flex: 1 }}>
+                <span style={{ fontFamily: FONTS.ui, fontWeight: 600, fontSize: 13, color: crit ? T.red : T.text, flex: 1 }}>
                   {v.venueName}
                 </span>
                 <span style={{ color: T.textSub, fontSize: 14, fontFamily: FONTS.ui }}>→</span>

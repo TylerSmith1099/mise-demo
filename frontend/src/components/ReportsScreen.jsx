@@ -17,7 +17,7 @@ const DEPT_COLOUR = {
   food:        '#E8A020',
   gaming:      '#00E87A',
   bottle_shop: '#B87A3C',
-  total:       '#E0D4B0',
+  total:       '#EAC88A',
 };
 
 function fmt(n) {

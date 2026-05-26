@@ -38,11 +38,11 @@ const FONT_DATA      = "'IBM Plex Mono', monospace";
 
 // ---- Severity colour map ---------------------------------------------------
 function severityColour(level) {
-  return { 1: '#4b5563', 2: T.amber, 3: '#d97706', 4: T.red }[level] || T.cream40;
+  return { 1: '#7AAAD0', 2: T.amber, 3: T.amber, 4: T.red }[level] || T.cream40;
 }
 
 function severityBg(level) {
-  return { 1: 'rgba(75,85,99,0.12)', 2: 'rgba(232,160,32,0.12)', 3: 'rgba(217,119,6,0.15)', 4: 'rgba(232,80,80,0.15)' }[level] || 'transparent';
+  return { 1: 'rgba(122,170,208,0.12)', 2: 'rgba(232,160,32,0.12)', 3: 'rgba(232,160,32,0.15)', 4: 'rgba(232,80,80,0.15)' }[level] || 'transparent';
 }
 
 // ---- Obligation badge ------------------------------------------------------
@@ -484,11 +484,11 @@ function Field({ label, value, multiline }) {
 
 function StatusChip({ status, small }) {
   const map = {
-    draft:       { label: 'Draft',     bg: 'rgba(75,85,99,0.2)',   text: '#9ca3af' },
+    draft:       { label: 'Draft',     bg: 'rgba(58,96,144,0.2)',   text: '#7AAAD0' },
     submitted:   { label: 'Submitted', bg: 'rgba(46,107,174,0.15)', text: 'var(--gold)' },
     acknowledged:{ label: 'Acknowledged', bg: 'rgba(0,232,122,0.12)', text: 'var(--mint)' },
   };
-  const s = map[status] || { label: status, bg: 'rgba(75,85,99,0.2)', text: '#9ca3af' };
+  const s = map[status] || { label: status, bg: 'rgba(58,96,144,0.2)', text: '#7AAAD0' };
   return (
     <span style={{ background: s.bg, color: s.text, fontFamily: FONT_DATA, fontSize: 12, fontWeight: 700, padding: small ? '2px 6px' : '3px 8px', borderRadius: 4, letterSpacing: '0.04em' }}>
       {s.label}
