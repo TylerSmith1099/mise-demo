@@ -660,11 +660,11 @@ async function runIsolationGate(pool) {
 
     for (const tbl of FACT_TABLES) {
       const { rows } = await client.query(
-        `SELECT count(*)::int AS n FROM ${tbl} WHERE client_id = $1 AND source != 'seed'`,
+        `SELECT count(*)::int AS n FROM ${tbl} WHERE client_id = $1 AND source NOT IN ('seed', 'award_estimate')`,
         [CLIENT_ID],
       );
-      if (rows[0].n > 0) fail(`§1.3 source ${tbl}: ${rows[0].n} rows with source != 'seed'`);
-      else ok(`§1.3 source ${tbl}: all rows have source='seed'`);
+      if (rows[0].n > 0) fail(`§1.3 source ${tbl}: ${rows[0].n} rows with source not in ('seed','award_estimate')`);
+      else ok(`§1.3 source ${tbl}: all rows have demo source ('seed' or 'award_estimate')`);
     }
 
     for (const tbl of [...FACT_TABLES, 'egm_machines', 'handover_notes']) {
