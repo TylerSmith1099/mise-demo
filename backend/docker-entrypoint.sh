@@ -13,8 +13,8 @@ echo "[entrypoint] applying migrations…"
 node scripts/migrate.js
 
 if [ "$SEED_ON_BOOT" = "1" ]; then
-  echo "[entrypoint] seeding Steward demo accounts…"
-  node src/demo/seed.js
+  echo "[entrypoint] seeding demo group tenant (v2: siblings + tier 1–3 personas)…"
+  node src/demo/seed-demo-v2.js || echo "[entrypoint] seed-demo-v2 gate/seed non-zero — non-fatal, continuing"
   echo "[entrypoint] ingesting legislation…"
   node scripts/ingest-legislation.js
 fi
