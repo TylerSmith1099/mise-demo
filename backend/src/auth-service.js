@@ -58,7 +58,10 @@ async function recordFailedLogin(reason, attempt) {
  * @throws {AuthError} generic on any failure (real reason is audited)
  */
 export async function login(config, input) {
-  const { clientId, venueId, email, password, sourceIp } = input;
+  const { clientId, email, password, sourceIp } = input;
+  // Normalise empty string → null. The UI should send null for blank Venue ID,
+  // but an empty string must never reach the SQL uuid cast (→ Postgres 500).
+  const venueId = input.venueId?.trim() || null;
   const attempt = { clientId, venueId, email, sourceIp };
 
   // venueId is optional for area/group-level staff (tier 1–3) whose venue_id

@@ -38,7 +38,7 @@ export function createApp(config) {
       const { client_id, venue_id, email, password } = req.body || {};
       const result = await login(config, {
         clientId: client_id,
-        venueId: venue_id,
+        venueId: typeof venue_id === 'string' ? venue_id.trim() || null : venue_id ?? null,
         email,
         password,
         sourceIp: req.ip,

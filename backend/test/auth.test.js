@@ -334,6 +334,21 @@ test('wrong password and unknown email return the SAME generic error (no enumera
   assert.equal(unknownRow[0].reason, 'no_such_staff');
 });
 
+test('venue_id empty string returns 401 not 500 (MIS-507: defense-in-depth against uuid cast)', async () => {
+  // The UI fix (MIS-506) prevents "" being sent, but the backend must never
+  // let a malformed string reach the Postgres uuid cast and return an unhandled
+  // 500. Empty string is normalised → null at the service boundary; for
+  // venue-scoped staff this triggers venue_mismatch → 401 AuthError, not a DB
+  // error. Whitespace-only strings are also normalised.
+  const emptyStr = await loginAs(ids.a.clientId, '', 'grace@pinnacle.test', 'floor-1234');
+  assert.equal(emptyStr.status, 401, 'venue_id:"" must be 401');
+  assert.equal(emptyStr.body.error, 'Invalid credentials');
+
+  const whitespace = await loginAs(ids.a.clientId, '   ', 'grace@pinnacle.test', 'floor-1234');
+  assert.equal(whitespace.status, 401, 'venue_id:"   " must be 401');
+  assert.equal(whitespace.body.error, 'Invalid credentials');
+});
+
 // failed_logins has no RLS; read it directly via an admin connection.
 async function dbAdmin(sql, params) {
   const c = new pg.Client({ connectionString: testCs });
