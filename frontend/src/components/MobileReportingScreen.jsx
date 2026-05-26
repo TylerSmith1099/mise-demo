@@ -105,7 +105,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       ))}
       {[minV, yMid, maxV].map((v, i) => (
         <text key={i} x={PAD.left - 4} y={ys(v) + 4}
-          fill="rgba(245,239,228,0.35)" fontSize="11" textAnchor="end"
+          fill="rgba(245,239,228,0.35)" fontSize="12" textAnchor="end"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtValue(v, unit)}
         </text>
@@ -114,7 +114,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       {/* X-labels */}
       {xLabels.map(({ t, x }, i) => (
         <text key={i} x={x} y={H - 4}
-          fill="rgba(245,239,228,0.35)" fontSize="11" textAnchor="middle"
+          fill="rgba(245,239,228,0.35)" fontSize="12" textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtDate(t.slice(0, 10))}
         </text>
