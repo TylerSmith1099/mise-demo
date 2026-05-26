@@ -55,13 +55,56 @@ export async function seedStewardDemo() {
   // externalStaffId -> { staffId, email } for wiring demo logins.
   const idMap = new Map();
 
-  // Idempotent: if this demo tenant is already seeded, do nothing. This lets the
-  // container boot with SEED_ON_BOOT=1 on a persistent DB without duplicate-key
-  // errors or orphan tenants — the demo ids stay stable across redeploys.
+  // Check if this demo tenant already exists.
   const already = await withClientContext(clientId, (q) =>
     q(`SELECT 1 FROM clients WHERE client_id = $1`, [clientId]).then((r) => r.rowCount > 0),
   );
+
   if (already) {
+    // Tenant exists — patch any missing DEMO_ACCOUNTS without touching existing rows.
+    // This keeps the seed idempotent on every boot while still adding newly introduced
+    // demo accounts (e.g. the tier-2 Group GM added in MIS-497) to a live persistent DB.
+    await withClientContext(clientId, async (q) => {
+      for (const acct of DEMO_ACCOUNTS) {
+        const existing = await q(
+          `SELECT staff_id FROM staff WHERE client_id = $1 AND email = $2 AND deleted_at IS NULL`,
+          [clientId, acct.email],
+        );
+        if (existing.rowCount > 0) {
+          idMap.set(acct.externalStaffId, { staffId: existing.rows[0].staff_id, email: acct.email });
+          continue;
+        }
+        const p = STAFF.find((s) => s.externalStaffId === acct.externalStaffId);
+        if (!p) continue;
+        const staffId = randomUUID();
+        const staffVenueId = p.roleTier <= 3 ? null : venueId;
+        await q(
+          `INSERT INTO staff (staff_id, client_id, venue_id, first_name, last_name,
+                              email, role_tier, role_name, password_hash)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+          [staffId, clientId, staffVenueId, p.firstName, p.lastName, acct.email,
+           p.roleTier, p.role, passwordHash],
+        );
+        idMap.set(acct.externalStaffId, { staffId, email: acct.email, role: p.role });
+      }
+      // Ensure group-scope assignments exist for any tier 1-3 demo staff.
+      for (const [extId, { staffId }] of idMap) {
+        const p = STAFF.find((s) => s.externalStaffId === extId);
+        if (!p || p.roleTier > 3) continue;
+        const hasAssignment = await q(
+          `SELECT 1 FROM staff_venue_assignments
+            WHERE client_id = $1 AND staff_id = $2 AND scope_type = 'group' AND deleted_at IS NULL`,
+          [clientId, staffId],
+        );
+        if (!hasAssignment.rowCount) {
+          await q(
+            `INSERT INTO staff_venue_assignments (client_id, staff_id, scope_type)
+             VALUES ($1, $2, 'group')`,
+            [clientId, staffId],
+          );
+        }
+      }
+    });
     return { clientId, venueId, staffCount: STAFF.length, idMap, skipped: true };
   }
 
