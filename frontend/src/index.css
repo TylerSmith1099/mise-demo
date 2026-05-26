@@ -65,7 +65,7 @@ body {
   margin: 0;
   background: var(--color-charcoal);
   color: var(--color-cream);
-  font-family: var(--font-sans);
+  font-family: var(--font-editorial);
   /* Never allow a horizontal scrollbar on a phone. */
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;

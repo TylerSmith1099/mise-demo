@@ -11,15 +11,15 @@ import http from 'node:http';
 
 const PORT = 4100;
 
-// Duty Manager session — the role that receives the Compliance Monitor banner
-// (MIS-44). Tier 5 ≤ MANAGER_MAX_TIER, so App.jsx arms the monitor + polls.
+// Group Admin session — roleTier 2 routes to admin desktop + Group Overview.
+// Switch back to roleTier:5 for compliance monitor / DM testing.
 const SESSION = {
-  whiteLabelName: 'Pinnacle Assist',
-  venueName: 'The Criterion Hotel',
+  whiteLabelName: 'QHA Hotel Group',
+  venueName: 'The Vault Bar',
   venueState: 'QLD',
-  role: 'Duty Manager',
-  roleTier: 5,
-  staffName: 'Dan Roberts',
+  role: 'Group Admin',
+  roleTier: 2,
+  staffName: 'David Chen',
 };
 
 // --- Compliance Monitor mock state (MIS-44) --------------------------------
@@ -216,6 +216,64 @@ const server = http.createServer(async (req, res) => {
   if (method === 'GET' && url === '/api/shift-summary') return send(res, 200, SHIFT_SUMMARY);
   if (method === 'GET' && url === '/api/handover') return send(res, 200, HANDOVER);
   if (method === 'POST' && url === '/api/logout') return send(res, 200, { status: 'logged_out' });
+
+  // ── Admin desktop endpoints (MIS-503 local QA) ─────────────────────────────
+  if (method === 'GET' && url.startsWith('/api/admin/homepage')) {
+    return send(res, 200, {
+      scope: { venueIds: ['venue-vault'] },
+      shiftSummary: { onFloorNow: 6, shifts: [] },
+      incidents: [],
+      reports: [],
+      compliance: [{
+        severity: 'critical',
+        event_type: 'RSA certification expiry',
+        description: 'RSA certification for Jane Smith — arrange renewal',
+      }],
+      revenue: [{ business_date: new Date().toISOString().slice(0,10), net_revenue_cents: 2640000, forecast_revenue_cents: 510000, variance_cents: 2130000, is_stale: false }],
+      labour: [],
+      dataFreshness: {},
+    });
+  }
+  if (method === 'GET' && url.startsWith('/api/admin/group-overview')) {
+    return send(res, 200, {
+      group_name: 'QHA Hotel Group',
+      period_label: 'Week to date',
+      venue_count: 3,
+      totals: {
+        revenue_current: 18640000,
+        revenue_target: 16000000,
+        compliance_open: 5,
+        compliance_breakdown: { L4: 1, L3: 2, L2: 2, L1: 0 },
+        venues_red: 1,
+        venues_over_labour: 1,
+      },
+      venues: [
+        { id: 'vault', name: 'The Vault Bar', suburb: 'Brisbane CBD', type: 'Gaming Pub', status: 'red',
+          revenue: { current_week: 8200000, target_week: 7000000, delta_pct: 17 },
+          compliance: { open_count: 3, highest_severity: 'L4', severity_breakdown: { L4: 1, L3: 2, L2: 0, L1: 0 } },
+          labour: { status: 'over', variance_pct: 8 },
+          critical_flags: { count: 1 } },
+        { id: 'meridian', name: 'Meridian Hotel', suburb: 'South Bank', type: 'Hotel Bar', status: 'warn',
+          revenue: { current_week: 6440000, target_week: 6000000, delta_pct: 7 },
+          compliance: { open_count: 2, highest_severity: 'L3', severity_breakdown: { L4: 0, L3: 2, L2: 0, L1: 0 } },
+          labour: { status: 'on', variance_pct: 0 },
+          critical_flags: { count: 0 } },
+        { id: 'station', name: 'Station Arms', suburb: 'Fortitude Valley', type: 'Pub', status: 'ok',
+          revenue: { current_week: 4000000, target_week: 3000000, delta_pct: 33 },
+          compliance: { open_count: 0, highest_severity: null, severity_breakdown: { L4: 0, L3: 0, L2: 0, L1: 0 } },
+          labour: { status: 'on', variance_pct: -2 },
+          critical_flags: { count: 0 } },
+      ],
+    });
+  }
+  if (method === 'GET' && url.startsWith('/api/admin/stream')) {
+    // SSE: send an empty stream and keep alive
+    res.writeHead(200, { 'Content-Type': 'text/event-stream', 'Cache-Control': 'no-cache', Connection: 'keep-alive' });
+    res.write('data: {}\n\n');
+    req.on('close', () => res.end());
+    return;
+  }
+
   send(res, 404, { error: 'not_found' });
 });
 

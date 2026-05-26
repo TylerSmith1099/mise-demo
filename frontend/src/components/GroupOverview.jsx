@@ -272,7 +272,7 @@ function Topbar({ groupName, notifCount = 0, now }) {
           <span style={{
             position: 'absolute', top: 4, right: 4, width: 16, height: 16,
             borderRadius: '50%', background: T.amber, color: T.bg,
-            fontFamily: FONTS.ui, fontWeight: 600, fontSize: 9,
+            fontFamily: FONTS.ui, fontWeight: 600, fontSize: 10,
             display: 'flex', alignItems: 'center', justifyContent: 'center',
           }}>{notifCount}</span>
         )}
@@ -347,7 +347,7 @@ function SevChip({ sev }) {
   const crit = sev === 'critical';
   return (
     <span style={{
-      fontFamily: FONTS.mono, fontWeight: 600, fontSize: 9, letterSpacing: '0.04em',
+      fontFamily: FONTS.mono, fontWeight: 600, fontSize: 10, letterSpacing: '0.04em',
       padding: '2px 5px', borderRadius: 3,
       background: crit ? T.redBg : T.amberBg,
       color: crit ? T.red : T.amber,
@@ -365,7 +365,7 @@ function MCard({ label, value, sub, color }) {
       background: T.surface2, border: `1px solid ${T.borderBlueSm}`,
       borderRadius: 4, padding: '8px 10px',
     }}>
-      <div style={{ fontFamily: FONTS.mono, fontSize: 9, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em', marginBottom: 3 }}>{label}</div>
+      <div style={{ fontFamily: FONTS.mono, fontSize: 10, color: T.textMuted, textTransform: 'uppercase', letterSpacing: '0.10em', marginBottom: 3 }}>{label}</div>
       <div style={{ fontFamily: FONTS.mono, fontWeight: 600, fontSize: 15, color: color || T.text, letterSpacing: '0.05em', fontVariantNumeric: 'tabular-nums' }}>{value}</div>
       {sub && <div style={{ fontFamily: FONTS.ui, fontSize: 10, color: T.textMuted, marginTop: 2 }}>{sub}</div>}
     </div>

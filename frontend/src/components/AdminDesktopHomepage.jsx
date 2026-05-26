@@ -115,7 +115,7 @@ function SeverityBadge({ level }) {
     <span style={{
       fontFamily:    FONTS.ui,
       fontWeight:    700,
-      fontSize:      9,
+      fontSize:      10,
       letterSpacing: '0.04em',
       padding:       '2px 6px',
       borderRadius:  3,
@@ -319,7 +319,7 @@ function KpiCard({ kpi }) {
           {kpi.value}
         </div>
         {isStale ? (
-          <div style={{ fontFamily: FONTS.mono, fontSize: 9, color: T.amber }}>⏸ Data from {kpi.staleTime}</div>
+          <div style={{ fontFamily: FONTS.mono, fontSize: 10, color: T.amber }}>⏸ Data from {kpi.staleTime}</div>
         ) : (
           <div style={{ fontFamily: FONTS.mono, fontWeight: 400, fontSize: 11, color: T.textMuted, marginBottom: 6 }}>
             {kpi.subvalue}

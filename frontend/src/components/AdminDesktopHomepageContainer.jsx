@@ -222,8 +222,10 @@ function buildGreetingLine(apiData) {
   const criticalCompliance = (compliance || []).find((c) => c.severity === 'critical');
   if (criticalCompliance) {
     const label = criticalCompliance.event_type || 'compliance item';
+    const rawDesc = criticalCompliance.description || label;
+    const desc = rawDesc.replace(/[.!?]\s*$/, '');
     return {
-      text: `One thing needs you — ${criticalCompliance.description || label} is flagged as critical.`,
+      text: `One thing needs you — ${desc} is flagged as critical.`,
       severity: 'critical',
       actionLabel: 'Review compliance',
     };
@@ -404,6 +406,7 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
   const [activeNav, setActiveNav] = useState('Dashboard');
   const [groupData, setGroupData] = useState(null);
   const [groupLoading, setGroupLoading] = useState(false);
+  const [drillInVenueName, setDrillInVenueName] = useState(null);
   const sseRef = useRef(null);
   const refreshTimerRef = useRef(null);
 
@@ -532,6 +535,15 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
     }
   }, [groupData, loadGroup]);
 
+  // Drill into a specific venue from Group Overview — thread its name to the topbar chip.
+  const handleGroupDrillIn = useCallback((venueId) => {
+    if (groupData?.venues) {
+      const venue = groupData.venues.find((v) => v.id === venueId);
+      if (venue) setDrillInVenueName(venue.name);
+    }
+    handleNavChange('Dashboard');
+  }, [groupData, handleNavChange]);
+
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen message={error} onRetry={load} />;
   if (!rawData) return <LoadingScreen />;
@@ -560,7 +572,7 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
         groupOverviewContent={
           <GroupOverviewPage
             data={groupData}
-            onDrillIn={() => handleNavChange('Dashboard')}
+            onDrillIn={handleGroupDrillIn}
           />
         }
       />
@@ -568,10 +580,13 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
   }
 
   const props = transformToProps(rawData, session);
+  const venueProps = drillInVenueName
+    ? { ...props, venueName: drillInVenueName, venues: [{ id: props.selectedVenueId || 'drilled', name: drillInVenueName }] }
+    : props;
 
   return (
     <AdminDesktopHomepage
-      {...props}
+      {...venueProps}
       activeNav={activeNav}
       onVenueChange={handleVenueChange}
       onNavChange={handleNavChange}

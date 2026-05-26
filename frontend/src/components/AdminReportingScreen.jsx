@@ -177,7 +177,7 @@ function LineChart({ primary, comparison, unit, height = 220 }) {
       {/* X-axis labels */}
       {xLabels.map(({ t, x }, i) => (
         <text key={i} x={x} y={H - 8}
-          fill={T.textMuted} fontSize="9" textAnchor="middle"
+          fill={T.textMuted} fontSize="10" textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtDate(t.slice(0, 10))}
         </text>

@@ -81,7 +81,7 @@ const PAGE_CSS = `
                       padding: 14px 16px !important; gap: 10px !important; }
     .grp-venue-cells { display: grid !important;
                        grid-template-columns: repeat(4, 1fr) !important; gap: 8px; }
-    .grp-cell-label { font-family: 'DM Sans',system-ui,sans-serif; font-size: 9px;
+    .grp-cell-label { font-family: 'DM Sans',system-ui,sans-serif; font-size: 10px;
                       text-transform: uppercase; letter-spacing: 0.08em;
                       color: #3A6090; margin-bottom: 2px; }
     .grp-drill-col  { display: none !important; }
@@ -96,7 +96,7 @@ const PAGE_CSS = `
                       padding: 12px 16px !important; gap: 8px !important; }
     .grp-venue-cells { display: grid !important;
                        grid-template-columns: repeat(4, 1fr) !important; gap: 6px; }
-    .grp-cell-label { font-family: 'DM Sans',system-ui,sans-serif; font-size: 9px;
+    .grp-cell-label { font-family: 'DM Sans',system-ui,sans-serif; font-size: 10px;
                       text-transform: uppercase; letter-spacing: 0.08em;
                       color: #3A6090; margin-bottom: 2px; }
     .grp-drill-col  { display: none !important; }
@@ -515,7 +515,7 @@ function VenueTable({ venues, onDrillIn }) {
             style={{
               paddingLeft:   i === 0 ? 20 : 8,
               fontFamily:    FONTS.ui,
-              fontSize:      9,
+              fontSize:      10,
               fontWeight:    500,
               textTransform: 'uppercase',
               letterSpacing: '0.1em',
