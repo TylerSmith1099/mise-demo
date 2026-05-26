@@ -1,6 +1,6 @@
 {
   "name": "mise",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "private": true,
   "description": "Mise backend — Postgres + per-request client isolation, auth layer, and pgvector RAG knowledge base.",
   "type": "module",
