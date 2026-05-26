@@ -393,42 +393,60 @@ const GREETING_PALETTE = {
 
 function GreetingLine({ line }) {
   const p = GREETING_PALETTE[line.severity] || GREETING_PALETTE.info;
+  // Split "One thing needs you — detail" to highlight the flag phrase
+  const dashIdx = line.text.indexOf(' — ');
+  const flag   = dashIdx > -1 ? line.text.slice(0, dashIdx) : null;
+  const detail = dashIdx > -1 ? line.text.slice(dashIdx + 3) : line.text;
   return (
     <div
       role="status"
       aria-live="polite"
       style={{
         display: 'flex', alignItems: 'flex-start', gap: 12,
-        background: p.bg, border: `1px solid ${p.border}`,
-        borderRadius: 6, padding: '10px 14px', marginBottom: 16,
+        background: p.bg,
+        borderLeft: `2px solid ${p.dot}`,
+        borderRadius: 5,
+        padding: '11px 14px', marginBottom: 16,
       }}
     >
-      {/* Severity dot */}
+      {/* Mise AI badge */}
       <span style={{
-        flexShrink: 0, width: 8, height: 8, borderRadius: '50%',
-        background: p.dot, marginTop: 5,
-      }} aria-hidden="true" />
+        flexShrink: 0,
+        display: 'inline-flex', alignItems: 'center', gap: 4,
+        fontFamily: FONTS.mono, fontSize: 9, fontWeight: 600,
+        letterSpacing: '0.08em', textTransform: 'uppercase',
+        color: T.gold,
+        background: 'rgba(184,134,58,0.12)',
+        border: '1px solid rgba(184,134,58,0.28)',
+        padding: '2px 7px', borderRadius: 3,
+        marginTop: 3, whiteSpace: 'nowrap',
+      }}>
+        ✦ Mise AI
+      </span>
 
-      <div style={{ flex: 1 }}>
-        <p style={{ fontFamily: FONTS.body, fontSize: 14, color: T.text, lineHeight: 1.45 }}>
-          {line.text}
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <p style={{ fontFamily: FONTS.body, fontSize: 13, color: T.text, lineHeight: 1.5 }}>
+          {flag ? (
+            <>
+              <strong style={{ fontWeight: 600, color: p.label }}>{flag}</strong>
+              {' — '}
+              {detail}
+            </>
+          ) : detail}
         </p>
-        {line.actionLabel && (
-          <p style={{ fontFamily: FONTS.ui, fontSize: 11, fontWeight: 500, color: p.label, marginTop: 4 }}>
-            {line.actionLabel} →
-          </p>
-        )}
       </div>
 
-      {/* Severity badge */}
-      <span style={{
-        flexShrink: 0, background: p.badge, color: p.label,
-        fontFamily: FONTS.mono, fontSize: 9, fontWeight: 600,
-        textTransform: 'uppercase', letterSpacing: '0.08em',
-        padding: '2px 6px', borderRadius: 3, marginTop: 2,
-      }}>
-        {line.severity}
-      </span>
+      {line.actionLabel && (
+        <a style={{
+          flexShrink: 0, alignSelf: 'center',
+          fontFamily: FONTS.ui, fontSize: 11, fontWeight: 500,
+          color: T.gold, cursor: 'pointer',
+          whiteSpace: 'nowrap', opacity: 0.85,
+          textDecoration: 'none',
+        }}>
+          {line.actionLabel} →
+        </a>
+      )}
     </div>
   );
 }
