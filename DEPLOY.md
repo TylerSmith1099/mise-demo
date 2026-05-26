@@ -24,10 +24,10 @@ Node. Keep these two paths in lockstep when changing boot behaviour.
 Live Start Command (Render dashboard → Settings → Start Command):
 
 ```
-cd backend && node scripts/migrate.js && node src/demo/seed.js && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && node src/server.js
+cd backend && node scripts/migrate.js && node src/demo/seed.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node src/demo/seed.js || true) && (node src/demo/seed-demo-v2.js || true) && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && node src/server.js
 ```
 
-`src/demo/seed.js` is idempotent-patch: on an already-seeded DB it adds any missing DEMO_ACCOUNTS (including the tier-2 Group GM added in MIS-497) without touching existing rows. No Render Start Command change required for MIS-497.
+`src/demo/seed.js` is idempotent-patch: on an already-seeded DB it adds any missing DEMO_ACCOUNTS without touching existing rows. It must be run **twice** — once for the default tenant (`a0000000…`) and once for the Steward Hotel tenant (`a4cba394…`) — because `groupgm@steward.demo` lives in the Steward tenant (MIS-497 fix: seed.js defaults to the wrong tenant if run only once).
 
 `scripts/seed-steward-extras.js` populates the data behind the Run Sheet, Revenue
 and Reports screens (shifts, runsheet_items, pnl_summary). It is idempotent and
