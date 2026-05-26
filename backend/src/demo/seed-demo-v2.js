@@ -365,12 +365,20 @@ async function seedSiblingStaff(q, passwordHash) {
        ON CONFLICT DO NOTHING`,
       [staffId, CLIENT_ID, p.venueId, p.first, p.last, email, p.roleTier, p.roleName, passwordHash, p.dept],
     );
+    // Resolve actual staff_id — the insert above may have been a no-op if the
+    // record already existed (ON CONFLICT DO NOTHING), so we must fetch the
+    // real id rather than using the freshly-generated UUID which was never stored.
+    const { rows: [existing] } = await q(
+      `SELECT staff_id FROM staff WHERE client_id = $1 AND email = $2`,
+      [CLIENT_ID, email],
+    );
+    const actualStaffId = existing?.staff_id ?? staffId;
     if (p.roleTier === 4) {
       await q(
         `INSERT INTO staff_venue_assignments
            (assignment_id, client_id, staff_id, scope_type, venue_id, cluster_id)
          VALUES ($1, $2, $3, 'venue', $4, NULL) ON CONFLICT DO NOTHING`,
-        [randomUUID(), CLIENT_ID, staffId, p.venueId],
+        [randomUUID(), CLIENT_ID, actualStaffId, p.venueId],
       );
     }
   }
