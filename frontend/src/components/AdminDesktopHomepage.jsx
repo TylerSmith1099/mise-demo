@@ -498,6 +498,7 @@ export default function AdminDesktopHomepage({
   greetingLine    = null,
   isGroupTier     = false,
   groupOverviewContent = null,
+  drillInVenueName = null,
 }) {
   const [now, setNow] = useState(new Date());
 
@@ -628,6 +629,16 @@ export default function AdminDesktopHomepage({
                 </span>
                 <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: T.cyan, letterSpacing: '0.06em' }}>
                   Estate View
+                </span>
+              </div>
+            ) : drillInVenueName ? (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(184,134,58,0.07)', border: `1px solid ${T.goldBorder}`,
+                borderRadius: 4, padding: '6px 14px',
+              }}>
+                <span style={{ fontFamily: FONTS.ui, fontWeight: 500, fontSize: 13, color: T.text }}>
+                  {drillInVenueName}
                 </span>
               </div>
             ) : (

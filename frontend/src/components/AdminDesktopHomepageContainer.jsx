@@ -591,6 +591,7 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
       onVenueChange={handleVenueChange}
       onNavChange={handleNavChange}
       isGroupTier={GROUP_TIERS.has(session?.roleTier)}
+      drillInVenueName={drillInVenueName}
     />
   );
 }
