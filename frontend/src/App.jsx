@@ -371,7 +371,7 @@ export default function App() {
           <span
             style={{
               fontFamily: "'IBM Plex Mono', monospace",
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: 600,
               letterSpacing: '0.1em',
               textTransform: 'uppercase',

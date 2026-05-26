@@ -30,17 +30,17 @@ const C = {
   gold:        'var(--gold, #b8863a)',
   goldBg:      'rgba(184,134,58,0.10)',
   goldBorder:  'rgba(184,134,58,0.35)',
-  cream:       'var(--cream, #f5f0e8)',
-  cream60:     'var(--cream-60, rgba(245,240,232,0.6))',
-  cream20:     'rgba(245,240,232,0.20)',
-  amber:       '#d97706',
-  amberBg:     'rgba(217,119,6,0.08)',
-  amberBorder: 'rgba(217,119,6,0.35)',
-  red:         '#dc2626',
-  redBg:       'rgba(220,38,38,0.08)',
-  redBorder:   'rgba(220,38,38,0.35)',
+  cream:       'var(--cream, #F5EFE4)',
+  cream60:     'var(--cream-60, rgba(245,239,228,0.6))',
+  cream20:     'rgba(245,239,228,0.20)',
+  amber:       '#E8A020',
+  amberBg:     'rgba(232,160,32,0.08)',
+  amberBorder: 'rgba(232,160,32,0.35)',
+  red:         '#E85050',
+  redBg:       'rgba(232,80,80,0.08)',
+  redBorder:   'rgba(232,80,80,0.35)',
   surface:     'rgba(255,255,255,0.04)',
-  border:      'rgba(245,240,232,0.12)',
+  border:      'rgba(245,239,228,0.12)',
 };
 const serif = "'Space Grotesk', system-ui, sans-serif";
 const slab  = "'Plus Jakarta Sans', system-ui, sans-serif";
@@ -140,7 +140,7 @@ function Label({ text, style }) {
     <p style={{
       margin: '0 0 6px',
       fontFamily: mono,
-      fontSize: 10,
+      fontSize: 12,
       letterSpacing: '0.1em',
       textTransform: 'uppercase',
       color: C.cream60,
@@ -224,7 +224,7 @@ function TriageQuestion({ q, currentValue, onTap, onContinue }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 10, padding: '0 16px 24px' }}>
       <div style={{ marginBottom: 4 }}>
-        <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.cream60 }}>
+        <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.cream60 }}>
           {q.hint}
         </p>
         <h2 style={{ margin: 0, fontFamily: serif, fontSize: 22, fontWeight: 700, color: C.cream, lineHeight: 1.3 }}>
@@ -334,7 +334,7 @@ function LoadingView() {
         borderRadius: '50%',
         animation: 'rsa-spin 0.8s linear infinite',
       }} />
-      <p style={{ margin: 0, fontFamily: mono, fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.cream60 }}>
+      <p style={{ margin: 0, fontFamily: mono, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.cream60 }}>
         Building your guidance…
       </p>
       <style>{`@keyframes rsa-spin { to { transform: rotate(360deg); } }`}</style>
@@ -594,7 +594,7 @@ function ReportView({ reportTemplate, coachingSummary, session, onSubmit, onSave
         <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
           {prefilledRows.map(([key, val]) => (
             <div key={key} style={{ display: 'flex', gap: 8 }}>
-              <span style={{ fontFamily: mono, fontSize: 11, color: C.cream60, width: 90, flexShrink: 0, lineHeight: 1.55 }}>{key}</span>
+              <span style={{ fontFamily: mono, fontSize: 12, color: C.cream60, width: 90, flexShrink: 0, lineHeight: 1.55 }}>{key}</span>
               <span style={{ fontFamily: sans, fontSize: 13, color: C.cream, lineHeight: 1.55 }}>{val}</span>
             </div>
           ))}
@@ -908,7 +908,7 @@ export default function RSATriage({ session, onDismiss, onMedicalGate, onAuthErr
           </button>
         )}
         <div style={{ flex: 1 }}>
-          <p style={{ margin: 0, fontFamily: mono, fontSize: 10, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.gold }}>
+          <p style={{ margin: 0, fontFamily: mono, fontSize: 12, letterSpacing: '0.1em', textTransform: 'uppercase', color: C.gold }}>
             RSA Patron Situation
           </p>
           <p style={{ margin: '2px 0 0', fontFamily: sans, fontSize: 13, color: C.cream60 }}>

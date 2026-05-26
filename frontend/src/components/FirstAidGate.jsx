@@ -77,14 +77,14 @@ const C = {
   gold:      'var(--gold, #b8863a)',
   cream:     'var(--cream, #f5f0e8)',
   cream60:   'var(--cream-60, rgba(245,240,232,0.6))',
-  red:       '#dc2626',
-  redBg:     'rgba(220,38,38,0.08)',
-  redBorder: 'rgba(220,38,38,0.35)',
-  amber:     '#d97706',
-  amberBg:   'rgba(217,119,6,0.08)',
-  amberBorder:'rgba(217,119,6,0.35)',
+  red:       '#E85050',
+  redBg:     'rgba(232,80,80,0.08)',
+  redBorder: 'rgba(232,80,80,0.35)',
+  amber:     '#E8A020',
+  amberBg:   'rgba(232,160,32,0.08)',
+  amberBorder:'rgba(232,160,32,0.35)',
   surface:   'rgba(255,255,255,0.04)',
-  border:    'rgba(245,240,232,0.12)',
+  border:    'rgba(245,239,228,0.12)',
 };
 
 const serif  = "'Space Grotesk', system-ui, sans-serif";
@@ -122,7 +122,7 @@ function DispatcherScreen({ venueAddress, onBack }) {
         border: `1px solid ${C.amberBorder}`,
         borderRadius: 10,
       }}>
-        <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.amber }}>
+        <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.amber }}>
           Venue address
         </p>
         <p style={{ margin: 0, fontFamily: mono, fontSize: 14, color: C.cream, lineHeight: 1.5 }}>
@@ -132,7 +132,7 @@ function DispatcherScreen({ venueAddress, onBack }) {
 
       {/* Dispatcher script */}
       <div style={{ padding: '14px 16px', background: C.surface, border: `1px solid ${C.border}`, borderRadius: 10 }}>
-        <p style={{ margin: '0 0 10px', fontFamily: mono, fontSize: 11, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.cream60 }}>
+        <p style={{ margin: '0 0 10px', fontFamily: mono, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.cream60 }}>
           Tell the dispatcher:
         </p>
         {[
@@ -199,7 +199,7 @@ function GuidanceScreen({ answer, citations, onDone }) {
         border: `1px solid ${C.border}`,
         borderRadius: 10,
       }}>
-        <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.cream60 }}>
+        <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.cream60 }}>
           Important — read before acting
         </p>
         <p style={{ margin: 0, fontFamily: sans, fontSize: 13, color: C.cream60, lineHeight: 1.55 }}>
@@ -215,7 +215,7 @@ function GuidanceScreen({ answer, citations, onDone }) {
           border: `1px solid ${C.border}`,
           borderRadius: 10,
         }}>
-          <p style={{ margin: '0 0 10px', fontFamily: mono, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.cream60 }}>
+          <p style={{ margin: '0 0 10px', fontFamily: mono, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.cream60 }}>
             Guidance — while you wait
           </p>
           <div style={{ fontFamily: sans, fontSize: 14, color: C.cream, lineHeight: 1.6, whiteSpace: 'pre-wrap' }}>
@@ -314,7 +314,7 @@ export default function FirstAidGate({ venueAddress, answer, citations, onConfir
       }}>
         <div style={{
           flex: 1,
-          fontFamily: mono, fontSize: 10, letterSpacing: '0.1em',
+          fontFamily: mono, fontSize: 12, letterSpacing: '0.1em',
           textTransform: 'uppercase', color: C.red, fontWeight: 700,
         }}>
           Medical Emergency
@@ -380,7 +380,7 @@ export default function FirstAidGate({ venueAddress, answer, citations, onConfir
               border: `1px solid ${C.amberBorder}`,
               borderRadius: 10,
             }}>
-              <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 10, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.amber }}>
+              <p style={{ margin: '0 0 4px', fontFamily: mono, fontSize: 12, letterSpacing: '0.08em', textTransform: 'uppercase', color: C.amber }}>
                 This venue's address
               </p>
               <p style={{ margin: 0, fontFamily: mono, fontSize: 15, fontWeight: 600, color: C.cream, lineHeight: 1.4 }}>
@@ -394,7 +394,7 @@ export default function FirstAidGate({ venueAddress, answer, citations, onConfir
             onClick={handleCalled}
             style={{
               width: '100%', padding: '16px 16px',
-              background: 'rgba(220,38,38,0.15)',
+              background: 'rgba(232,80,80,0.15)',
               border: `1px solid ${C.redBorder}`,
               borderRadius: 12,
               fontFamily: sans, fontSize: 15, fontWeight: 600,

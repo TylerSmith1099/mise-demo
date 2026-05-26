@@ -80,7 +80,7 @@ function MobileLineChart({ primary, comparison, unit }) {
   const range = maxV - minV || 1;
   const N = pts.length;
   const W = 340, H = 120;
-  const PAD = { top: 8, right: 12, bottom: 28, left: 48 };
+  const PAD = { top: 8, right: 12, bottom: 28, left: 54 };
   const cW = W - PAD.left - PAD.right;
   const cH = H - PAD.top - PAD.bottom;
 
@@ -105,7 +105,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       ))}
       {[minV, yMid, maxV].map((v, i) => (
         <text key={i} x={PAD.left - 4} y={ys(v) + 4}
-          fill="rgba(245,239,228,0.35)" fontSize="8" textAnchor="end"
+          fill="rgba(245,239,228,0.35)" fontSize="11" textAnchor="end"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtValue(v, unit)}
         </text>
@@ -114,7 +114,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       {/* X-labels */}
       {xLabels.map(({ t, x }, i) => (
         <text key={i} x={x} y={H - 4}
-          fill="rgba(245,239,228,0.35)" fontSize="8" textAnchor="middle"
+          fill="rgba(245,239,228,0.35)" fontSize="11" textAnchor="middle"
           fontFamily="'IBM Plex Mono', monospace">
           {fmtDate(t.slice(0, 10))}
         </text>
@@ -158,14 +158,14 @@ function KpiCell({ label, value, delta }) {
       padding: '12px 16px',
       flexShrink: 0,
     }}>
-      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(245,239,228,0.45)', marginBottom: 4 }}>
+      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(245,239,228,0.45)', marginBottom: 4 }}>
         {label}
       </div>
       <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 18, fontWeight: 600, color: '#00C8E8' }}>
         {value}
       </div>
       {delta && (
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, marginTop: 3, color: pos ? '#00E87A' : '#E85050' }}>
+        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, marginTop: 3, color: pos ? '#00E87A' : '#E85050' }}>
           {delta} vs prev
         </div>
       )}
@@ -287,7 +287,7 @@ export default function MobileReportingScreen({ onAuthError }) {
         </div>
         {data?.meta?.scopeClamped && (
           <span style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: '#E8A020',
+            fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#E8A020',
             background: 'rgba(232,160,32,0.10)', padding: '3px 8px', borderRadius: 12,
           }}>
             ≤7d limit
@@ -336,7 +336,7 @@ export default function MobileReportingScreen({ onAuthError }) {
         <div className="flex items-baseline justify-between mb-3">
           <span className="text-[13px] font-semibold text-cream/90">{metricLabel}</span>
           {data?.meta?.range && (
-            <span className="font-data text-[11px] text-cream/40">
+            <span className="font-data text-[12px] text-cream/40">
               {fmtDate(data.meta.range.from)} – {fmtDate(data.meta.range.to)}
             </span>
           )}
@@ -371,7 +371,7 @@ export default function MobileReportingScreen({ onAuthError }) {
               )}
             </div>
             {data.meta?.partlyEstimated && (
-              <p className="mt-2 font-data text-[11px] text-amber/80">
+              <p className="mt-2 font-data text-[12px] text-amber/80">
                 ⚠ Includes award estimates
               </p>
             )}
@@ -390,7 +390,7 @@ function LegendDot({ color, label, dashed }) {
           stroke={color} strokeWidth="2"
           strokeDasharray={dashed ? '4,3' : 'none'} />
       </svg>
-      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 11, color: 'rgba(245,239,228,0.45)' }}>
+      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(245,239,228,0.45)' }}>
         {label}
       </span>
     </div>
