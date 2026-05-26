@@ -494,7 +494,7 @@ async function seedLabourDailyAll(q) {
         `INSERT INTO labour_actuals_daily
            (client_id, venue_id, business_date, worked_hours, labour_cost_cents,
             budgeted_hours, budgeted_cost_cents, source, is_stale)
-         VALUES ($1, $2, $3, $4, $5, $6, $7, 'seed', false)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 'award_estimate', false)
          ON CONFLICT (client_id, venue_id, business_date, source) DO UPDATE
            SET worked_hours        = EXCLUDED.worked_hours,
                labour_cost_cents   = EXCLUDED.labour_cost_cents,

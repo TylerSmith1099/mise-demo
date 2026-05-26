@@ -64,6 +64,11 @@ export const PERMISSION_MAP = Object.freeze({
   //   Tier 7 (Gaming Attendant) has no reporting surface (MIS-426 §3.3).
   'admin-reports':        Object.freeze([2, 3, 4, 5]),
   'admin-reports-export': Object.freeze([2, 3, 4]),
+
+  // Group roll-up view (MIS-478): estate-level view for group-scoped roles only.
+  // Tier 1=Group Admin, 2=Area Manager, 3=General Manager. Venue Manager (4) and below
+  // see single-venue; they do not access the estate overview.
+  'admin-group-overview': Object.freeze([1, 2, 3]),
 });
 
 /**

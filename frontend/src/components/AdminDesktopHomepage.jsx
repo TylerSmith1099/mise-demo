@@ -496,6 +496,8 @@ export default function AdminDesktopHomepage({
   onVenueChange   = () => {},
   onNavChange     = () => {},
   greetingLine    = null,
+  isGroupTier     = false,
+  groupOverviewContent = null,
 }) {
   const [now, setNow] = useState(new Date());
 
@@ -518,8 +520,12 @@ export default function AdminDesktopHomepage({
   const dmFirstName = dmName.split(' ')[0];
   const dmInitials  = dmName.split(' ').map(n => n[0]).slice(0, 2).join('');
 
-  const mainNavItems    = ['Group Overview', 'Dashboard', 'Roster', 'Reports', 'Staff', 'Forecasting', 'Budgets'];
+  // Group Overview only shown to group-scoped tiers (1-3); all others see single-venue nav.
+  const mainNavItems    = isGroupTier
+    ? ['Group Overview', 'Dashboard', 'Roster', 'Reports', 'Staff', 'Forecasting', 'Budgets']
+    : ['Dashboard', 'Roster', 'Reports', 'Staff', 'Forecasting', 'Budgets'];
   const bottomNavItems  = ['Compliance', 'Settings', 'Admin'];
+  const isGroupOverview = activeNav === 'Group Overview';
 
   const NavItem = ({ label }) => {
     const isActive = label === activeNav;
@@ -610,20 +616,35 @@ export default function AdminDesktopHomepage({
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '0 24px', gap: 12,
           }}>
-            {/* Venue selector */}
-            <select
-              className="venue-sel transition"
-              value={selectedVenueId}
-              onChange={e => onVenueChange(e.target.value)}
-              style={{
-                background: T.bg, border: `1px solid ${T.goldBorder}`, borderRadius: 4,
-                padding: '6px 12px', color: T.text,
-                fontFamily: FONTS.ui, fontWeight: 500, fontSize: 13,
-                cursor: 'pointer', appearance: 'none',
-              }}
-            >
-              {venues.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
-            </select>
+            {/* Venue selector / Group chip */}
+            {isGroupOverview ? (
+              <div style={{
+                display: 'flex', alignItems: 'center', gap: 8,
+                background: 'rgba(0,200,232,0.07)', border: '1px solid rgba(0,200,232,0.25)',
+                borderRadius: 4, padding: '6px 14px',
+              }}>
+                <span style={{ fontFamily: FONTS.ui, fontWeight: 500, fontSize: 13, color: T.text }}>
+                  QHA Hotel Group
+                </span>
+                <span style={{ fontFamily: FONTS.mono, fontSize: 10, color: T.cyan, letterSpacing: '0.06em' }}>
+                  Estate View
+                </span>
+              </div>
+            ) : (
+              <select
+                className="venue-sel transition"
+                value={selectedVenueId}
+                onChange={e => onVenueChange(e.target.value)}
+                style={{
+                  background: T.bg, border: `1px solid ${T.goldBorder}`, borderRadius: 4,
+                  padding: '6px 12px', color: T.text,
+                  fontFamily: FONTS.ui, fontWeight: 500, fontSize: 13,
+                  cursor: 'pointer', appearance: 'none',
+                }}
+              >
+                {venues.map(v => <option key={v.id} value={v.id}>{v.name}</option>)}
+              </select>
+            )}
 
             <div style={{ flex: 1 }} />
 
@@ -674,6 +695,12 @@ export default function AdminDesktopHomepage({
           </header>
 
           {/* ── Scrollable content ── */}
+          {/* Group Overview replaces the entire main area when active */}
+          {isGroupOverview && groupOverviewContent ? (
+            <div style={{ flex: 1, overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+              {groupOverviewContent}
+            </div>
+          ) : (
           <main className="admin-content" style={{ flex: 1, overflowY: 'auto', padding: '24px 24px 32px' }}>
 
             {/* Page header */}
@@ -810,6 +837,7 @@ export default function AdminDesktopHomepage({
               </div>
             </div>
           </main>
+          )}
         </div>
       </div>
     </>

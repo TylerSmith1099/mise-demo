@@ -18,8 +18,11 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AdminDesktopHomepage from './AdminDesktopHomepage.jsx';
 import AdminReportingScreen from './AdminReportingScreen.jsx';
-import GroupOverview from './GroupOverview.jsx';
+import GroupOverviewPage from './GroupOverviewPage.jsx';
 import { fetchAdminHomepage, fetchGroupOverview, openAdminStream } from '../api.js';
+
+// Tiers with group-scope access (Group Admin, Area Manager, General Manager).
+const GROUP_TIERS = new Set([1, 2, 3]);
 
 const REFRESH_MS = 5 * 60 * 1000; // 5-minute revenue/labour poll
 
@@ -188,7 +191,9 @@ function buildKpis(apiData) {
       label:      'Labour Cost Today',
       value:      todayLab ? `${todayLab.worked_hours} hrs` : '—',
       subvalue:   todayLab
-        ? `${formatCents(todayLab.labour_cost_cents)} · ${labourPct(todayLab)}% rev`
+        ? todayLab.source === 'award_estimate'
+          ? `~${formatCents(todayLab.labour_cost_cents)} · ~${labourPct(todayLab)}% rev · est.`
+          : `${formatCents(todayLab.labour_cost_cents)} · ${labourPct(todayLab)}% rev`
         : 'No data',
       accentColor: T.mint,
       trend:      todayLab?.budgeted_hours
@@ -542,20 +547,22 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
     );
   }
 
-  // Group Overview — estate-level view (MIS-467). Full-page component with own sidebar.
+  // Group Overview — estate-level view (MIS-478). Visible to group-scoped tiers (1-3).
   if (activeNav === 'Group Overview') {
-    const EMPTY_DATA = { summary: { totalRevenueCents: 0, openComplianceCount: 0, venuesInRed: 0, labourSummary: { onTarget: 0, overTarget: 0, noData: 0 } }, venues: [] };
+    if (groupLoading) return <LoadingScreen />;
     return (
-      <GroupOverview
-        data={groupLoading ? EMPTY_DATA : (groupData || EMPTY_DATA)}
+      <AdminDesktopHomepage
+        {...transformToProps(rawData || {}, session)}
+        activeNav={activeNav}
+        onVenueChange={handleVenueChange}
         onNavChange={handleNavChange}
-        onDrillIn={() => handleNavChange('Dashboard')}
-        groupName={session?.clientName || 'Pinnacle Hotel Group'}
-        dmName={session?.staffName || ''}
-        dmRole={session?.role || ''}
-        notifCount={0}
-        loading={groupLoading}
-        onRetry={loadGroup}
+        isGroupTier={GROUP_TIERS.has(session?.roleTier)}
+        groupOverviewContent={
+          <GroupOverviewPage
+            data={groupData}
+            onDrillIn={() => handleNavChange('Dashboard')}
+          />
+        }
       />
     );
   }
@@ -568,6 +575,7 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
       activeNav={activeNav}
       onVenueChange={handleVenueChange}
       onNavChange={handleNavChange}
+      isGroupTier={GROUP_TIERS.has(session?.roleTier)}
     />
   );
 }

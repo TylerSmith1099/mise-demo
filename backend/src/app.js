@@ -24,6 +24,7 @@ import { incidentRouter } from './incident-api.js';
 import { rsaRouter } from './rsa-api.js';
 import { adminHomepageRouter } from './admin/homepage-api.js';
 import { reportingRouter } from './admin/reporting-api.js';
+import { groupOverviewRouter } from './admin/group-overview-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -149,6 +150,10 @@ export function createApp(config) {
   // Reporting & Filtering (MIS-429): /api/admin/reports/query + /export.
   // Tiers 2-5 for query; tiers 2-4 for export (DM cannot export).
   api.use('/', reportingRouter());
+
+  // Group Overview / Estate roll-up (MIS-478): /api/admin/group-overview.
+  // Tiers 1-3 only (Group Admin, Area Manager, General Manager).
+  api.use('/', groupOverviewRouter());
 
   app.use('/api', api);
 
