@@ -143,6 +143,12 @@ export function createApp(config) {
   // All authenticated roles — floor staff and managers.
   api.use('/', rsaRouter(config));
 
+  // Group Overview / Estate roll-up (MIS-478): /api/admin/group-overview.
+  // Tiers 1-3 only. Must be mounted BEFORE adminHomepageRouter — homepage-api.js
+  // carries a legacy MIS-467 /admin/group-overview stub that would shadow this
+  // route and return 500 for non-group tiers instead of the correct 403.
+  api.use('/', groupOverviewRouter());
+
   // Admin Desktop Homepage (MIS-412): /api/admin/homepage + section endpoints + SSE stream.
   // Tiers 1-5 (desktop roles + venue-level staff). Tier 7 excluded from admin surface.
   api.use('/', adminHomepageRouter());
@@ -150,10 +156,6 @@ export function createApp(config) {
   // Reporting & Filtering (MIS-429): /api/admin/reports/query + /export.
   // Tiers 2-5 for query; tiers 2-4 for export (DM cannot export).
   api.use('/', reportingRouter());
-
-  // Group Overview / Estate roll-up (MIS-478): /api/admin/group-overview.
-  // Tiers 1-3 only (Group Admin, Area Manager, General Manager).
-  api.use('/', groupOverviewRouter());
 
   app.use('/api', api);
 
