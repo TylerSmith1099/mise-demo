@@ -61,7 +61,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
         >
           <p
             style={{
-              fontFamily: "'Playfair Display', Georgia, serif",
+              fontFamily: "'Space Grotesk', system-ui, sans-serif",
               fontSize: 13,
               fontWeight: 700,
               letterSpacing: '0.28em',
@@ -75,7 +75,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
           </p>
           <p
             style={{
-              fontFamily: "'Cormorant Garamond', Georgia, serif",
+              fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
               fontSize: 16,
               fontWeight: 500,
               color: 'var(--cream)',

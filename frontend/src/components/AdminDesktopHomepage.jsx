@@ -36,7 +36,8 @@ const T = {
 };
 
 const FONTS = {
-  display: "'Playfair Display', Georgia, serif",
+  display: "'Space Grotesk', system-ui, sans-serif",
+  body:    "'Plus Jakarta Sans', system-ui, sans-serif",
   ui:      "'DM Sans', system-ui, sans-serif",
   mono:    "'IBM Plex Mono', 'Courier New', monospace",
 };
@@ -51,7 +52,7 @@ const cardBase = {
 
 // ─── Global CSS (injected once) ───────────────────────────────────────────────
 const GLOBAL_CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400;600&family=DM+Sans:wght@300;400;500;600&display=swap');
 
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -486,8 +487,9 @@ export default function AdminDesktopHomepage({
 
         {/* ── Sidebar ── */}
         <aside className="sidebar" style={{
-          width: 200, flexShrink: 0, background: T.sidebar,
-          borderRight: `1px solid ${T.goldBorder}`,
+          width: 200, flexShrink: 0,
+          background: 'linear-gradient(180deg, #0E2A45 0%, #140F0B 40%)',
+          borderRight: '1px solid rgba(46,107,174,0.3)',
           display: 'flex', flexDirection: 'column', height: '100%', overflow: 'hidden',
         }}>
           <div style={{ padding: '20px 20px 16px' }}>
@@ -499,7 +501,7 @@ export default function AdminDesktopHomepage({
             </div>
             <div className="sidebar-tagline" style={{
               fontFamily: FONTS.ui, fontWeight: 300, fontSize: 10,
-              color: T.textMuted, textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: 2,
+              color: '#5A9BD4', textTransform: 'uppercase', letterSpacing: '0.06em', marginTop: 2,
             }}>
               Venue Intelligence
             </div>
@@ -520,7 +522,8 @@ export default function AdminDesktopHomepage({
           {/* ── Top Bar ── */}
           <header style={{
             height: 56, flexShrink: 0,
-            background: T.card, borderBottom: `1px solid ${T.goldBorder}`,
+            background: 'linear-gradient(135deg, #0E2A45 0%, #251E18 60%)',
+            borderBottom: 'rgba(46,107,174,0.3) 1px solid',
             display: 'flex', alignItems: 'center', justifyContent: 'space-between',
             padding: '0 24px', gap: 12,
           }}>

@@ -290,7 +290,7 @@ export default function App() {
           border: '1px solid rgba(184, 134, 58, 0.5)',
           borderRadius: 8,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: "'Space Grotesk', system-ui, sans-serif",
           fontSize: 24, fontWeight: 700,
           color: 'var(--gold)',
         }}>
@@ -465,7 +465,7 @@ function ComingSoon({ label }) {
     >
       <h1
         style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: "'Space Grotesk', system-ui, sans-serif",
           fontSize: 24,
           fontWeight: 700,
           color: 'var(--gold)',
@@ -477,8 +477,8 @@ function ComingSoon({ label }) {
       </h1>
       <p
         style={{
-          fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 17,
+          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontSize: 16,
           color: 'var(--cream-60)',
           margin: 0,
           textAlign: 'center',

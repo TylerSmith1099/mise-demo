@@ -87,8 +87,8 @@ const C = {
   border:    'rgba(245,240,232,0.12)',
 };
 
-const serif  = "'Playfair Display', Georgia, serif";
-const slab   = "'Cormorant Garamond', Georgia, serif";
+const serif  = "'Space Grotesk', system-ui, sans-serif";
+const slab   = "'Plus Jakarta Sans', system-ui, sans-serif";
 const mono   = "'IBM Plex Mono', monospace";
 const sans   = "'DM Sans', system-ui, sans-serif";
 

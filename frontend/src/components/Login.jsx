@@ -32,11 +32,22 @@ export default function Login({ onAuthenticated }) {
   return (
     <div
       className="flex min-h-full flex-col justify-center px-6"
-      style={{ paddingTop: 'var(--safe-top)', paddingBottom: 'var(--safe-bottom)' }}
+      style={{
+        paddingTop: 'var(--safe-top)',
+        paddingBottom: 'var(--safe-bottom)',
+        background: 'radial-gradient(ellipse 80% 50% at 50% 0%, rgba(46,107,174,0.25) 0%, transparent 60%), var(--charcoal)',
+      }}
     >
       <div className="mx-auto w-full max-w-[340px]">
         <div className="mb-7 text-center">
-          <div className="mx-auto grid h-14 w-14 place-items-center rounded-2xl border border-gold/50 font-data text-2xl font-bold text-gold">
+          <div
+            className="mx-auto grid h-14 w-14 place-items-center rounded-2xl font-data text-2xl font-bold text-gold"
+            style={{
+              border: '1px solid rgba(46,107,174,0.5)',
+              background: 'linear-gradient(135deg, rgba(14,42,69,0.8) 0%, rgba(28,22,18,0.6) 100%)',
+              boxShadow: '0 0 24px rgba(46,107,174,0.15)',
+            }}
+          >
             M
           </div>
           <h1 className="mt-4 font-display text-2xl font-bold tracking-tight text-gold">Mise</h1>

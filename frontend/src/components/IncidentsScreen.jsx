@@ -31,8 +31,8 @@ const T = {
   charcoal:  'var(--charcoal)',
 };
 
-const FONT_DISPLAY   = "'Playfair Display', Georgia, serif";
-const FONT_EDITORIAL = "'Cormorant Garamond', Georgia, serif";
+const FONT_DISPLAY   = "'Space Grotesk', system-ui, sans-serif";
+const FONT_EDITORIAL = "'Plus Jakarta Sans', system-ui, sans-serif";
 const FONT_SANS      = "'DM Sans', system-ui, sans-serif";
 const FONT_DATA      = "'IBM Plex Mono', monospace";
 

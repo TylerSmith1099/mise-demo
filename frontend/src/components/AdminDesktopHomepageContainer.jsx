@@ -287,7 +287,7 @@ function LoadingScreen() {
       <div style={{
         width: 56, height: 56, border: '1px solid rgba(184,134,58,0.5)', borderRadius: 8,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Playfair Display', Georgia, serif",
+        fontFamily: "'Space Grotesk', system-ui, sans-serif",
         fontSize: 24, fontWeight: 700, color: '#B8863A',
       }}>M</div>
       <p style={{

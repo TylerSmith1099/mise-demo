@@ -1,5 +1,5 @@
-// TopBar — Option A spec (MIS-230). Persistent 44px header.
-// Layout: MISE logotype (gold, Playfair) | venue name (cream italic, centred) | hamburger
+// TopBar — Deep Meridian spec (MIS-463). Persistent 44px header.
+// Layout: MISE logotype (gold, Space Grotesk) | venue name (cream, centred) | hamburger
 // All content from GET /api/session — never hardcoded.
 //
 // Props:
@@ -12,8 +12,8 @@ export default function TopBar({ session, onMenuToggle }) {
     <header
       style={{
         height: 44,
-        background: 'var(--charcoal)',
-        borderBottom: '1px solid var(--gold-25)',
+        background: 'linear-gradient(135deg, #0E2A45 0%, #1C1612 60%)',
+        borderBottom: '1px solid rgba(46, 107, 174, 0.35)',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
@@ -26,7 +26,7 @@ export default function TopBar({ session, onMenuToggle }) {
     >
       <span
         style={{
-          fontFamily: "'Playfair Display', Georgia, serif",
+          fontFamily: "'Space Grotesk', system-ui, sans-serif",
           fontWeight: 700,
           fontSize: 14,
           letterSpacing: '0.22em',
@@ -40,8 +40,8 @@ export default function TopBar({ session, onMenuToggle }) {
 
       <span
         style={{
-          fontFamily: "'Cormorant Garamond', Georgia, serif",
-          fontSize: 14,
+          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontSize: 13,
           fontStyle: 'italic',
           color: 'var(--cream-60)',
           flex: 1,
