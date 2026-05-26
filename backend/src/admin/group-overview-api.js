@@ -247,6 +247,13 @@ export function groupOverviewRouter() {
     '/admin/group-overview',
     requireAccess('admin-group-overview'),
     async (req, res, next) => {
+      // Belt-and-suspenders: requireAccess() already gates this, but resolveScope
+      // throws for SINGLE_VENUE_TIERS with no venueId — return 403 explicitly so
+      // a scope-resolution error for a non-group caller never leaks as a 500.
+      const GROUP_TIERS = new Set([1, 2, 3]);
+      if (!GROUP_TIERS.has(req.auth.roleTier)) {
+        return res.status(403).json({ error: 'forbidden' });
+      }
       try {
         const scope = await resolveScope(req.auth);
 

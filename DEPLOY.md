@@ -24,7 +24,7 @@ Node. Keep these two paths in lockstep when changing boot behaviour.
 Live Start Command (Render dashboard → Settings → Start Command):
 
 ```
-cd backend && node scripts/migrate.js && node src/demo/seed.js && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && node src/server.js
+cd backend && node scripts/migrate.js && node src/demo/seed.js && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d node scripts/seed-group-gm.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 node scripts/seed-group-gm.js || true) && node src/server.js
 ```
 
 `scripts/seed-steward-extras.js` populates the data behind the Run Sheet, Revenue
@@ -69,6 +69,9 @@ Password for all accounts: `mise-demo-2026`
 - `gaming@steward.demo` — Gaming Attendant (Scene 1)
 - `dutymanager@steward.demo` — Duty Manager (Scene 2 + 3)
 - `manager@steward.demo` — Venue Manager
+- `groupgm@steward.demo` — Group GM / Hannah Chiu (tier 2) — **estate view**
+  - Leave Venue ID **blank** at login (group-scope roles have no home venue; scope resolved from staff_venue_assignments)
+  - Unlocks `GET /api/admin/group-overview` and the GroupOverviewPage estate roll-up
 
 ## One-shot seed/ingest (persistent DB)
 

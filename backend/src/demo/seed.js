@@ -2,7 +2,7 @@
  * Demo tenant seed — The Steward Hotel / Pinnacle Hotel Group (FICTIONAL).
  * MIS-185.
  *
- * Loads the demo client, venue, and all 28 staff from the mock workforce
+ * Loads the demo client, venue, and all 29 staff from the mock workforce
  * adapter into Postgres under the client's RLS context (so the seed itself
  * honours the isolation contract — no row is written outside the client scope).
  *
@@ -11,7 +11,7 @@
  * seed loads the relational records (client, venue, staff, logins) and prints a
  * summary of the mock datasets it is paired with.
  *
- * Idempotent-ish: re-running with a fresh DB is clean. The three demo logins
+ * Idempotent-ish: re-running with a fresh DB is clean. The four demo logins
  * are deterministic emails so the demo accounts are always the same.
  *
  * Run:  node src/demo/seed.js        (from MISE/backend)
@@ -37,8 +37,11 @@ export const DEMO_PASSWORD = 'mise-demo-2026';
 export const DEMO_CLIENT_ID = process.env.DEMO_CLIENT_ID || 'a0000000-0000-4000-8000-000000000001';
 export const DEMO_VENUE_ID = process.env.DEMO_VENUE_ID || 'a0000000-0000-4000-8000-000000000002';
 
-// The three demo accounts map onto specific seeded staff (by externalStaffId).
+// The four demo accounts map onto specific seeded staff (by externalStaffId).
+// groupgm@steward.demo is tier-2 (Group GM) — no Venue ID required at login;
+// venue scope is resolved from staff_venue_assignments (group scope = all venues).
 export const DEMO_ACCOUNTS = [
+  { email: 'groupgm@steward.demo',     externalStaffId: 'STW-029', label: 'Group GM (Hannah Chiu)' },
   { email: 'gaming@steward.demo',      externalStaffId: 'STW-011', label: 'Gaming Attendant (Sarah Chen)' },
   { email: 'dutymanager@steward.demo', externalStaffId: 'STW-003', label: 'Duty Manager (James Kovacs)' },
   { email: 'manager@steward.demo',     externalStaffId: 'STW-001', label: 'Venue Manager (Rachel Drummond)' },
@@ -83,18 +86,33 @@ export async function seedStewardDemo() {
       // a deterministic internal email and the same hash (logins not exposed).
       const email = demoEmailFor(p.externalStaffId)
         || `${p.firstName}.${p.lastName}`.toLowerCase().replace(/[^a-z.]/g, '') + '@steward.demo';
+      // Tier 1-3 (multi-venue desktop roles) have no home venue: their scope is
+      // resolved from staff_venue_assignments after login (migration 032).
+      const staffVenueId = p.roleTier <= 3 ? null : venueId;
       await q(
         `INSERT INTO staff (staff_id, client_id, venue_id, first_name, last_name,
                             email, role_tier, role_name, password_hash)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
-        [staffId, clientId, venueId, p.firstName, p.lastName, email,
+        [staffId, clientId, staffVenueId, p.firstName, p.lastName, email,
          p.roleTier, p.role, passwordHash],
       );
       idMap.set(p.externalStaffId, { staffId, email, role: p.role });
     }
+
+    // Wire group-scope venue assignments for all tier 1-3 staff (MIS-409 / migration 023).
+    // scope_type='group' grants access to every venue under the client.
+    for (const p of STAFF.filter((m) => m.roleTier <= 3)) {
+      const entry = idMap.get(p.externalStaffId);
+      if (!entry) continue;
+      await q(
+        `INSERT INTO staff_venue_assignments (client_id, staff_id, scope_type)
+         VALUES ($1, $2, 'group')`,
+        [clientId, entry.staffId],
+      );
+    }
   });
 
-  return { clientId, venueId, staffCount: STAFF.length, idMap };
+  return { clientId, venueId, staffCount: STAFF.length, idMap, skipped: false };
 }
 
 // CLI entry — seeds, then prints the demo handover summary.

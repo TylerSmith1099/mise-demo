@@ -51,10 +51,15 @@ export function monthsFromNow(n) {
 // STAFF (the static export) is for the seed CLI which runs once per boot.
 // ---------------------------------------------------------------------------
 
-/** Build the 28-person staff list with dates relative to RIGHT NOW (MIS-270). */
+/** Build the 29-person staff list with dates relative to RIGHT NOW (MIS-270). */
 export function buildStaff() {
   return [
-    // --- Management ---------------------------------------------------------
+    // --- Group / Area Management (tier 1-3) --------------------------------
+    s('STW-029', 'Hannah',  'Chiu',     'Group General Manager',   2, 'FT',
+      // Demo login (groupgm@steward.demo). Group-scope: all venues in the estate.
+      { rsa: monthsFromNow(24), rg: monthsFromNow(24), phone: '0401 888 271' }),
+
+    // --- Venue Management ---------------------------------------------------
     s('STW-001', 'Rachel',  'Drummond', 'Venue Manager',           4, 'FT',
       { rsa: monthsFromNow(20), rg: monthsFromNow(20), phone: '0407 112 884' }),
     s('STW-002', 'Aaron',   'Whitfield', 'Assistant Venue Manager', 4, 'FT',
