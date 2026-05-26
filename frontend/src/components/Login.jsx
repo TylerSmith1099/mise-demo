@@ -56,7 +56,7 @@ export default function Login({ onAuthenticated }) {
 
         <form onSubmit={submit} className="flex flex-col gap-3">
           <Field label="Client ID" value={form.clientId} onChange={set('clientId')} mono />
-          <Field label="Venue ID" value={form.venueId} onChange={set('venueId')} mono />
+          <Field label="Venue ID" value={form.venueId} onChange={set('venueId')} mono optional />
           <Field label="Email" type="email" value={form.email} onChange={set('email')} autoComplete="username" />
           <Field
             label="Password"
@@ -85,13 +85,16 @@ export default function Login({ onAuthenticated }) {
   );
 }
 
-function Field({ label, mono, ...props }) {
+function Field({ label, mono, optional, ...props }) {
   return (
     <label className="flex flex-col gap-1">
-      <span className="text-[12px] font-semibold uppercase tracking-wider text-cream/45">{label}</span>
+      <span className="text-[12px] font-semibold uppercase tracking-wider text-cream/45">
+        {label}
+        {optional && <span className="ml-1 normal-case tracking-normal opacity-50">(optional)</span>}
+      </span>
       <input
         {...props}
-        required
+        required={!optional}
         className={`rounded-xl border border-hairline bg-surface px-3.5 py-3 text-[15px] text-cream placeholder:text-cream/30 focus:border-gold/60 focus:outline-none ${
           mono ? 'font-data' : ''
         }`}

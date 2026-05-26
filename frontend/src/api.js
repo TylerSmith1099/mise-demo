@@ -56,7 +56,7 @@ export async function login({ clientId, venueId, email, password }) {
   const data = await request('/auth/login', {
     method: 'POST',
     auth: false,
-    body: { client_id: clientId, venue_id: venueId, email, password },
+    body: { client_id: clientId, venue_id: venueId?.trim() || null, email, password },
   });
   setToken(data.token);
   return data;
