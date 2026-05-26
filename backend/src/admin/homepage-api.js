@@ -491,6 +491,61 @@ export function adminHomepageRouter() {
     });
   });
 
+  // ---- GET /api/admin/group-overview (MIS-467) --------------------------------
+  // Estate-level roll-up: per-venue summary for all venues in the caller's scope.
+  // Returns a group summary strip + venue rows array suitable for the GroupOverview UI.
+  // For demo tenants with a single venue, DEMO_GROUP_VENUES=1 augments with mock extras.
+  router.get('/admin/group-overview', adminGuard, async (req, res, next) => {
+    try {
+      const { clientId } = req.auth;
+      const { venueIds } = req.scope;
+
+      // Fetch venue names + per-venue metrics in one DB context.
+      const raw = await withClientContext(clientId, async (q) => {
+        const venueRows = await q(
+          `SELECT venue_id, venue_name FROM venues
+            WHERE venue_id = ANY($1) AND deleted_at IS NULL`,
+          [venueIds],
+        ).then((r) => r.rows);
+
+        const revenue = await queryRevenue(q, venueIds, { from: sevenDaysAgo(), to: today() });
+        const labour  = await queryLabour(q, venueIds, { from: sevenDaysAgo(), to: today() });
+        const compliance = await q(
+          `SELECT venue_id, severity, COUNT(*) AS cnt
+             FROM compliance_events
+            WHERE venue_id = ANY($1) AND acknowledged_at IS NULL AND deleted_at IS NULL
+            GROUP BY venue_id, severity`,
+          [venueIds],
+        ).then((r) => r.rows);
+        const incidents = await q(
+          `SELECT venue_id, severity_level, COUNT(*) AS cnt
+             FROM incident_reports
+            WHERE venue_id = ANY($1)
+              AND status IN ('active','open')
+              AND deleted_at IS NULL
+            GROUP BY venue_id, severity_level`,
+          [venueIds],
+        ).then((r) => r.rows);
+
+        return { venueRows, revenue, labour, compliance, incidents };
+      });
+
+      const venues = buildGroupVenueRows(raw, venueIds);
+
+      // Demo mode: augment single-venue scope with mock additional venues for credible demo.
+      const demoExtras = process.env.DEMO_GROUP_VENUES === '1' && venues.length < 3
+        ? DEMO_GROUP_EXTRAS.slice(0, 3 - venues.length)
+        : [];
+      const allVenues = [...venues, ...demoExtras];
+
+      const summary = buildGroupSummary(allVenues);
+
+      res.json({ summary, venues: allVenues, generatedAt: new Date().toISOString() });
+    } catch (err) {
+      next(err);
+    }
+  });
+
   return router;
 }
 
@@ -521,3 +576,129 @@ function sevenDaysAgo() {
   d.setDate(d.getDate() - 7);
   return d.toISOString().slice(0, 10);
 }
+
+// ---------------------------------------------------------------------------
+// Group overview helpers (MIS-467)
+// ---------------------------------------------------------------------------
+
+function buildGroupVenueRows({ venueRows, revenue, labour, compliance, incidents }, venueIds) {
+  return venueIds.map((venueId) => {
+    const info = venueRows.find((v) => v.venue_id === venueId);
+
+    // Weekly revenue sum.
+    const revRows = revenue.filter((r) => r.venue_id === venueId);
+    const weeklyRevCents = revRows.reduce((s, r) => s + (r.net_revenue_cents || 0), 0);
+    const weeklyForecastCents = revRows.reduce((s, r) => s + (r.forecast_revenue_cents || 0), 0);
+    const revDeltaPct = weeklyForecastCents > 0
+      ? Math.round(((weeklyRevCents - weeklyForecastCents) / weeklyForecastCents) * 100)
+      : null;
+
+    // Labour: most recent day.
+    const labRows = labour.filter((l) => l.venue_id === venueId).sort((a, b) =>
+      (b.business_date || '').localeCompare(a.business_date || ''),
+    );
+    const todayLab = labRows[0] || null;
+    const labStatus = !todayLab ? 'no-data'
+      : todayLab.worked_hours > (todayLab.budgeted_hours || Infinity) ? 'over-target'
+      : 'on-target';
+    const labOverHours = todayLab?.budgeted_hours
+      ? Math.max(0, (todayLab.worked_hours || 0) - todayLab.budgeted_hours)
+      : 0;
+
+    // Compliance.
+    const compRows = compliance.filter((c) => c.venue_id === venueId);
+    const compCount = compRows.reduce((s, c) => s + Number(c.cnt), 0);
+    const highSeverity = compRows.some((c) => c.severity === 'critical') ? 'critical'
+      : compRows.length > 0 ? 'warning' : null;
+
+    // Active critical incidents.
+    const incRows = incidents.filter((i) => i.venue_id === venueId);
+    const criticalFlags = incRows
+      .filter((i) => Number(i.severity_level) >= 3)
+      .reduce((s, i) => s + Number(i.cnt), 0);
+    const openIncidents = incRows.reduce((s, i) => s + Number(i.cnt), 0);
+
+    // Overall status.
+    const hasCriticalCompliance = highSeverity === 'critical';
+    const hasCriticalIncident = criticalFlags > 0;
+    const status = hasCriticalCompliance || hasCriticalIncident ? 'critical'
+      : compCount > 0 || labStatus === 'over-target' ? 'attention'
+      : 'clear';
+
+    return {
+      venueId,
+      venueName: info?.venue_name || venueId,
+      status,
+      weeklyRevenueCents: weeklyRevCents,
+      weeklyRevenueDeltaPct: revDeltaPct,
+      complianceAlertCount: compCount,
+      complianceHighestSeverity: highSeverity,
+      labourStatus: labStatus,
+      labourOverHours: labOverHours,
+      activeCriticalFlags: criticalFlags,
+      openIncidentCount: openIncidents,
+    };
+  });
+}
+
+function buildGroupSummary(venues) {
+  const totalRevCents = venues.reduce((s, v) => s + (v.weeklyRevenueCents || 0), 0);
+  const openComplianceCount = venues.reduce((s, v) => s + (v.complianceAlertCount || 0), 0);
+  const venuesInRed = venues.filter((v) => v.status === 'critical').length;
+  const overTarget = venues.filter((v) => v.labourStatus === 'over-target').length;
+  const onTarget   = venues.filter((v) => v.labourStatus === 'on-target').length;
+  return {
+    totalRevenueCents: totalRevCents,
+    openComplianceCount,
+    venuesInRed,
+    labourSummary: {
+      onTarget,
+      overTarget,
+      noData: venues.length - onTarget - overTarget,
+    },
+  };
+}
+
+// Demo extras — realistic mock venues to show a credible multi-venue group when
+// DEMO_GROUP_VENUES=1 and the real scope only contains one venue.
+const DEMO_GROUP_EXTRAS = [
+  {
+    venueId: 'demo-venue-b',
+    venueName: 'The Caxton Arms',
+    status: 'critical',
+    weeklyRevenueCents: 312800,
+    weeklyRevenueDeltaPct: -8,
+    complianceAlertCount: 2,
+    complianceHighestSeverity: 'critical',
+    labourStatus: 'over-target',
+    labourOverHours: 4.5,
+    activeCriticalFlags: 1,
+    openIncidentCount: 2,
+  },
+  {
+    venueId: 'demo-venue-c',
+    venueName: 'The Paddington Arms',
+    status: 'attention',
+    weeklyRevenueCents: 198400,
+    weeklyRevenueDeltaPct: 2,
+    complianceAlertCount: 1,
+    complianceHighestSeverity: 'warning',
+    labourStatus: 'on-target',
+    labourOverHours: 0,
+    activeCriticalFlags: 0,
+    openIncidentCount: 0,
+  },
+  {
+    venueId: 'demo-venue-d',
+    venueName: 'The Fortitude Valley Club',
+    status: 'clear',
+    weeklyRevenueCents: 267500,
+    weeklyRevenueDeltaPct: 5,
+    complianceAlertCount: 0,
+    complianceHighestSeverity: null,
+    labourStatus: 'on-target',
+    labourOverHours: 0,
+    activeCriticalFlags: 0,
+    openIncidentCount: 0,
+  },
+];

@@ -178,6 +178,10 @@ export function submitRSAReport(reportData) {
 export function fetchAdminHomepage() {
   return request('/api/admin/homepage');
 }
+// Group overview: per-venue summary for all venues in caller's scope (MIS-467).
+export function fetchGroupOverview() {
+  return request('/api/admin/group-overview');
+}
 // Live-section section endpoints (incremental refresh).
 export function fetchAdminShiftsOnFloor() {
   return request('/api/admin/shifts/on-floor');

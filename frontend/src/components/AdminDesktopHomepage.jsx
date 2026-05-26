@@ -371,6 +371,7 @@ function SectionHeading({ children }) {
 
 // ─── Nav icons (minimal inline SVG) ──────────────────────────────────────────
 const NavIcons = {
+  'Group Overview': <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="1" width="6" height="5" rx="1"/><rect x="9" y="1" width="6" height="5" rx="1"/><rect x="1" y="10" width="6" height="5" rx="1"/><rect x="9" y="10" width="6" height="5" rx="1"/><line x1="4" y1="6" x2="8" y2="8"/><line x1="12" y1="6" x2="8" y2="8"/></svg>,
   Dashboard:    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>,
   Roster:       <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="3" width="12" height="11" rx="1"/><path d="M5 1v4M11 1v4M2 7h12"/></svg>,
   Reports:      <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M3 2h10v12H3zM6 6h4M6 9h4M6 12h2"/></svg>,
@@ -499,11 +500,14 @@ export default function AdminDesktopHomepage({
   const dmFirstName = dmName.split(' ')[0];
   const dmInitials  = dmName.split(' ').map(n => n[0]).slice(0, 2).join('');
 
-  const mainNavItems    = ['Dashboard', 'Roster', 'Reports', 'Staff', 'Forecasting', 'Budgets'];
+  const mainNavItems    = ['Group Overview', 'Dashboard', 'Roster', 'Reports', 'Staff', 'Forecasting', 'Budgets'];
   const bottomNavItems  = ['Compliance', 'Settings', 'Admin'];
 
   const NavItem = ({ label }) => {
     const isActive = label === activeNav;
+    // Group Overview uses cyan active state per MIS-467 designer spec.
+    const activeColor  = label === 'Group Overview' ? T.cyan : T.gold;
+    const activeBg     = label === 'Group Overview' ? 'rgba(0,200,232,0.10)' : T.goldActive;
     return (
       <button
         className="nav-item transition"
@@ -516,17 +520,17 @@ export default function AdminDesktopHomepage({
           fontFamily:     FONTS.ui,
           fontWeight:     isActive ? 500 : 400,
           fontSize:       13,
-          color:          isActive ? T.gold : T.textMuted,
-          background:     isActive ? T.goldActive : 'transparent',
+          color:          isActive ? activeColor : T.textMuted,
+          background:     isActive ? activeBg : 'transparent',
           border:         'none',
-          borderLeft:     isActive ? `3px solid ${T.gold}` : '3px solid transparent',
+          borderLeft:     isActive ? `3px solid ${activeColor}` : '3px solid transparent',
           borderRadius:   '0 2px 2px 0',
           cursor:         'pointer',
           width:          '100%',
           textAlign:      'left',
         }}
       >
-        <span style={{ color: isActive ? T.gold : T.textMuted, flexShrink: 0 }}>
+        <span style={{ color: isActive ? activeColor : T.textMuted, flexShrink: 0 }}>
           {NavIcons[label]}
         </span>
         <span className="nav-label">{label}</span>
@@ -562,7 +566,14 @@ export default function AdminDesktopHomepage({
           </div>
 
           <nav style={{ flex: 1, overflowY: 'auto' }}>
-            {mainNavItems.map(item => <NavItem key={item} label={item} />)}
+            {mainNavItems.map((item, i) => (
+              <React.Fragment key={item}>
+                {i === 1 && (
+                  <div style={{ height: 1, background: 'rgba(46,107,174,0.15)', margin: '4px 12px' }} />
+                )}
+                <NavItem label={item} />
+              </React.Fragment>
+            ))}
           </nav>
 
           <div style={{ borderTop: `1px solid ${T.goldBorder}`, paddingTop: 4, paddingBottom: 8 }}>

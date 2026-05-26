@@ -18,7 +18,8 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import AdminDesktopHomepage from './AdminDesktopHomepage.jsx';
 import AdminReportingScreen from './AdminReportingScreen.jsx';
-import { fetchAdminHomepage, openAdminStream } from '../api.js';
+import GroupOverview from './GroupOverview.jsx';
+import { fetchAdminHomepage, fetchGroupOverview, openAdminStream } from '../api.js';
 
 const REFRESH_MS = 5 * 60 * 1000; // 5-minute revenue/labour poll
 
@@ -396,6 +397,8 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [activeNav, setActiveNav] = useState('Dashboard');
+  const [groupData, setGroupData] = useState(null);
+  const [groupLoading, setGroupLoading] = useState(false);
   const sseRef = useRef(null);
   const refreshTimerRef = useRef(null);
 
@@ -409,6 +412,20 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
       setError(err.message || 'Failed to load dashboard data.');
     } finally {
       setLoading(false);
+    }
+  }, [onAuthError]);
+
+  const loadGroup = useCallback(async () => {
+    setGroupLoading(true);
+    try {
+      const data = await fetchGroupOverview();
+      setGroupData(data);
+    } catch (err) {
+      if (err.status === 401) { onAuthError(); return; }
+      // Non-fatal: fall back to empty state
+      setGroupData(null);
+    } finally {
+      setGroupLoading(false);
     }
   }, [onAuthError]);
 
@@ -502,6 +519,14 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
     [load],
   );
 
+  // Load group data when navigating to Group Overview.
+  const handleNavChange = useCallback((nav) => {
+    setActiveNav(nav);
+    if (nav === 'Group Overview' && !groupData) {
+      loadGroup();
+    }
+  }, [groupData, loadGroup]);
+
   if (loading) return <LoadingScreen />;
   if (error) return <ErrorScreen message={error} onRetry={load} />;
   if (!rawData) return <LoadingScreen />;
@@ -511,8 +536,26 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
     return (
       <AdminReportingScreen
         session={session}
-        onNavChange={setActiveNav}
+        onNavChange={handleNavChange}
         onAuthError={onAuthError}
+      />
+    );
+  }
+
+  // Group Overview — estate-level view (MIS-467). Full-page component with own sidebar.
+  if (activeNav === 'Group Overview') {
+    const EMPTY_DATA = { summary: { totalRevenueCents: 0, openComplianceCount: 0, venuesInRed: 0, labourSummary: { onTarget: 0, overTarget: 0, noData: 0 } }, venues: [] };
+    return (
+      <GroupOverview
+        data={groupLoading ? EMPTY_DATA : (groupData || EMPTY_DATA)}
+        onNavChange={handleNavChange}
+        onDrillIn={() => handleNavChange('Dashboard')}
+        groupName={session?.clientName || 'Pinnacle Hotel Group'}
+        dmName={session?.staffName || ''}
+        dmRole={session?.role || ''}
+        notifCount={0}
+        loading={groupLoading}
+        onRetry={loadGroup}
       />
     );
   }
@@ -524,7 +567,7 @@ export default function AdminDesktopHomepageContainer({ session, onAuthError }) 
       {...props}
       activeNav={activeNav}
       onVenueChange={handleVenueChange}
-      onNavChange={setActiveNav}
+      onNavChange={handleNavChange}
     />
   );
 }
