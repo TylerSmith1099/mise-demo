@@ -185,6 +185,11 @@ export function chatRouter(config) {
     try {
       const { clientId, venueId, staffId, roleAtLogin, roleTier } = req.auth;
       const row = await withClientContext(clientId, async (q) => {
+        // venueId is null for area/group-scope staff (tiers 1-3); use a LEFT
+        // JOIN so the query resolves for both venue-scoped and venue-less sessions.
+        // RLS (app.current_client_id) already restricts the clients row to the
+        // correct tenant; the parameter $2::uuid is null for group-GM, causing
+        // the LEFT JOIN to return null venue columns rather than 0 rows.
         const { rows } = await q(
           `SELECT c.white_label_name,
                   v.venue_name,
@@ -192,11 +197,10 @@ export function chatRouter(config) {
                   v.venue_address,
                   s.first_name,
                   s.last_name
-             FROM venues v
-             JOIN clients c ON c.client_id = v.client_id
-             JOIN staff   s ON s.staff_id  = $2 AND s.deleted_at IS NULL
-            WHERE v.venue_id = $1 AND v.deleted_at IS NULL`,
-          [venueId, staffId],
+             FROM clients c
+             JOIN staff   s ON s.staff_id  = $1 AND s.deleted_at IS NULL
+        LEFT JOIN venues v ON v.venue_id = $2::uuid AND v.deleted_at IS NULL`,
+          [staffId, venueId],
         );
         return rows[0] || null;
       });
