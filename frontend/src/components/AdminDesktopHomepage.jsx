@@ -382,6 +382,56 @@ const NavIcons = {
   Admin:        <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" strokeWidth="1.5"><rect x="2" y="8" width="12" height="6" rx="1"/><path d="M5 8V5a3 3 0 016 0v3"/></svg>,
 };
 
+// ─── AI greeting line ─────────────────────────────────────────────────────────
+
+const GREETING_PALETTE = {
+  critical: { border: 'rgba(232,80,80,0.55)',  bg: 'rgba(232,80,80,0.07)',  dot: T.red,   label: T.red,   badge: 'rgba(232,80,80,0.15)'  },
+  warning:  { border: 'rgba(232,160,32,0.55)', bg: 'rgba(232,160,32,0.07)', dot: T.amber, label: T.amber, badge: 'rgba(232,160,32,0.15)' },
+  info:     { border: 'rgba(0,200,232,0.40)',  bg: 'rgba(0,200,232,0.05)',  dot: T.cyan,  label: T.cyan,  badge: 'rgba(0,200,232,0.12)'  },
+};
+
+function GreetingLine({ line }) {
+  const p = GREETING_PALETTE[line.severity] || GREETING_PALETTE.info;
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      style={{
+        display: 'flex', alignItems: 'flex-start', gap: 12,
+        background: p.bg, border: `1px solid ${p.border}`,
+        borderRadius: 6, padding: '10px 14px', marginBottom: 16,
+      }}
+    >
+      {/* Severity dot */}
+      <span style={{
+        flexShrink: 0, width: 8, height: 8, borderRadius: '50%',
+        background: p.dot, marginTop: 5,
+      }} aria-hidden="true" />
+
+      <div style={{ flex: 1 }}>
+        <p style={{ fontFamily: FONTS.body, fontSize: 14, color: T.text, lineHeight: 1.45 }}>
+          {line.text}
+        </p>
+        {line.actionLabel && (
+          <p style={{ fontFamily: FONTS.ui, fontSize: 11, fontWeight: 500, color: p.label, marginTop: 4 }}>
+            {line.actionLabel} →
+          </p>
+        )}
+      </div>
+
+      {/* Severity badge */}
+      <span style={{
+        flexShrink: 0, background: p.badge, color: p.label,
+        fontFamily: FONTS.mono, fontSize: 9, fontWeight: 600,
+        textTransform: 'uppercase', letterSpacing: '0.08em',
+        padding: '2px 6px', borderRadius: 3, marginTop: 2,
+      }}>
+        {line.severity}
+      </span>
+    </div>
+  );
+}
+
 // ─── Main component ───────────────────────────────────────────────────────────
 
 /**
@@ -404,6 +454,9 @@ const NavIcons = {
  * @param {Array}  props.venues             - Available venues for selector
  * @param {string} props.selectedVenueId    - Currently selected venue id
  * @param {function} props.onVenueChange    - Callback when venue changes
+ * @param {{text:string,severity:string,actionLabel:string}|null} props.greetingLine
+ *   Highest-priority exception from live data. null = all clear.
+ *   severity: 'critical' (red) | 'warning' (amber) | 'info' (cyan).
  */
 export default function AdminDesktopHomepage({
   venueName       = 'The Waterford Hotel',
@@ -423,6 +476,7 @@ export default function AdminDesktopHomepage({
   selectedVenueId = 'waterford',
   onVenueChange   = () => {},
   onNavChange     = () => {},
+  greetingLine    = null,
 }) {
   const [now, setNow] = useState(new Date());
 
@@ -594,7 +648,7 @@ export default function AdminDesktopHomepage({
           <main className="admin-content" style={{ flex: 1, overflowY: 'auto', padding: '24px 24px 32px' }}>
 
             {/* Page header */}
-            <div style={{ marginBottom: 20, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
+            <div style={{ marginBottom: greetingLine ? 12 : 20, display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: 8 }}>
               <div>
                 <h1 style={{ fontFamily: FONTS.display, fontWeight: 600, fontSize: 26, color: T.text, marginBottom: 4 }}>
                   {greeting}, {dmFirstName}.
@@ -605,6 +659,9 @@ export default function AdminDesktopHomepage({
               </div>
               <StatusPill state={venueStatus} />
             </div>
+
+            {/* AI greeting — one thing needs you */}
+            {greetingLine && <GreetingLine line={greetingLine} />}
 
             {/* KPI strip */}
             <div className="kpi-strip" style={{
@@ -740,6 +797,11 @@ export const SAMPLE_DATA = {
   notificationCount: 2,
   venues: [{ id: 'waterford', name: 'The Waterford Hotel' }],
   selectedVenueId: 'waterford',
+  greetingLine: {
+    text: "One thing needs you — Jordan's RSA certification expired 3 days ago. They can't work gaming until renewed.",
+    severity: 'critical',
+    actionLabel: 'Review certification',
+  },
 
   kpis: [
     {

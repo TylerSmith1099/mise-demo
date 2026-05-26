@@ -204,6 +204,72 @@ function buildKpis(apiData) {
   ];
 }
 
+// Derive the single highest-priority exception from live API data.
+// Priority: critical compliance > open L4 incident > open L3 incident > labour over budget.
+// Returns { text, severity, actionLabel } or null (all clear).
+function buildGreetingLine(apiData) {
+  const { incidents, compliance, labour } = apiData;
+  const todayStr = TODAY_STR();
+  const todayLab = labour?.find((l) => l.business_date?.startsWith(todayStr)) || labour?.[0];
+
+  // 1. Critical compliance item
+  const criticalCompliance = (compliance || []).find((c) => c.severity === 'critical');
+  if (criticalCompliance) {
+    const label = criticalCompliance.event_type || 'compliance item';
+    return {
+      text: `One thing needs you — ${criticalCompliance.description || label} is flagged as critical.`,
+      severity: 'critical',
+      actionLabel: 'Review compliance',
+    };
+  }
+
+  // 2. L4 incident open
+  const l4 = (incidents || []).find(
+    (i) => i.severity_level >= 4 && (i.status === 'active' || i.status === 'open'),
+  );
+  if (l4) {
+    return {
+      text: `One thing needs you — L4 ${l4.incident_type || 'incident'} is open at ${l4.location_in_venue || 'venue'}.`,
+      severity: 'critical',
+      actionLabel: 'View incident',
+    };
+  }
+
+  // 3. Warning compliance item
+  const warnCompliance = (compliance || []).find((c) => c.severity !== 'critical');
+  if (warnCompliance) {
+    return {
+      text: `One thing needs your eye — ${warnCompliance.description || warnCompliance.event_type || 'compliance item'} requires attention.`,
+      severity: 'warning',
+      actionLabel: 'Review compliance',
+    };
+  }
+
+  // 4. L3 incident open
+  const l3 = (incidents || []).find(
+    (i) => i.severity_level >= 3 && (i.status === 'active' || i.status === 'open'),
+  );
+  if (l3) {
+    return {
+      text: `One thing needs your eye — L3 ${l3.incident_type || 'incident'} is open at ${l3.location_in_venue || 'venue'}.`,
+      severity: 'warning',
+      actionLabel: 'View incident',
+    };
+  }
+
+  // 5. Labour over budget
+  if (todayLab?.budgeted_hours && todayLab.worked_hours > todayLab.budgeted_hours) {
+    const over = (todayLab.worked_hours - todayLab.budgeted_hours).toFixed(1);
+    return {
+      text: `One thing needs your eye — labour is ${over} hrs over budget today.`,
+      severity: 'warning',
+      actionLabel: 'Review roster',
+    };
+  }
+
+  return null;
+}
+
 function transformToProps(apiData, session) {
   const { shiftSummary, incidents, reports, compliance, dataFreshness } = apiData;
 
@@ -262,6 +328,7 @@ function transformToProps(apiData, session) {
       { label: 'View Compliance',     primary: false },
       { label: 'Send Staff Alert',    primary: false },
     ],
+    greetingLine: buildGreetingLine(apiData),
   };
 }
 
