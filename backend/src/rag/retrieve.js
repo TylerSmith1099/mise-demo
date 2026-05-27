@@ -72,12 +72,17 @@ function clamp01(x) {
  * @param {string|null} args.venueId     caller's venue id — gates licence_condition.
  * @param {string|null} args.venueState  caller's venue state, e.g. 'QLD'.
  * @param {string} args.queryText   the natural-language question.
+ * @param {string[]} [args.domains] persona domain scope (MIS-590). When set, hard-filters
+ *                                  to chunks whose domain is in this list OR domain='general'.
+ *                                  Example: ['liquor_rsa','gambling_rsg'] for gaming attendants.
+ *                                  Omit or pass [] to retrieve across all domains.
  * @param {number} [args.topK]      default 5.
  * @returns {Promise<{results: Array, lowConfidence: boolean, topScore: number}>}
  */
-export async function retrieveChunks({ clientId, venueId = null, venueState = null, queryText, topK = TOP_K }) {
+export async function retrieveChunks({ clientId, venueId = null, venueState = null, queryText, domains, topK = TOP_K }) {
   if (!queryText || !queryText.trim()) throw new Error('queryText is required');
   const qvec = toVectorLiteral(embed(queryText));
+  const hasDomainScope = Array.isArray(domains) && domains.length > 0;
 
   const rows = await withClientContext(clientId, async (q) => {
     // Hybrid retrieval in ONE round trip.
@@ -87,6 +92,9 @@ export async function retrieveChunks({ clientId, venueId = null, venueState = nu
     //     2. content_type predicate (four-layer, migration 011): narrows to the
     //        layers in scope for this caller. venue_state gates legislation;
     //        venue_id gates licence_condition; sop is RLS-scoped already.
+    //     3. Domain filter (MIS-590, migration 035): when domains[] is set,
+    //        restricts to chunks in those domains OR domain='general'. Prevents
+    //        RSA (liquor) questions from returning RSG (gambling) content.
     //   vec   — top CANDIDATE_K by cosine distance (dense leg).
     //   q     — OR-semantics tsquery for the lexical leg (handles natural
     //           language questions that have no single chunk matching all terms).
@@ -94,6 +102,15 @@ export async function retrieveChunks({ clientId, venueId = null, venueState = nu
     //   fused — RRF over the two leg ranks.
     // Final SELECT recomputes cosine for the <=TOP_K survivors so `confidence`
     // is a true cosine score even for a chunk surfaced via the lexical leg only.
+
+    // Build domain predicate (positional param $8 when hasDomainScope is true).
+    const domainClause = hasDomainScope
+      ? `AND (domain = ANY($8::text[]) OR domain = 'general')`
+      : '';
+
+    const baseParams = [qvec, venueState, venueId, topK, CANDIDATE_K, queryText, RRF_K];
+    if (hasDomainScope) baseParams.push(domains);
+
     const { rows } = await q(
       `WITH base AS (
          SELECT chunk_id, source, section, content, content_type, venue_state,
@@ -106,6 +123,7 @@ export async function retrieveChunks({ clientId, venueId = null, venueState = nu
                 OR (content_type = 'licence_condition' AND venue_id = $3::uuid)
                 OR (content_type = 'sop')
                 )
+            ${domainClause}
        ),
        vec AS (
          SELECT chunk_id,
@@ -146,7 +164,7 @@ export async function retrieveChunks({ clientId, venueId = null, venueState = nu
          FROM fused JOIN base b ON b.chunk_id = fused.chunk_id
         ORDER BY fused.rrf DESC, b.embedding <=> $1::vector ASC
         LIMIT $4`,
-      [qvec, venueState, venueId, topK, CANDIDATE_K, queryText, RRF_K],
+      baseParams,
     );
     return rows;
   });

@@ -31,6 +31,16 @@ import { retrieveChunks, CONFIDENCE_FLOOR } from './rag/retrieve.js';
 import { loadPersona } from './personas.js';
 import { isSynthesisAvailable, synthesizeAnswer } from './rag/synthesize.js';
 
+// Domain scoping by role tier (MIS-590 WS-2). Maps verified roleTier to the
+// knowledge domains the persona is authorised to query. Gaming Attendants (tier 7)
+// work both bar and gaming floor — they need access to liquor_rsa AND gambling_rsg.
+// Duty Managers (tier 5) and above are unrestricted (null = all domains).
+// This prevents employment/WHS/AML chunks from polluting RSA or RSG answers.
+const TIER_DOMAINS = {
+  7: ['liquor_rsa', 'gambling_rsg'], // Gaming Attendant: RSA + RSG only
+  // tier 5 (Duty Manager) and all others: unrestricted
+};
+
 // Compose the answer deterministically from the retrieved chunks. This is the
 // AU-resident, no-external-API path that ships the demo (board decision on
 // approval b22383bd: no offshore LLM key). It NEVER invents content — it
@@ -237,11 +247,16 @@ export function chatRouter(config) {
         return rows[0]?.state ?? null;
       });
 
+      // Derive persona domains from verified role tier (MIS-590 WS-2).
+      // null = unrestricted (Duty Manager and above see all domains).
+      const personaDomains = TIER_DOMAINS[roleTier] ?? null;
+
       const { results, topScore, lowConfidence } = await retrieveChunks({
         clientId,
         venueId,
         venueState,
         queryText: message,
+        domains: personaDomains,
       });
 
       // Persona is keyed off the VERIFIED role tier (token only): Tier 7 →
