@@ -166,11 +166,10 @@ export function developmentProfileRouter() {
 
   // Individual development profile — tiers 5 and 7.
   router.get('/development-profile', requireTier([5, 7]), (req, res) => {
-    // Demo routing: use email prefix to pick the right profile.
-    // In production: query by req.auth.staffId.
-    const email = req.auth?.email || '';
-    const prefix = email.split('@')[0]?.toLowerCase() || 'default';
-    const profile = INDIVIDUAL_PROFILES[prefix] || INDIVIDUAL_PROFILES.default;
+    // Demo routing: tier 7 (Gaming Attendant) → Sarah Chen; others → default.
+    // In production: query by req.auth.staffId against employee_profiles.
+    const key = req.auth?.roleTier === 7 ? 'gaming' : 'default';
+    const profile = INDIVIDUAL_PROFILES[key];
     res.json(profile);
   });
 
