@@ -12,18 +12,19 @@ import React from 'react';
 
 // Role tier → tab configuration (spec section 5)
 const NAV_CONFIG = {
-  7: [ // Gaming Attendant
+  7: [ // Gaming Attendant — 5 tabs; "Growth" = Progression Tracker individual profile (MIS-536)
     { id: 'chat',       label: 'Chat',       Icon: ChatIcon },
     { id: 'compliance', label: 'Compliance', Icon: ShieldIcon },
     { id: 'incidents',  label: 'Incidents',  Icon: ExclamationIcon },
     { id: 'shift',      label: 'Shift',      Icon: ClockIcon },
+    { id: 'growth',     label: 'Growth',     Icon: GrowthIcon },
   ],
-  5: [ // Duty Manager
+  5: [ // Duty Manager — "Team" tab replaces "Alerts" (coming-soon); compliance alerts live in the banner (MIS-536)
     { id: 'chat',       label: 'Chat',      Icon: ChatIcon },
     { id: 'run_sheet',  label: 'Run Sheet', Icon: ClipboardIcon },
     { id: 'bookings',   label: 'Bookings',  Icon: CalendarIcon },
     { id: 'reports',    label: 'Reports',   Icon: ChartBarIcon },
-    { id: 'alerts',     label: 'Alerts',    Icon: BellIcon },
+    { id: 'team',       label: 'Team',      Icon: TeamIcon },
   ],
   4: [ // Venue Manager
     { id: 'chat',       label: 'Chat',     Icon: ChatIcon },
@@ -231,6 +232,28 @@ function DocumentIcon({ color }) {
     <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
       <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8l-6-6Z" {...S} stroke={color} />
       <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" {...S} stroke={color} />
+    </svg>
+  );
+}
+
+// Trending-up icon — individual development/growth profile (MIS-536)
+function GrowthIcon({ color }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+      <polyline points="22 7 13.5 15.5 8.5 10.5 2 17" {...S} stroke={color} />
+      <polyline points="16 7 22 7 22 13" {...S} stroke={color} />
+    </svg>
+  );
+}
+
+// Team/people icon — team development view (MIS-536)
+function TeamIcon({ color }) {
+  return (
+    <svg width="22" height="22" viewBox="0 0 24 24" aria-hidden="true">
+      <circle cx="9"  cy="7"  r="3" {...S} stroke={color} />
+      <circle cx="17" cy="8"  r="2.5" {...S} stroke={color} />
+      <path d="M3 20a6 6 0 0 1 12 0" {...S} stroke={color} />
+      <path d="M17 14a4 4 0 0 1 4 4" {...S} stroke={color} />
     </svg>
   );
 }

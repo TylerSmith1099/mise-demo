@@ -27,6 +27,8 @@ import FirstAidGate from './components/FirstAidGate.jsx';
 import RSATriage from './components/RSATriage.jsx';
 import AdminDesktopHomepageContainer from './components/AdminDesktopHomepageContainer.jsx';
 import MobileReportingScreen from './components/MobileReportingScreen.jsx';
+import MyDevelopmentScreen from './components/MyDevelopmentScreen.jsx';
+import TeamDevelopmentScreen from './components/TeamDevelopmentScreen.jsx';
 
 // Admin desktop tiers: 1=Group Admin, 2=Area Manager, 3=General Manager,
 // 4=Venue Coordinator/Venue Manager — oversight roles whose primary surface
@@ -426,6 +428,36 @@ export default function App() {
       {tab === 'incidents' && (
         <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden">
           <IncidentsScreen onAuthError={dropToLogin} roleTier={session?.roleTier} />
+        </main>
+      )}
+
+      {/* Progression Tracker — individual development profile (tier 7 Gaming Attendant) */}
+      {tab === 'growth' && (
+        <main
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
+          <MyDevelopmentScreen onAuthError={dropToLogin} />
+        </main>
+      )}
+
+      {/* Progression Tracker — team development view (tier 5 Duty Manager) */}
+      {tab === 'team' && (
+        <main
+          style={{
+            flex: 1,
+            display: 'flex',
+            flexDirection: 'column',
+            overflowY: 'auto',
+            overflowX: 'hidden',
+          }}
+        >
+          <TeamDevelopmentScreen onAuthError={dropToLogin} />
         </main>
       )}
 

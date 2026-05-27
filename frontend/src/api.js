@@ -255,6 +255,18 @@ export async function exportAdminReport(params) {
   return { blob, filename };
 }
 
+// ---- Progression Tracker (MIS-536) ----------------------------------------
+// Individual development profile — tier 5 and 7.
+// Shape: { staffName, role, knowledgeAreas[], recentActivity, certifications[], nudge, sessionCount }
+export function fetchDevelopmentProfile() {
+  return request('/api/development-profile');
+}
+// Team development view — tier 5 (Duty Manager) and tier 4 (Venue Manager).
+// Shape: { venueName, summary, staff[], teamGaps[], spotlight }
+export function fetchTeamDevelopment() {
+  return request('/api/team-development');
+}
+
 // ---- Compliance Monitor (MIS-44) ------------------------------------------
 // Arm the monitor; the backend runs Check 4 against live roster ~10s later.
 export function activateComplianceMonitor() {

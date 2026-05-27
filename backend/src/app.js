@@ -25,6 +25,7 @@ import { rsaRouter } from './rsa-api.js';
 import { adminHomepageRouter } from './admin/homepage-api.js';
 import { reportingRouter } from './admin/reporting-api.js';
 import { groupOverviewRouter } from './admin/group-overview-api.js';
+import { developmentProfileRouter } from './development-profile-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -156,6 +157,10 @@ export function createApp(config) {
   // Reporting & Filtering (MIS-429): /api/admin/reports/query + /export.
   // Tiers 2-5 for query; tiers 2-4 for export (DM cannot export).
   api.use('/', reportingRouter());
+
+  // Progression Tracker (MIS-536): /api/development-profile + /api/team-development.
+  // Sprint 1: pre-seeded demo data. Sprint 2: live processing hook post-QHA.
+  api.use('/', developmentProfileRouter());
 
   app.use('/api', api);
 
