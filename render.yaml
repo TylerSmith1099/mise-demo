@@ -52,3 +52,19 @@ services:
         sync: false
       - key: ANTHROPIC_BASE_URL
         sync: false
+
+  # Keep-warm cron job — pings /health every 5 minutes so the free-tier web
+  # service never goes idle during a demo session. Runs entirely in Render cloud;
+  # no external dependency on Tyler's machine or any third-party ping service.
+  - type: cron
+    name: mise-keep-warm
+    runtime: node
+    plan: free
+    region: singapore
+    schedule: "*/5 * * * *"
+    rootDir: ./backend
+    buildCommand: npm ci --omit=dev
+    startCommand: node scripts/keep-warm.js
+    envVars:
+      - key: KEEP_WARM_URL
+        value: "https://mise-demo.onrender.com/health"
