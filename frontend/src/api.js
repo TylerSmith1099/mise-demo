@@ -89,6 +89,29 @@ export async function logout() {
   }
 }
 
+// ---- Run Sheet Full (MIS-639 / MIS-626 W3) --------------------------------
+// Full 9-section rebuilt run sheet: header, alerts, roster, sports, specials,
+// bookings, incentives, budget (DM/VM only), handover notes.
+// Shape: { roleTier, shiftId, header, alerts[], roster, sports[], specials,
+//          bookings?, incentives[], budget?, handover }
+export function fetchRunSheetFull() {
+  return request('/api/run-sheet');
+}
+// Acknowledge a run-sheet compliance alert (logs to compliance_acknowledgements).
+export function acknowledgeRunSheetAlert({ refId, alertType }) {
+  return request(`/api/run-sheet/alerts/${encodeURIComponent(refId)}/ack`, {
+    method: 'POST',
+    body: { alertType },
+  });
+}
+// Auto-save the current shift's handover note.
+export function saveHandoverNote({ bodyText, tags }) {
+  return request('/api/run-sheet/handover', {
+    method: 'POST',
+    body: { bodyText, tags },
+  });
+}
+
 // ---- Shift Runsheet (MIS-102) ---------------------------------------------
 // The runsheet is a token/RLS-scoped task list for the caller's current shift.
 // Expected shape (defined by UI, implemented by Backend — see Ops/Issues/MIS-UI-NAV.md):

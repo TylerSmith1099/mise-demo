@@ -18,6 +18,7 @@ import { runsheetRouter } from './runsheet-api.js';
 import { complianceRouter } from './compliance-monitor.js';
 import { demoRouter } from './api/routes/demo.js';
 import { reservationsRouter } from './reservations-api.js';
+import { bookingsRouter } from './bookings-api.js';
 import { revenueIntelligenceRouter } from './revenue-intelligence-api.js';
 import { reportsRouter } from './reports-api.js';
 import { incidentRouter } from './incident-api.js';
@@ -26,6 +27,7 @@ import { adminHomepageRouter } from './admin/homepage-api.js';
 import { reportingRouter } from './admin/reporting-api.js';
 import { groupOverviewRouter } from './admin/group-overview-api.js';
 import { developmentProfileRouter } from './development-profile-api.js';
+import { runSheetFullRouter } from './run-sheet-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -132,6 +134,11 @@ export function createApp(config) {
   // All roles — no tier restriction per feature spec.
   api.use('/', reservationsRouter());
 
+  // Bookings (MIS-635 WS5): /api/bookings, /api/bookings/:date, /api/bookings/range/:from/:to.
+  // DB-backed replacement for the mock reservations adapter — powers the Booking tab.
+  // All roles — no tier restriction per feature spec.
+  api.use('/', bookingsRouter());
+
   // Reports (MIS-253): /api/reports — 7-day P&L summary from pnl_summary table.
   // Tier 4 (Venue Manager) only.
   api.use('/', reportsRouter());
@@ -161,6 +168,12 @@ export function createApp(config) {
   // Progression Tracker (MIS-536): /api/development-profile + /api/team-development.
   // Sprint 1: pre-seeded demo data. Sprint 2: live processing hook post-QHA.
   api.use('/', developmentProfileRouter());
+
+  // Run Sheet Full (MIS-639 / MIS-626 W3): /api/run-sheet — 9-section rebuilt run sheet.
+  // GET /api/run-sheet: full payload scoped by JWT role tier.
+  // POST /api/run-sheet/alerts/:refId/ack: acknowledge a compliance alert.
+  // POST /api/run-sheet/handover: save/update the current shift's handover note.
+  api.use('/', runSheetFullRouter());
 
   app.use('/api', api);
 
