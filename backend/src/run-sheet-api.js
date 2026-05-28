@@ -237,7 +237,7 @@ async function buildRoster(q, { venueId, shiftId, staffId, roleTier }) {
       WHERE sh.venue_id = $1
         AND sh.deleted_at IS NULL
         AND sh.shift_start >= $2::timestamptz
-        AND sh.shift_start < ($2::date + INTERVAL '1 day')::timestamptz
+        AND sh.shift_start < $2::timestamptz + INTERVAL '1 day'
       ORDER BY COALESCE(vr.sort_order, 99), sh.shift_start`,
     [venueId, `${today}T00:00:00+10:00`],
   );
@@ -418,28 +418,27 @@ async function buildBookings(q, { venueId }) {
   // Try the bookings table (migration 035). If it doesn't exist yet, return null.
   try {
     const { rows } = await q(
-      `SELECT booking_id, booking_time, guest_name, pax, area, occasion,
-              vip, dietary, table_number, special_requirements, status
+      `SELECT booking_id, slot_time, guest_name, party_size, service_window,
+              is_vip, notes, status
          FROM bookings
         WHERE venue_id = $1
           AND booking_date = $2::date
-          AND status NOT IN ('cancelled')
+          AND status NOT IN ('cancelled', 'no_show')
           AND deleted_at IS NULL
-        ORDER BY booking_time`,
+        ORDER BY slot_time`,
       [venueId, today],
     );
 
-    const totalCovers = rows.reduce((sum, r) => sum + r.pax, 0);
-    const largeGroups = rows.filter((r) => r.pax >= 8);
-    const vipCount = rows.filter((r) => r.vip).length;
+    const totalCovers = rows.reduce((sum, r) => sum + Number(r.party_size), 0);
+    const largeGroups = rows.filter((r) => Number(r.party_size) >= 8);
+    const vipCount = rows.filter((r) => r.is_vip).length;
 
-    // Split lunch vs dinner by booking time
     const lunchCovers = rows
-      .filter((r) => r.booking_time < '15:00')
-      .reduce((sum, r) => sum + r.pax, 0);
+      .filter((r) => r.service_window === 'lunch')
+      .reduce((sum, r) => sum + Number(r.party_size), 0);
     const dinnerCovers = rows
-      .filter((r) => r.booking_time >= '15:00')
-      .reduce((sum, r) => sum + r.pax, 0);
+      .filter((r) => r.service_window !== 'lunch')
+      .reduce((sum, r) => sum + Number(r.party_size), 0);
 
     return {
       totalCovers,
@@ -448,15 +447,12 @@ async function buildBookings(q, { venueId }) {
       vipCount,
       largeGroups: largeGroups.map((g) => ({
         id: g.booking_id,
-        time: g.booking_time,
+        time: g.slot_time?.slice(0, 5),
         guestName: g.guest_name,
-        pax: g.pax,
-        area: g.area,
-        occasion: g.occasion || null,
-        vip: g.vip,
-        dietary: g.dietary || [],
-        specialRequirements: g.special_requirements || null,
-        tableNumber: g.table_number || null,
+        pax: Number(g.party_size),
+        serviceWindow: g.service_window,
+        vip: g.is_vip,
+        notes: g.notes || null,
         status: g.status,
       })),
     };
@@ -583,7 +579,7 @@ async function buildBudget(q, { venueId }) {
        FROM shifts
       WHERE venue_id = $1 AND deleted_at IS NULL
         AND shift_start >= $2::timestamptz
-        AND shift_start < ($2::date + INTERVAL '1 day')::timestamptz`,
+        AND shift_start < $2::timestamptz + INTERVAL '1 day'`,
     [venueId, `${today}T00:00:00+10:00`],
   ).catch(() => ({ rows: [{ staff_count: 0 }] }));
 

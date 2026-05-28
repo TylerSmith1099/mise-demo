@@ -212,7 +212,7 @@ async function main() {
         `SELECT shift_id FROM shifts
           WHERE staff_id = $1 AND venue_id = $2
             AND shift_start >= $3::timestamptz
-            AND shift_start < ($3::date + INTERVAL '1 day')::timestamptz
+            AND shift_start < $3::timestamptz + INTERVAL '1 day'
             AND deleted_at IS NULL
           ORDER BY shift_start DESC LIMIT 1`,
         [dmId, VENUE_ID, `${BASE_DATE}T00:00:00+10:00`],
@@ -325,12 +325,14 @@ async function main() {
       `INSERT INTO shift_incentives (incentive_id, client_id, venue_id, name, target_description, reward_description, active_from, active_to, is_active)
        VALUES ($1, $2, $3, $4, $5, $6, $7::timestamptz, $8::timestamptz, true)
        ON CONFLICT (incentive_id) DO UPDATE
-         SET name = EXCLUDED.name, is_active = true`,
+         SET name = EXCLUDED.name, is_active = true,
+             active_from = EXCLUDED.active_from,
+             active_to = EXCLUDED.active_to`,
       [IDS.incentive_roast, CLIENT_ID, VENUE_ID,
        'Sunday Roast Push',
        'Push table d\'hôte to every table — aim for 60% conversion tonight',
        '$50 gift card for highest conversion — tracked by till',
-       bne(0, 16), bne(1, 0)],
+       bne(-1, 0), bne(3, 0)],
     );
     const leaderboard = [
       [IDS.alex,    7],
@@ -353,7 +355,7 @@ async function main() {
         `SELECT shift_id FROM shifts
           WHERE staff_id = $1 AND venue_id = $2
             AND shift_start >= $3::timestamptz
-            AND shift_start < ($3::date + INTERVAL '1 day')::timestamptz
+            AND shift_start < $3::timestamptz + INTERVAL '1 day'
             AND deleted_at IS NULL
           ORDER BY shift_start DESC LIMIT 1`,
         [dmId, VENUE_ID, `${BASE_DATE}T00:00:00+10:00`],
