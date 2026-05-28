@@ -451,9 +451,9 @@ async function seedRevenueDailyAll(q) {
       await q(
         `INSERT INTO revenue_daily
            (client_id, venue_id, business_date, gross_revenue_cents, net_revenue_cents,
-            transaction_count, source, is_stale)
-         VALUES ($1, $2, $3, $4, $5, $6, 'seed', false)
-         ON CONFLICT (client_id, venue_id, business_date, source) DO UPDATE
+            transaction_count, source, channel, is_stale)
+         VALUES ($1, $2, $3, $4, $5, $6, 'seed', 'total', false)
+         ON CONFLICT (client_id, venue_id, business_date, source, channel) DO UPDATE
            SET gross_revenue_cents = EXCLUDED.gross_revenue_cents,
                net_revenue_cents   = EXCLUDED.net_revenue_cents,
                transaction_count   = EXCLUDED.transaction_count`,
@@ -765,9 +765,9 @@ export async function seedDemoV2() {
     for (const date of ['2026-01-01', '2026-01-02', '2026-01-03']) {
       await q(
         `INSERT INTO revenue_daily
-           (client_id, venue_id, business_date, gross_revenue_cents, net_revenue_cents, transaction_count, source)
-         VALUES ($1, $2, $3, 512000, 493000, 44, 'seed')
-         ON CONFLICT (client_id, venue_id, business_date, source) DO NOTHING`,
+           (client_id, venue_id, business_date, gross_revenue_cents, net_revenue_cents, transaction_count, source, channel)
+         VALUES ($1, $2, $3, 512000, 493000, 44, 'seed', 'total')
+         ON CONFLICT (client_id, venue_id, business_date, source, channel) DO NOTHING`,
         [DECOY_CLIENT_ID, DECOY_VENUE_ID, date],
       );
       await q(

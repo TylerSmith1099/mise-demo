@@ -345,9 +345,9 @@ async function main() {
           `INSERT INTO revenue_daily
              (client_id, venue_id, business_date,
               gross_revenue_cents, net_revenue_cents,
-              forecast_revenue_cents, source, is_stale, synced_at)
-           VALUES ($1,$2,$3,$4,$5,$6,'seed',false,NOW())
-           ON CONFLICT (client_id, venue_id, business_date, source) DO NOTHING`,
+              forecast_revenue_cents, source, channel, is_stale, synced_at)
+           VALUES ($1,$2,$3,$4,$5,$6,'seed','total',false,NOW())
+           ON CONFLICT (client_id, venue_id, business_date, source, channel) DO NOTHING`,
           [clientId, venueId, bizDate, grossRev, netRev, forecast],
         );
 
