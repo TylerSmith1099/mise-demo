@@ -44,5 +44,9 @@ DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-
 DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 \
   node scripts/seed-demo-incidents.js || echo "[entrypoint] incident seed (a0000000) skipped/failed — non-fatal"
 
+echo "[entrypoint] seeding run sheet scene 2 data (MIS-639)…"
+DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 \
+  node scripts/seed-runsheet-scene2.js || echo "[entrypoint] runsheet scene2 seed skipped/failed — non-fatal"
+
 echo "[entrypoint] starting Mise server…"
 exec node src/server.js
