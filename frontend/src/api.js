@@ -136,6 +136,32 @@ export function fetchReports() {
   return request('/api/reports');
 }
 
+// ---- Channel Reports (MIS-642) -------------------------------------------
+// Tiers 4 and 5. Per-channel revenue with actual vs target, variance, trend.
+// params: { from?, to?, grain?: 'daily'|'weekly'|'monthly', channels?: string[] }
+// Shape: { from, to, grain, scopeClamped, channels: [{ channel, label, colour, periods }] }
+export function fetchChannelReports({ from, to, grain, channels } = {}) {
+  const params = new URLSearchParams();
+  if (from)          params.set('from', from);
+  if (to)            params.set('to', to);
+  if (grain)         params.set('grain', grain);
+  if (channels?.length) params.set('channels', channels.join(','));
+  const qs = params.toString();
+  return request(`/api/reports/channels${qs ? '?' + qs : ''}`);
+}
+
+// ---- Bookings (MIS-642) ---------------------------------------------------
+// All roles. Returns bookings grouped by service_window.
+// Shape: { date, services: [{ window, label, bookings: [{ bookingId, guestName, partySize, slotTime, status, isVip, notes }] }] }
+export function fetchBookings(date) {
+  const path = date ? `/api/bookings/${encodeURIComponent(date)}` : '/api/bookings';
+  return request(path);
+}
+// Week view: { from, to, days: [{ date, services }] }
+export function fetchBookingsWeek() {
+  return request('/api/bookings/week');
+}
+
 // ---- Incidents (MIS-390) --------------------------------------------------
 // All MVP roles. Tier 7 sees own incidents only (server-enforced).
 // Shape: { incidents: [{ incidentId, incidentType, incidentLabel, severityLevel,

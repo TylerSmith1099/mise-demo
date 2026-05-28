@@ -26,6 +26,7 @@ import { adminHomepageRouter } from './admin/homepage-api.js';
 import { reportingRouter } from './admin/reporting-api.js';
 import { groupOverviewRouter } from './admin/group-overview-api.js';
 import { developmentProfileRouter } from './development-profile-api.js';
+import { bookingsRouter } from './bookings-api.js';
 
 export function createApp(config) {
   const app = express();
@@ -161,6 +162,10 @@ export function createApp(config) {
   // Progression Tracker (MIS-536): /api/development-profile + /api/team-development.
   // Sprint 1: pre-seeded demo data. Sprint 2: live processing hook post-QHA.
   api.use('/', developmentProfileRouter());
+
+  // Bookings (MIS-642): /api/bookings + /api/bookings/:date + /api/bookings/week.
+  // All authenticated roles — DM uses this for the Booking tab.
+  api.use('/', bookingsRouter());
 
   app.use('/api', api);
 

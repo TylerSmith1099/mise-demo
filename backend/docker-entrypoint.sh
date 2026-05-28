@@ -32,6 +32,12 @@ DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-
 DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 \
   node scripts/seed-steward-extras.js || echo "[entrypoint] extras seed (a0000000) skipped/failed — non-fatal"
 
+echo "[entrypoint] seeding per-channel revenue and bookings (MIS-642)…"
+DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 \
+  node scripts/seed-revenue-channels.js || echo "[entrypoint] channel seed (a4cba394) skipped/failed — non-fatal"
+DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 \
+  node scripts/seed-revenue-channels.js || echo "[entrypoint] channel seed (a0000000) skipped/failed — non-fatal"
+
 echo "[entrypoint] seeding demo incidents for current day…"
 DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 \
   node scripts/seed-demo-incidents.js || echo "[entrypoint] incident seed (a4cba394) skipped/failed — non-fatal"
