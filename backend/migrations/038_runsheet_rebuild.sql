@@ -223,9 +223,9 @@ CREATE TABLE shift_handover_notes (
     updated_at          TIMESTAMPTZ NOT NULL DEFAULT now(),
     UNIQUE (shift_id)
 );
-CREATE INDEX idx_handover_notes_shift   ON shift_handover_notes(shift_id);
-CREATE INDEX idx_handover_notes_venue   ON shift_handover_notes(venue_id);
-CREATE INDEX idx_handover_notes_client  ON shift_handover_notes(client_id);
+CREATE INDEX idx_shn_shift   ON shift_handover_notes(shift_id);
+CREATE INDEX idx_shn_venue   ON shift_handover_notes(venue_id);
+CREATE INDEX idx_shn_client  ON shift_handover_notes(client_id);
 
 -- ── venue_roles ──────────────────────────────────────────────────────────────
 CREATE TABLE venue_roles (

@@ -228,7 +228,7 @@ async function buildRoster(q, { venueId, shiftId, staffId, roleTier }) {
             sc_rsa.expires_at AS rsa_expiry
        FROM shifts sh
        JOIN staff s ON s.staff_id = sh.staff_id AND s.deleted_at IS NULL
-       LEFT JOIN venue_roles vr ON vr.venue_id = sh.venue_id AND vr.label = sh.role_name AND vr.deleted_at IS NULL
+       LEFT JOIN venue_roles vr ON vr.venue_id = sh.venue_id AND vr.label = sh.role_name AND vr.is_active = true
        LEFT JOIN roster_breaks rb ON rb.shift_id = sh.shift_id
        LEFT JOIN certifications sc_rsg ON sc_rsg.staff_id = sh.staff_id
                  AND sc_rsg.cert_type = 'rsg' AND sc_rsg.deleted_at IS NULL
