@@ -20,15 +20,15 @@ const KB = join(dirname(fileURLToPath(import.meta.url)), '..', 'Knowledge Base',
 // The shared legislation set required by the brief. QLD statutes are tagged
 // venue_state 'QLD'; national instruments are state-agnostic (null = all states).
 export const LEGISLATION = [
-  { file: join(KB, 'QLD', 'gaming-machine-act-1991.md'),                source: 'Gaming Machine Act 1991 (QLD)',                          idPrefix: 'qld-gaming-machine-act-1991',  venueState: 'QLD',  lastUpdated: '2024-01-01' },
-  { file: join(KB, 'QLD', 'responsible-gambling-code-of-practice.md'),  source: 'Queensland Responsible Gambling Code of Practice',       idPrefix: 'qld-rg-code',                   venueState: 'QLD',  lastUpdated: '2024-01-01' },
-  { file: join(KB, 'QLD', 'liquor-act-1992.md'),                        source: 'Liquor Act 1992 (QLD)',                                 idPrefix: 'qld-liquor-act-1992',           venueState: 'QLD',  lastUpdated: '2024-01-01' },
-  { file: join(KB, 'QLD', 'work-health-safety-act-2011.md'),            source: 'Work Health and Safety Act 2011 (QLD)',                 idPrefix: 'qld-whs-act-2011',              venueState: 'QLD',  lastUpdated: '2024-01-01' },
-  { file: join(KB, 'National', 'fair-work-act-2009.md'),                source: 'Fair Work Act 2009 (Cth)',                              idPrefix: 'cth-fair-work-act-2009',        venueState: null,   lastUpdated: '2024-01-01' },
-  { file: join(KB, 'National', 'hospitality-industry-general-award-2020.md'), source: 'Hospitality Industry (General) Award 2020',     idPrefix: 'cth-hospitality-award-2020',    venueState: null,   lastUpdated: '2024-07-01' },
+  { file: join(KB, 'QLD', 'gaming-machine-act-1991.md'),                source: 'Gaming Machine Act 1991 (QLD)',                          idPrefix: 'qld-gaming-machine-act-1991',  venueState: 'QLD',  lastUpdated: '2024-01-01', domain: 'gambling_rsg' },
+  { file: join(KB, 'QLD', 'responsible-gambling-code-of-practice.md'),  source: 'Queensland Responsible Gambling Code of Practice',       idPrefix: 'qld-rg-code',                   venueState: 'QLD',  lastUpdated: '2024-01-01', domain: 'gambling_rsg' },
+  { file: join(KB, 'QLD', 'liquor-act-1992.md'),                        source: 'Liquor Act 1992 (QLD)',                                 idPrefix: 'qld-liquor-act-1992',           venueState: 'QLD',  lastUpdated: '2024-01-01', domain: 'liquor_rsa' },
+  { file: join(KB, 'QLD', 'work-health-safety-act-2011.md'),            source: 'Work Health and Safety Act 2011 (QLD)',                 idPrefix: 'qld-whs-act-2011',              venueState: 'QLD',  lastUpdated: '2024-01-01', domain: 'wphs' },
+  { file: join(KB, 'National', 'fair-work-act-2009.md'),                source: 'Fair Work Act 2009 (Cth)',                              idPrefix: 'cth-fair-work-act-2009',        venueState: null,   lastUpdated: '2024-01-01', domain: 'employment' },
+  { file: join(KB, 'National', 'hospitality-industry-general-award-2020.md'), source: 'Hospitality Industry (General) Award 2020',     idPrefix: 'cth-hospitality-award-2020',    venueState: null,   lastUpdated: '2024-07-01', domain: 'employment' },
   // AML/CTF Tranche-1 (commenced 31 Mar 2026). Legal-authored summary (MIS-92);
   // DEPLOY-FLAGGED pending solicitor sign-off — do NOT present as execution-ready.
-  { file: join(KB, 'National', 'aml-ctf-act-2006.md'),                  source: 'Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (Cth)', idPrefix: 'cth-aml-ctf-act-2006', venueState: null, lastUpdated: '2026-03-31',
+  { file: join(KB, 'National', 'aml-ctf-act-2006.md'),                  source: 'Anti-Money Laundering and Counter-Terrorism Financing Act 2006 (Cth)', idPrefix: 'cth-aml-ctf-act-2006', venueState: null, lastUpdated: '2026-03-31', domain: 'incident_reporting',
     flags: ['DEPLOY FLAG — Legal-drafted summary; solicitor sign-off pending (Ops/Questions.md). Confirm thresholds/dates/mechanics and load full consolidated statute + AUSTRAC rules before production.'] },
 ];
 
@@ -45,6 +45,7 @@ export async function ingestLegislation(opts = {}) {
       venueState: item.venueState,
       lastUpdated: item.lastUpdated,
       idPrefix: item.idPrefix,
+      domain: item.domain ?? 'general',
       flags: item.flags ?? [DEPLOY_FLAG, 'production embedding model TBD at deploy (AU-hosted)'],
       manifestPath: opts.manifestPath,
     });

@@ -140,6 +140,24 @@ textarea {
   animation: mise-rise 160ms ease-out;
 }
 
+/* Compliance alert — L4 pulse dot (opacity 1→0.4, 2s loop, MIS-629 spec). */
+@keyframes compliance-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
+/* Compliance alert detail overlay — slides up from bottom on mobile. */
+@keyframes detail-slide-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 /* Thin, on-brand scrollbar for the thread. */
 .mise-thread::-webkit-scrollbar {
   width: 6px;

@@ -24,7 +24,7 @@ Node. Keep these two paths in lockstep when changing boot behaviour.
 Live Start Command (Render dashboard → Settings → Start Command):
 
 ```
-cd backend && node scripts/migrate.js && node src/demo/seed.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node src/demo/seed.js || true) && (node src/demo/seed-demo-v2.js || true) && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && node src/server.js
+cd backend && node scripts/migrate.js && node src/demo/seed.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node src/demo/seed.js || true) && (node src/demo/seed-demo-v2.js || true) && node scripts/ingest-legislation.js && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-steward-extras.js || true) && (DEMO_CLIENT_ID=a4cba394-238e-47f5-a2b4-25e2cfccb85d DEMO_VENUE_ID=a6d8aee2-92de-4400-9ef0-a227d42496c1 node scripts/seed-demo-incidents.js || true) && (DEMO_CLIENT_ID=a0000000-0000-4000-8000-000000000001 DEMO_VENUE_ID=a0000000-0000-4000-8000-000000000002 node scripts/seed-demo-incidents.js || true) && node src/server.js
 ```
 
 `src/demo/seed.js` is idempotent-patch: on an already-seeded DB it adds any missing DEMO_ACCOUNTS without touching existing rows. It must be run **twice** — once for the default tenant (`a0000000…`) and once for the Steward Hotel tenant (`a4cba394…`) — because `groupgm@steward.demo` lives in the Steward tenant (MIS-497 fix: seed.js defaults to the wrong tenant if run only once).
@@ -35,6 +35,26 @@ date-aware — it re-anchors shifts to the current Brisbane day on every boot so
 there is always an active shift for the demo. It uses **soft deletes**
 (`UPDATE ... SET deleted_at = NOW()`), never `DELETE`, because the `mise_app`
 role has no DELETE grant (see migration 005).
+
+`scripts/seed-demo-incidents.js` populates demo compliance incidents (Scene 3
+alert). Added to the Node Start Command to match `docker-entrypoint.sh` (they
+must stay in lockstep).
+
+## DB reset recovery
+
+Render's free-tier PostgreSQL resets after 90 days, wiping all data. The
+running server continues with an empty DB until a redeploy re-runs the Start
+Command (which includes migrations + seeds + ingest).
+
+**Recovery procedure:**
+1. Render dashboard → mise-demo service → **Manual Deploy** → Deploy latest commit.
+2. Watch the Deploy Logs: you should see migrate, seed, and ingest output before
+   the server starts. If any step errors, check that `DB_CONNECTION_STRING` is
+   still wired to the (new) Postgres instance.
+3. Once the deploy completes, test auth: `gaming@steward.demo` / `mise-demo-2026`.
+
+If Render auto-deploy is enabled (Deploy → Auto-Deploy), any push to `main` also
+triggers this — no manual deploy needed.
 
 ## Environment variables
 

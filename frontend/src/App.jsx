@@ -28,6 +28,7 @@ import RSATriage from './components/RSATriage.jsx';
 import AdminDesktopHomepageContainer from './components/AdminDesktopHomepageContainer.jsx';
 import MobileReportingScreen from './components/MobileReportingScreen.jsx';
 import MyDevelopmentScreen from './components/MyDevelopmentScreen.jsx';
+import BookingsScreen from './components/BookingsScreen.jsx';
 import TeamDevelopmentScreen from './components/TeamDevelopmentScreen.jsx';
 
 // Admin desktop tiers: 1=Group Admin, 2=Area Manager, 3=General Manager,
@@ -461,8 +462,15 @@ export default function App() {
         </main>
       )}
 
+      {/* Bookings tab — DM (tier 5) restaurant and function bookings (MIS-642) */}
+      {tab === 'bookings' && (
+        <main className="mise-thread flex-1 overflow-y-auto overflow-x-hidden px-3 py-4">
+          <BookingsScreen onAuthError={dropToLogin} />
+        </main>
+      )}
+
       {/* Placeholder screens for tabs not yet built — on-brand, readable */}
-      {['compliance', 'shift', 'bookings', 'labour', 'alerts'].includes(tab) && (
+      {['compliance', 'shift', 'labour', 'alerts'].includes(tab) && (
         <ComingSoon label={tab} />
       )}
 

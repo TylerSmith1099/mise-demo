@@ -46,11 +46,12 @@ async function insertChunk(q, c) {
   await q(
     `INSERT INTO document_chunks
        (chunk_id, source, section, content, content_type, client_id, venue_id,
-        venue_state, last_updated, token_count, embedding)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::vector)`,
+        venue_state, last_updated, token_count, embedding, domain)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11::vector,$12)`,
     [
       c.chunkId, c.source, c.section, c.content, c.contentType, c.clientId,
       c.venueId, c.venueState, c.lastUpdated, c.tokenCount, toVectorLiteral(c.embedding),
+      c.domain ?? 'general',
     ],
   );
 }
@@ -72,6 +73,10 @@ async function insertChunk(q, c) {
  *                                     two layers).
  * @param {string} doc.lastUpdated   ISO date (currency of the source).
  * @param {string} doc.idPrefix      stable chunk_id prefix, e.g. 'qld-gaming-act-1991'.
+ * @param {string} [doc.domain]      knowledge domain for retrieval scoping (MIS-590).
+ *                                   Vocab: liquor_rsa | gambling_rsg | wphs | employment |
+ *                                   incident_reporting | conflict_mgmt | emergency | general.
+ *                                   Defaults to 'general'.
  * @param {string[]} [doc.flags]     deploy-stage notes (e.g. "needs full-text load").
  * @returns {Promise<{source, clientId, chunkCount, chunkIds, flags}>}
  */
@@ -80,6 +85,7 @@ export async function ingestDocument(doc) {
     source, text, clientId = null, venueId = null, venueState = null,
     lastUpdated, idPrefix,
   } = doc;
+  const domain = doc.domain ?? 'general';
   if (!source || !text || !idPrefix) {
     throw new Error('ingestDocument requires source, text, idPrefix');
   }
@@ -119,6 +125,7 @@ export async function ingestDocument(doc) {
     lastUpdated,
     tokenCount: rc.tokenCount,
     embedding: embed(embeddingInput(rc.section, rc.content)),
+    domain,
   }));
 
   // store — supersede prior live rows from the same source, then insert.
