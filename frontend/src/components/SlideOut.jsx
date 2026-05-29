@@ -61,7 +61,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
         >
           <p
             style={{
-              fontFamily: "'Space Grotesk', system-ui, sans-serif",
+              fontFamily: "'Fraunces', Georgia, serif",
               fontSize: 13,
               fontWeight: 700,
               letterSpacing: '0.28em',
@@ -75,7 +75,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
           </p>
           <p
             style={{
-              fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 16,
               fontWeight: 500,
               color: 'var(--cream)',
@@ -87,7 +87,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
           </p>
           <p
             style={{
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               fontWeight: 500,
               letterSpacing: '0.08em',
@@ -101,7 +101,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
           </p>
           <p
             style={{
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               color: 'var(--cream-40)',
               margin: 0,
@@ -121,7 +121,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
               style={{
                 display: 'block',
                 padding: '12px 24px',
-                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 13,
                 fontWeight: 400,
                 color: 'var(--cream-60)',
@@ -149,7 +149,7 @@ export default function SlideOut({ open, session, onClose, onLogout }) {
             type="button"
             onClick={onLogout}
             style={{
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 13,
               fontWeight: 500,
               color: 'var(--red)',

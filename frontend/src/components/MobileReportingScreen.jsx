@@ -69,7 +69,7 @@ function MobileLineChart({ primary, comparison, unit }) {
   const allVals = [...pts, ...cpts].map((p) => p.v).filter((v) => v != null);
   if (allVals.length === 0) {
     return (
-      <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(122,170,208,0.6)', fontSize: 13, fontFamily: "'DM Sans', sans-serif" }}>
+      <div style={{ height: 140, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(122,170,208,0.6)', fontSize: 13, fontFamily: "'Hanken Grotesk', system-ui, sans-serif" }}>
         No data
       </div>
     );
@@ -106,7 +106,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       {[minV, yMid, maxV].map((v, i) => (
         <text key={i} x={PAD.left - 4} y={ys(v) + 4}
           fill="rgba(122,170,208,0.7)" fontSize="12" textAnchor="end"
-          fontFamily="'IBM Plex Mono', monospace">
+          fontFamily="'Hanken Grotesk', system-ui, sans-serif">
           {fmtValue(v, unit)}
         </text>
       ))}
@@ -115,7 +115,7 @@ function MobileLineChart({ primary, comparison, unit }) {
       {xLabels.map(({ t, x }, i) => (
         <text key={i} x={x} y={H - 4}
           fill="rgba(122,170,208,0.7)" fontSize="12" textAnchor="middle"
-          fontFamily="'IBM Plex Mono', monospace">
+          fontFamily="'Hanken Grotesk', system-ui, sans-serif">
           {fmtDate(t.slice(0, 10))}
         </text>
       ))}
@@ -158,14 +158,14 @@ function KpiCell({ label, value, delta }) {
       padding: '12px 16px',
       flexShrink: 0,
     }}>
-      <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(122,170,208,0.8)', marginBottom: 4 }}>
+      <div style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, color: 'rgba(122,170,208,0.8)', marginBottom: 4 }}>
         {label}
       </div>
-      <div style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 18, fontWeight: 600, color: '#00C8E8' }}>
+      <div style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 18, fontWeight: 600, color: '#00C8E8' }}>
         {value}
       </div>
       {delta && (
-        <div style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, marginTop: 3, color: pos ? '#00E87A' : '#E85050' }}>
+        <div style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, marginTop: 3, color: pos ? '#00E87A' : '#E85050' }}>
           {delta} vs prev
         </div>
       )}
@@ -185,7 +185,7 @@ function TimeChip({ label, active, onClick }) {
         border: `1px solid ${active ? '#2E6BAE' : 'rgba(46,107,174,0.22)'}`,
         background: active ? 'rgba(46,107,174,0.18)' : 'transparent',
         color: active ? '#5A9BD4' : 'rgba(122,170,208,0.6)',
-        fontFamily: "'DM Sans', sans-serif",
+        fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
         fontWeight: active ? 500 : 400,
         fontSize: 13,
         cursor: 'pointer',
@@ -287,7 +287,7 @@ export default function MobileReportingScreen({ onAuthError }) {
         </div>
         {data?.meta?.scopeClamped && (
           <span style={{
-            fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: '#E8A020',
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, color: '#E8A020',
             background: 'rgba(232,160,32,0.10)', padding: '3px 8px', borderRadius: 12,
           }}>
             ≤7d limit
@@ -390,7 +390,7 @@ function LegendDot({ color, label, dashed }) {
           stroke={color} strokeWidth="2"
           strokeDasharray={dashed ? '4,3' : 'none'} />
       </svg>
-      <span style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'rgba(224,238,255,0.45)' }}>
+      <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, color: 'rgba(224,238,255,0.45)' }}>
         {label}
       </span>
     </div>

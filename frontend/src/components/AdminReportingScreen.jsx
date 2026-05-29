@@ -37,10 +37,10 @@ const T = {
 };
 
 const FONTS = {
-  display: "'Space Grotesk', system-ui, sans-serif",
-  body:    "'Plus Jakarta Sans', system-ui, sans-serif",
-  ui:      "'DM Sans', system-ui, sans-serif",
-  mono:    "'IBM Plex Mono', 'Courier New', monospace",
+  display: "'Fraunces', Georgia, serif",
+  body:    "'Hanken Grotesk', system-ui, sans-serif",
+  ui:      "'Hanken Grotesk', system-ui, sans-serif",
+  mono:    "'Hanken Grotesk', system-ui, sans-serif",
 };
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
@@ -169,7 +169,7 @@ function LineChart({ primary, comparison, unit, height = 220 }) {
       {yLabels.map(({ v, y }, i) => (
         <text key={i} x={PAD.left - 6} y={y + 4}
           fill={T.textMuted} fontSize="10" textAnchor="end"
-          fontFamily="'IBM Plex Mono', monospace">
+          fontFamily="'Hanken Grotesk', system-ui, sans-serif">
           {fmtValue(v, unit)}
         </text>
       ))}
@@ -178,7 +178,7 @@ function LineChart({ primary, comparison, unit, height = 220 }) {
       {xLabels.map(({ t, x }, i) => (
         <text key={i} x={x} y={H - 8}
           fill={T.textMuted} fontSize="10" textAnchor="middle"
-          fontFamily="'IBM Plex Mono', monospace">
+          fontFamily="'Hanken Grotesk', system-ui, sans-serif">
           {fmtDate(t.slice(0, 10))}
         </text>
       ))}

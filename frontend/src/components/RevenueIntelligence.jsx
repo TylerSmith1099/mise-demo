@@ -3,7 +3,7 @@
 //
 // Layout: compact summary (default) → expanded blocks on tap → drill-down bottom sheet.
 // 375px-first: all 5 department rows + header fit in one viewport without scroll.
-// IBM Plex Mono (font-data) for numbers; DM Sans (font-sans) for labels.
+// Hanken Grotesk (font-data, tabular-nums) for numbers and labels (MIS-640).
 // Status colours: mint=#00E87A (green), amber=#E8A020, red=#E85050.
 // Trend direction is REVERSED vs revenue: +X% means labour rising = bad (red).
 
@@ -70,7 +70,7 @@ function CompactRow({ dept, isRtv }) {
       {/* Department label */}
       <span className="truncate text-[13px] text-cream/90">{dept.label}</span>
 
-      {/* Labour % — IBM Plex Mono, status colour */}
+      {/* Labour % — Hanken Grotesk tabular-nums, status colour */}
       <span
         className="font-data text-[14px] font-bold text-right"
         style={{ color: early ? '#E0EEFF66' : statusColor(dept.status) }}
@@ -92,7 +92,7 @@ function CompactRow({ dept, isRtv }) {
         {dept.benchmark.label}
       </span>
 
-      {/* Trend — IBM Plex Mono */}
+      {/* Trend — Hanken Grotesk tabular-nums */}
       <span
         className="font-data text-[12px] text-right"
         style={{ color: trendColor(dept.trend?.delta) }}

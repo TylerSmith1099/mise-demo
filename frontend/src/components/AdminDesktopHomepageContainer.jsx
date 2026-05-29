@@ -362,11 +362,11 @@ function LoadingScreen() {
       <div style={{
         width: 56, height: 56, border: '1px solid rgba(46,107,174,0.5)', borderRadius: 8,
         display: 'flex', alignItems: 'center', justifyContent: 'center',
-        fontFamily: "'Space Grotesk', system-ui, sans-serif",
+        fontFamily: "'Fraunces', Georgia, serif",
         fontSize: 24, fontWeight: 700, color: '#2E6BAE',
       }}>M</div>
       <p style={{
-        fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13,
+        fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 13,
         color: 'rgba(122,170,208,0.8)', margin: 0,
       }}>Loading dashboard…</p>
     </div>
@@ -380,13 +380,13 @@ function ErrorScreen({ message, onRetry }) {
       background: '#090F1A', flexDirection: 'column', gap: 16,
     }}>
       <p style={{
-        fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14,
+        fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 14,
         color: '#E85050', margin: 0, textAlign: 'center', maxWidth: 360,
       }}>{message || 'Failed to load dashboard data.'}</p>
       <button
         onClick={onRetry}
         style={{
-          fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 13,
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 13,
           background: 'transparent', border: '1px solid rgba(46,107,174,0.4)',
           color: '#2E6BAE', borderRadius: 4, padding: '8px 20px', cursor: 'pointer',
         }}

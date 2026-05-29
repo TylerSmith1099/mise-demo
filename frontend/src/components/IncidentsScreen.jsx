@@ -31,10 +31,11 @@ const T = {
   charcoal:  'var(--charcoal)',
 };
 
-const FONT_DISPLAY   = "'Space Grotesk', system-ui, sans-serif";
-const FONT_EDITORIAL = "'Plus Jakarta Sans', system-ui, sans-serif";
-const FONT_SANS      = "'DM Sans', system-ui, sans-serif";
-const FONT_DATA      = "'IBM Plex Mono', monospace";
+// MIS-640: Fraunces + Hanken Grotesk (board confirmed 2026-05-29)
+const FONT_DISPLAY   = "'Fraunces', Georgia, serif";
+const FONT_EDITORIAL = "'Hanken Grotesk', system-ui, sans-serif";
+const FONT_SANS      = "'Hanken Grotesk', system-ui, sans-serif";
+const FONT_DATA      = "'Hanken Grotesk', system-ui, sans-serif";
 
 // ---- Severity colour map ---------------------------------------------------
 function severityColour(level) {

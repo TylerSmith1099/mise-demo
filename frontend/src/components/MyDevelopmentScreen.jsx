@@ -73,7 +73,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
         <p
           style={{
             margin: '0 0 4px',
-            fontFamily: "'IBM Plex Mono', monospace",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 12,
             fontWeight: 600,
             letterSpacing: '0.1em',
@@ -86,7 +86,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
         <h1
           style={{
             margin: '0 0 2px',
-            fontFamily: "'Space Grotesk', system-ui, sans-serif",
+            fontFamily: "'Fraunces', Georgia, serif",
             fontSize: 22,
             fontWeight: 700,
             color: 'var(--cream)',
@@ -98,7 +98,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
         <p
           style={{
             margin: 0,
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 14,
             color: 'var(--text-sub)',
           }}
@@ -110,7 +110,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
           <p
             style={{
               margin: '8px 0 0',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               color: 'var(--text-muted)',
             }}
@@ -146,7 +146,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
               <p
                 style={{
                   margin: '0 0 8px',
-                  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                  fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                   fontSize: 14,
                   color: 'var(--text-sub)',
                   lineHeight: 1.4,
@@ -157,7 +157,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
               <p
                 style={{
                   margin: 0,
-                  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                  fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                   fontSize: 15,
                   color: 'var(--cream)',
                   lineHeight: 1.5,
@@ -218,7 +218,7 @@ export default function MyDevelopmentScreen({ onAuthError }) {
             <p
               style={{
                 margin: 0,
-                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 14,
                 color: 'var(--mint)',
                 lineHeight: 1.5,
@@ -241,7 +241,7 @@ function Section({ title, children }) {
       <p
         style={{
           margin: '0 0 10px',
-          fontFamily: "'IBM Plex Mono', monospace",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 12,
           fontWeight: 600,
           letterSpacing: '0.08em',
@@ -277,7 +277,7 @@ function KnowledgeAreaRow({ area }) {
         <p
           style={{
             margin: 0,
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 15,
             fontWeight: 500,
             color: 'var(--cream)',
@@ -290,7 +290,7 @@ function KnowledgeAreaRow({ area }) {
           <p
             style={{
               margin: '2px 0 0',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               color: 'var(--text-muted)',
               lineHeight: 1,
@@ -324,7 +324,7 @@ function KnowledgeAreaRow({ area }) {
         </span>
         <span
           style={{
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 13,
             fontWeight: 600,
             color: sig.color,
@@ -355,7 +355,7 @@ function CertRow({ cert, isLast }) {
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <span
           style={{
-            fontFamily: "'IBM Plex Mono', monospace",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 14,
             fontWeight: 700,
             color: config.color,
@@ -368,7 +368,7 @@ function CertRow({ cert, isLast }) {
         </span>
         <span
           style={{
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 15,
             fontWeight: 600,
             color: 'var(--cream)',
@@ -382,7 +382,7 @@ function CertRow({ cert, isLast }) {
         <p
           style={{
             margin: 0,
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 14,
             fontWeight: 500,
             color: config.color,
@@ -395,7 +395,7 @@ function CertRow({ cert, isLast }) {
           <p
             style={{
               margin: '2px 0 0',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               color: 'var(--text-muted)',
               lineHeight: 1,
@@ -422,7 +422,7 @@ function NudgeCard({ nudge }) {
       <p
         style={{
           margin: '0 0 12px',
-          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 15,
           color: 'var(--cream)',
           lineHeight: 1.5,
@@ -441,7 +441,7 @@ function NudgeCard({ nudge }) {
             borderRadius: 8,
             border: 'none',
             cursor: 'pointer',
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 14,
             fontWeight: 600,
             color: 'var(--charcoal)',
@@ -470,7 +470,7 @@ function EmptyProfileState() {
       <p
         style={{
           margin: 0,
-          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 15,
           color: 'var(--text-sub)',
           lineHeight: 1.5,
@@ -497,7 +497,7 @@ function LoadingState() {
     >
       <div
         style={{
-          fontFamily: "'IBM Plex Mono', monospace",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 14,
           color: 'var(--text-sub)',
         }}
@@ -524,7 +524,7 @@ function ErrorState() {
       <p
         style={{
           margin: 0,
-          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 15,
           color: 'var(--text-sub)',
           textAlign: 'center',

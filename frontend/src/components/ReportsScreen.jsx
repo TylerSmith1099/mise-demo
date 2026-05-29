@@ -31,7 +31,7 @@ function spark(periods, W=80, H=28) {
 
 function Chip({ label, active, colour, onClick }) {
   return (
-    <button type="button" onClick={onClick} style={{ display:'inline-flex', alignItems:'center', gap:5, paddingInline:10, paddingBlock:5, borderRadius:20, border:`1px solid ${active ? colour||'var(--gold)' : 'rgba(234,200,138,0.2)'}`, background: active ? (colour ? colour+'22' : 'rgba(234,200,138,0.12)') : 'transparent', cursor:'pointer', fontFamily:"'DM Sans', sans-serif", fontSize:13, fontWeight: active?600:400, color: active ? (colour||'var(--gold)') : 'var(--cream-60)', whiteSpace:'nowrap', minHeight:32 }}>
+    <button type="button" onClick={onClick} style={{ display:'inline-flex', alignItems:'center', gap:5, paddingInline:10, paddingBlock:5, borderRadius:20, border:`1px solid ${active ? colour||'var(--gold)' : 'rgba(234,200,138,0.2)'}`, background: active ? (colour ? colour+'22' : 'rgba(234,200,138,0.12)') : 'transparent', cursor:'pointer', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, fontWeight: active?600:400, color: active ? (colour||'var(--gold)') : 'var(--cream-60)', whiteSpace:'nowrap', minHeight:32 }}>
       {colour && <span style={{ width:8, height:8, borderRadius:'50%', background:colour, flexShrink:0 }} aria-hidden="true" />}
       {label}
     </button>
@@ -41,13 +41,13 @@ function Chip({ label, active, colour, onClick }) {
 function VPill({ value }) {
   if (value == null) return <span style={{ color:'var(--cream-40)', fontSize:12 }}>—</span>;
   const pos = value >= 0;
-  return <span style={{ display:'inline-flex', alignItems:'center', paddingInline:7, paddingBlock:2, borderRadius:10, background: pos ? 'rgba(0,232,122,0.12)' : 'rgba(232,80,80,0.12)', color: pos ? '#00E87A' : '#E85050', fontFamily:"'IBM Plex Mono', monospace", fontSize:11, fontWeight:600 }}>{fmtV(value)}</span>;
+  return <span style={{ display:'inline-flex', alignItems:'center', paddingInline:7, paddingBlock:2, borderRadius:10, background: pos ? 'rgba(0,232,122,0.12)' : 'rgba(232,80,80,0.12)', color: pos ? '#00E87A' : '#E85050', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:11, fontWeight:600 }}>{fmtV(value)}</span>;
 }
 
 function Trend({ t }) {
   if (t == null) return null;
   const up = t >= 0;
-  return <span style={{ color: up ? '#00E87A' : '#E85050', fontFamily:"'IBM Plex Mono', monospace", fontSize:12, fontWeight:600 }}>{up?'↑':'↓'} {Math.abs(t).toFixed(1)}%</span>;
+  return <span style={{ color: up ? '#00E87A' : '#E85050', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:12, fontWeight:600 }}>{up?'↑':'↓'} {Math.abs(t).toFixed(1)}%</span>;
 }
 
 function ChannelCard({ ch, grain, expanded, onToggle }) {
@@ -58,17 +58,17 @@ function ChannelCard({ ch, grain, expanded, onToggle }) {
     <div style={{ borderRadius:16, border:`1px solid ${col}33`, background:'var(--surface)', overflow:'hidden' }}>
       <button type="button" onClick={onToggle} aria-expanded={expanded} style={{ width:'100%', display:'flex', alignItems:'center', gap:10, padding:'12px 14px', background:'none', border:'none', cursor:'pointer', textAlign:'left', minHeight:44 }}>
         <span style={{ width:10, height:10, borderRadius:'50%', background:col, flexShrink:0 }} aria-hidden="true" />
-        <span style={{ flex:1, fontFamily:"'Space Grotesk', sans-serif", fontSize:15, fontWeight:600, color:'var(--cream)' }}>{ch.label}</span>
+        <span style={{ flex:1, fontFamily:"'Fraunces', Georgia, serif", fontSize:15, fontWeight:600, color:'var(--cream)' }}>{ch.label}</span>
         {sp && <svg width="80" height="28" viewBox="0 0 80 28" aria-hidden="true" style={{ flexShrink:0 }}><path d={sp} fill="none" stroke={col} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" /></svg>}
-        {latest && <span style={{ fontFamily:"'IBM Plex Mono', monospace", fontSize:13, fontWeight:700, color:'var(--cream)', minWidth:52, textAlign:'right' }}>{fmtD(latest.actual)}</span>}
+        {latest && <span style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, fontWeight:700, color:'var(--cream)', minWidth:52, textAlign:'right' }}>{fmtD(latest.actual)}</span>}
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cream-40)" strokeWidth="2" strokeLinecap="round" style={{ flexShrink:0, transform: expanded ? 'rotate(180deg)' : 'none', transition:'transform 0.2s' }} aria-hidden="true"><path d="m6 9 6 6 6-6" /></svg>
       </button>
 
       {latest && (
         <div style={{ display:'grid', gridTemplateColumns:'1fr 1fr 1fr 1fr', borderTop:`1px solid ${col}22`, borderBottom: expanded ? `1px solid ${col}22` : 'none' }}>
-          {[['Actual', <span style={{ fontFamily:"'IBM Plex Mono', monospace", fontSize:13, fontWeight:700, color:'var(--cream)' }}>{fmtD(latest.actual)}</span>], ['Target', <span style={{ fontFamily:"'IBM Plex Mono', monospace", fontSize:13, color:'var(--cream-60)' }}>{fmtD(latest.target)}</span>], ['Variance', <VPill value={latest.variance} />], ['Trend', <Trend t={latest.trend} />]].map(([lbl, node], i) => (
+          {[['Actual', <span style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, fontWeight:700, color:'var(--cream)' }}>{fmtD(latest.actual)}</span>], ['Target', <span style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, color:'var(--cream-60)' }}>{fmtD(latest.target)}</span>], ['Variance', <VPill value={latest.variance} />], ['Trend', <Trend t={latest.trend} />]].map(([lbl, node], i) => (
             <div key={lbl} style={{ display:'flex', flexDirection:'column', alignItems:'center', padding:'8px 4px', borderLeft: i > 0 ? `1px solid ${col}22` : 'none' }}>
-              <span style={{ fontFamily:"'IBM Plex Mono', monospace", fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', color:'var(--cream-40)' }}>{lbl}</span>
+              <span style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', color:'var(--cream-40)' }}>{lbl}</span>
               <span style={{ marginTop:3 }}>{node}</span>
             </div>
           ))}
@@ -78,13 +78,13 @@ function ChannelCard({ ch, grain, expanded, onToggle }) {
       {expanded && ch.periods.length > 0 && (
         <div style={{ overflowX:'auto' }}>
           <table style={{ width:'100%', borderCollapse:'collapse' }} aria-label={`${ch.label} history`}>
-            <thead><tr>{['Period','Actual','Target','Variance','Trend'].map((h,i) => <th key={h} style={{ padding:'6px 10px', fontFamily:"'IBM Plex Mono', monospace", fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', color:'var(--cream-40)', fontWeight:600, textAlign: i===0?'left':'right', background:'rgba(0,0,0,0.15)', whiteSpace:'nowrap' }}>{h}</th>)}</tr></thead>
+            <thead><tr>{['Period','Actual','Target','Variance','Trend'].map((h,i) => <th key={h} style={{ padding:'6px 10px', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:10, letterSpacing:'0.08em', textTransform:'uppercase', color:'var(--cream-40)', fontWeight:600, textAlign: i===0?'left':'right', background:'rgba(0,0,0,0.15)', whiteSpace:'nowrap' }}>{h}</th>)}</tr></thead>
             <tbody>
               {[...ch.periods].reverse().slice(0, 30).map(p => (
                 <tr key={p.period} style={{ borderTop:`1px solid ${col}14` }}>
-                  <td style={{ padding:'7px 10px', fontFamily:"'DM Sans', sans-serif", fontSize:13, color:'var(--cream-80)', whiteSpace:'nowrap' }}>{fmtP(p.period, grain)}</td>
-                  <td style={{ padding:'7px 10px', fontFamily:"'IBM Plex Mono', monospace", fontSize:12, color:'var(--cream)', textAlign:'right', fontWeight:600 }}>{fmtD(p.actual)}</td>
-                  <td style={{ padding:'7px 10px', fontFamily:"'IBM Plex Mono', monospace", fontSize:12, color:'var(--cream-60)', textAlign:'right' }}>{fmtD(p.target)}</td>
+                  <td style={{ padding:'7px 10px', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, color:'var(--cream-80)', whiteSpace:'nowrap' }}>{fmtP(p.period, grain)}</td>
+                  <td style={{ padding:'7px 10px', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:12, color:'var(--cream)', textAlign:'right', fontWeight:600 }}>{fmtD(p.actual)}</td>
+                  <td style={{ padding:'7px 10px', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:12, color:'var(--cream-60)', textAlign:'right' }}>{fmtD(p.target)}</td>
                   <td style={{ padding:'7px 10px', textAlign:'right' }}><VPill value={p.variance} /></td>
                   <td style={{ padding:'7px 10px', textAlign:'right' }}><Trend t={p.trend} /></td>
                 </tr>
@@ -125,8 +125,8 @@ export default function ReportsScreen({ onAuthError }) {
     <section data-testid="reports-screen" style={{ display:'flex', flexDirection:'column', gap:14, width:'100%', maxWidth:420, margin:'0 auto' }} aria-label="Channel revenue reports">
       <header style={{ display:'flex', alignItems:'baseline', justifyContent:'space-between', paddingInline:2 }}>
         <div>
-          <p style={{ fontFamily:"'IBM Plex Mono', monospace", fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--cream-40)', margin:0 }}>Reports</p>
-          <h2 style={{ fontFamily:"'Space Grotesk', sans-serif", fontSize:16, fontWeight:700, color:'var(--gold)', margin:0 }}>Revenue by Channel</h2>
+          <p style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:11, letterSpacing:'0.1em', textTransform:'uppercase', color:'var(--cream-40)', margin:0 }}>Reports</p>
+          <h2 style={{ fontFamily:"'Fraunces', Georgia, serif", fontSize:16, fontWeight:700, color:'var(--gold)', margin:0 }}>Revenue by Channel</h2>
         </div>
         {st.status === 'loading' && <div style={{ width:16, height:16, border:'2px solid rgba(234,200,138,0.3)', borderTopColor:'var(--gold)', borderRadius:'50%', animation:'spin 0.8s linear infinite' }} />}
       </header>
@@ -143,8 +143,8 @@ export default function ReportsScreen({ onAuthError }) {
 
       {st.status === 'error' && (
         <div style={{ display:'flex', flexDirection:'column', alignItems:'center', padding:'32px 20px', gap:8 }}>
-          <p style={{ fontFamily:"'Space Grotesk', sans-serif", fontSize:15, fontWeight:600, color:'var(--cream)', margin:0 }}>Couldn't load reports</p>
-          <button type="button" onClick={load} style={{ marginTop:8, paddingInline:16, paddingBlock:8, borderRadius:20, border:'1px solid var(--gold-25)', background:'transparent', color:'var(--gold)', fontFamily:"'DM Sans', sans-serif", fontSize:13, cursor:'pointer', minHeight:44 }}>Retry</button>
+          <p style={{ fontFamily:"'Fraunces', Georgia, serif", fontSize:15, fontWeight:600, color:'var(--cream)', margin:0 }}>Couldn't load reports</p>
+          <button type="button" onClick={load} style={{ marginTop:8, paddingInline:16, paddingBlock:8, borderRadius:20, border:'1px solid var(--gold-25)', background:'transparent', color:'var(--gold)', fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, cursor:'pointer', minHeight:44 }}>Retry</button>
         </div>
       )}
 
@@ -156,14 +156,14 @@ export default function ReportsScreen({ onAuthError }) {
           }
           {st.status === 'ready' && (st.data?.channels||[]).length === 0 && (
             <div style={{ display:'flex', flexDirection:'column', alignItems:'center', padding:'32px 20px', gap:6 }}>
-              <p style={{ fontFamily:"'Space Grotesk', sans-serif", fontSize:15, fontWeight:600, color:'var(--cream)', margin:0 }}>No data for this range</p>
-              <p style={{ fontFamily:"'DM Sans', sans-serif", fontSize:13, color:'var(--cream-55)', margin:0 }}>Try a wider date range or different channels.</p>
+              <p style={{ fontFamily:"'Fraunces', Georgia, serif", fontSize:15, fontWeight:600, color:'var(--cream)', margin:0 }}>No data for this range</p>
+              <p style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:13, color:'var(--cream-55)', margin:0 }}>Try a wider date range or different channels.</p>
             </div>
           )}
         </div>
       )}
 
-      {st.data?.scopeClamped && <p style={{ fontFamily:"'IBM Plex Mono', monospace", fontSize:11, color:'var(--cream-40)', textAlign:'center', margin:0 }}>Range limited to 7 days for your role.</p>}
+      {st.data?.scopeClamped && <p style={{ fontFamily:"'Hanken Grotesk', system-ui, sans-serif", fontSize:11, color:'var(--cream-40)', textAlign:'center', margin:0 }}>Range limited to 7 days for your role.</p>}
 
       <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
     </section>

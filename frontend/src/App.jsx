@@ -293,7 +293,7 @@ export default function App() {
           border: '1px solid rgba(46, 107, 174, 0.5)',
           borderRadius: 8,
           display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontFamily: "'Space Grotesk', system-ui, sans-serif",
+          fontFamily: "'Fraunces', Georgia, serif",
           fontSize: 24, fontWeight: 700,
           color: 'var(--gold)',
         }}>
@@ -373,7 +373,7 @@ export default function App() {
           </svg>
           <span
             style={{
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               fontWeight: 600,
               letterSpacing: '0.1em',
@@ -505,7 +505,7 @@ function ComingSoon({ label }) {
     >
       <h1
         style={{
-          fontFamily: "'Space Grotesk', system-ui, sans-serif",
+          fontFamily: "'Fraunces', Georgia, serif",
           fontSize: 24,
           fontWeight: 700,
           color: 'var(--gold)',
@@ -517,7 +517,7 @@ function ComingSoon({ label }) {
       </h1>
       <p
         style={{
-          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 16,
           color: 'var(--cream-60)',
           margin: 0,

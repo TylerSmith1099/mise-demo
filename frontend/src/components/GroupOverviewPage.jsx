@@ -42,10 +42,10 @@ const T = {
 };
 
 const FONTS = {
-  head:  "'Space Grotesk', system-ui, sans-serif",
-  body:  "'Plus Jakarta Sans', system-ui, sans-serif",
-  ui:    "'DM Sans', system-ui, sans-serif",
-  mono:  "'IBM Plex Mono', 'Courier New', monospace",
+  head:  "'Fraunces', Georgia, serif",
+  body:  "'Hanken Grotesk', system-ui, sans-serif",
+  ui:    "'Hanken Grotesk', system-ui, sans-serif",
+  mono:  "'Hanken Grotesk', system-ui, sans-serif",
 };
 
 // ── Injected CSS (keyframes + responsive + hover) ─────────────────────────
@@ -81,7 +81,7 @@ const PAGE_CSS = `
                       padding: 14px 16px !important; gap: 10px !important; }
     .grp-venue-cells { display: grid !important;
                        grid-template-columns: repeat(4, 1fr) !important; gap: 8px; }
-    .grp-cell-label { font-family: 'DM Sans',system-ui,sans-serif; font-size: 10px;
+    .grp-cell-label { font-family: 'Hanken Grotesk',system-ui,sans-serif; font-size: 10px;
                       text-transform: uppercase; letter-spacing: 0.08em;
                       color: #3A6090; margin-bottom: 2px; }
     .grp-drill-col  { display: none !important; }
@@ -96,7 +96,7 @@ const PAGE_CSS = `
                       padding: 12px 16px !important; gap: 8px !important; }
     .grp-venue-cells { display: grid !important;
                        grid-template-columns: repeat(4, 1fr) !important; gap: 6px; }
-    .grp-cell-label { font-family: 'DM Sans',system-ui,sans-serif; font-size: 10px;
+    .grp-cell-label { font-family: 'Hanken Grotesk',system-ui,sans-serif; font-size: 10px;
                       text-transform: uppercase; letter-spacing: 0.08em;
                       color: #3A6090; margin-bottom: 2px; }
     .grp-drill-col  { display: none !important; }

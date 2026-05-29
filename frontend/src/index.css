@@ -1,7 +1,9 @@
 /* Mise brand system — Deep Meridian LOCKED (MIS-463 / MIS-514).
    Source of truth: Mise-Brand-DeepMeridian-LOCKED-V1.html (board confirmed 2026-05-25).
    Tailwind v4: brand tokens declared in @theme become utilities
-   (bg-charcoal, text-cream, text-gold, font-data, font-display, font-editorial). */
+   (bg-charcoal, text-cream, text-gold, font-data, font-display, font-editorial).
+   Font update MIS-640 (board confirmed 2026-05-29): Fraunces + Hanken Grotesk replaces
+   Space Grotesk + Plus Jakarta Sans + IBM Plex Mono. Mono removed from all UI contexts. */
 @import 'tailwindcss';
 
 @theme {
@@ -40,11 +42,13 @@
   --color-text-sub:    #7aaad0;
   --color-text-muted:  #3a6090;
 
-  /* Fonts — Deep Meridian four-family system */
-  --font-display:   'Space Grotesk', system-ui, sans-serif;      /* screen titles, headings */
-  --font-editorial: 'Plus Jakarta Sans', system-ui, sans-serif;  /* body copy, message text */
-  --font-sans:      'DM Sans', system-ui, -apple-system, sans-serif; /* UI labels, nav, buttons */
-  --font-data:      'IBM Plex Mono', ui-monospace, 'SF Mono', Menlo, monospace; /* numbers, metrics, timestamps */
+  /* Fonts — Deep Meridian + Pairing 01 (board MIS-640 2026-05-29)
+     Fraunces (variable OPTICAL/SOFT/WONK, OFL): display / headings
+     Hanken Grotesk (OFL): body, UI labels, data/numbers — no mono in UI */
+  --font-display:   'Fraunces', Georgia, serif;                  /* screen titles, headings */
+  --font-editorial: 'Hanken Grotesk', system-ui, sans-serif;     /* body copy, message text */
+  --font-sans:      'Hanken Grotesk', system-ui, sans-serif;     /* UI labels, nav, buttons */
+  --font-data:      'Hanken Grotesk', system-ui, sans-serif;     /* numbers, metrics, timestamps — tabular-nums via .font-data rule below */
 }
 
 /* Deep Meridian CSS custom properties — LOCKED 2026-05-25 */
@@ -108,6 +112,13 @@ body {
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+}
+
+/* Tabular lining numerals for all data-layer elements (MIS-640: Hanken Grotesk
+   handles data contexts; tnum/lnum ensure column alignment without mono). */
+.font-data {
+  font-variant-numeric: tabular-nums lining-nums;
+  font-feature-settings: "tnum" 1, "lnum" 1;
 }
 
 /* Respect the iOS safe area / notch on a floor phone. */

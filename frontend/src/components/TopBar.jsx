@@ -1,5 +1,6 @@
 // TopBar — Deep Meridian spec (MIS-463). Persistent 44px header.
-// Layout: MISE logotype (gold, Space Grotesk) | venue name (cream, centred) | hamburger
+// Layout: MISE logotype (gold, Fraunces) | venue name (cream, centred) | hamburger
+// Font: Fraunces + Hanken Grotesk (MIS-640, board confirmed 2026-05-29)
 // All content from GET /api/session — never hardcoded.
 //
 // Props:
@@ -26,7 +27,7 @@ export default function TopBar({ session, onMenuToggle }) {
     >
       <span
         style={{
-          fontFamily: "'Space Grotesk', system-ui, sans-serif",
+          fontFamily: "'Fraunces', Georgia, serif",
           fontWeight: 700,
           fontSize: 14,
           letterSpacing: '0.22em',
@@ -40,7 +41,7 @@ export default function TopBar({ session, onMenuToggle }) {
 
       <span
         style={{
-          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 13,
           fontStyle: 'italic',
           color: 'var(--cream-60)',

@@ -42,10 +42,11 @@ const C = {
   surface:     'rgba(255,255,255,0.04)',
   border:      'rgba(46,107,174,0.20)',
 };
-const serif = "'Space Grotesk', system-ui, sans-serif";
-const slab  = "'Plus Jakarta Sans', system-ui, sans-serif";
-const mono  = "'IBM Plex Mono', monospace";
-const sans  = "'DM Sans', system-ui, sans-serif";
+// MIS-640: Fraunces + Hanken Grotesk (board confirmed 2026-05-29)
+const serif = "'Fraunces', Georgia, serif";
+const slab  = "'Hanken Grotesk', system-ui, sans-serif";
+const mono  = "'Hanken Grotesk', system-ui, sans-serif";
+const sans  = "'Hanken Grotesk', system-ui, sans-serif";
 
 // ---------------------------------------------------------------------------
 // Triage question definitions.

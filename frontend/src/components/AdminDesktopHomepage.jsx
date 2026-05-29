@@ -35,11 +35,12 @@ const T = {
   amberBg:    'rgba(232,160,32,0.10)',
 };
 
+// MIS-640: Fraunces + Hanken Grotesk (board confirmed 2026-05-29)
 const FONTS = {
-  display: "'Space Grotesk', system-ui, sans-serif",
-  body:    "'Plus Jakarta Sans', system-ui, sans-serif",
-  ui:      "'DM Sans', system-ui, sans-serif",
-  mono:    "'IBM Plex Mono', 'Courier New', monospace",
+  display: "'Fraunces', Georgia, serif",
+  body:    "'Hanken Grotesk', system-ui, sans-serif",
+  ui:      "'Hanken Grotesk', system-ui, sans-serif",
+  mono:    "'Hanken Grotesk', system-ui, sans-serif",
 };
 
 // ─── Inline styles helpers ────────────────────────────────────────────────────

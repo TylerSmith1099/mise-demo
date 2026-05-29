@@ -48,16 +48,16 @@ function ServiceSection({ service }) {
     <div style={{ borderRadius: 16, border: '1px solid var(--gold-25)', background: 'var(--surface)', overflow: 'hidden' }}>
       {/* Section header */}
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '10px 14px', borderBottom: '1px solid rgba(234,200,138,0.12)' }}>
-        <span style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 15, fontWeight: 600, color: 'var(--gold)' }}>
+        <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: 15, fontWeight: 600, color: 'var(--gold)' }}>
           {service.label}
         </span>
         <div style={{ display: 'flex', gap: 10, alignItems: 'center' }}>
           {vips > 0 && (
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, fontWeight: 600, color: '#E8A020', background: 'rgba(232,160,32,0.12)', paddingInline: 8, paddingBlock: 3, borderRadius: 10 }}>
+            <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 11, fontWeight: 600, color: '#E8A020', background: 'rgba(232,160,32,0.12)', paddingInline: 8, paddingBlock: 3, borderRadius: 10 }}>
               {vips} VIP
             </span>
           )}
-          <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: 'var(--cream-60)' }}>
+          <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, color: 'var(--cream-60)' }}>
             {service.bookings.length} bookings · {total} pax
           </span>
         </div>
@@ -77,24 +77,24 @@ function ServiceSection({ service }) {
             }}
           >
             {/* Time */}
-            <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, fontWeight: 600, color: 'var(--cream-80)', minWidth: 40, flexShrink: 0 }}>
+            <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 13, fontWeight: 600, color: 'var(--cream-80)', minWidth: 40, flexShrink: 0 }}>
               {b.slotTime || '—'}
             </span>
 
             {/* Guest info */}
             <div style={{ flex: 1, minWidth: 0 }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                <span style={{ fontFamily: "'DM Sans', system-ui, sans-serif", fontSize: 14, fontWeight: 500, color: 'var(--cream)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 14, fontWeight: 500, color: 'var(--cream)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {b.guestName}
                 </span>
                 {b.isVip && (
-                  <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 10, fontWeight: 700, color: '#E8A020', background: 'rgba(232,160,32,0.15)', paddingInline: 5, paddingBlock: 2, borderRadius: 6, flexShrink: 0 }}>
+                  <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 10, fontWeight: 700, color: '#E8A020', background: 'rgba(232,160,32,0.15)', paddingInline: 5, paddingBlock: 2, borderRadius: 6, flexShrink: 0 }}>
                     VIP
                   </span>
                 )}
               </div>
               {b.notes && (
-                <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 12, color: 'var(--cream-55)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                <p style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, color: 'var(--cream-55)', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                   {b.notes}
                 </p>
               )}
@@ -107,7 +107,7 @@ function ServiceSection({ service }) {
                 <circle cx="9" cy="7" r="4" />
                 <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
               </svg>
-              <span style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 13, color: 'var(--cream-80)', fontWeight: 600 }}>
+              <span style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 13, color: 'var(--cream-80)', fontWeight: 600 }}>
                 {b.partySize}
               </span>
             </div>
@@ -115,7 +115,7 @@ function ServiceSection({ service }) {
             {/* Status pill */}
             <span
               style={{
-                fontFamily: "'IBM Plex Mono', monospace",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 10,
                 fontWeight: 600,
                 letterSpacing: '0.06em',
@@ -167,7 +167,7 @@ export default function BookingsScreen({ onAuthError }) {
       {/* Header + date navigation */}
       <header style={{ display: 'flex', flexDirection: 'column', gap: 10, paddingInline: 2 }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
-          <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--cream-40)', margin: 0 }}>
+          <p style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 11, letterSpacing: '0.1em', textTransform: 'uppercase', color: 'var(--cream-40)', margin: 0 }}>
             Bookings
           </p>
           {state.status === 'loading' && (
@@ -187,11 +187,11 @@ export default function BookingsScreen({ onAuthError }) {
           </button>
 
           <div style={{ flex: 1, textAlign: 'center' }}>
-            <h2 style={{ fontFamily: "'Space Grotesk', system-ui, sans-serif", fontSize: 17, fontWeight: 700, color: 'var(--gold)', margin: 0 }}>
+            <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: 17, fontWeight: 700, color: 'var(--gold)', margin: 0 }}>
               {fmtDate(date)}
             </h2>
             {state.status === 'ready' && totalBookings > 0 && (
-              <p style={{ fontFamily: "'IBM Plex Mono', monospace", fontSize: 12, color: 'var(--cream-60)', margin: 0 }}>
+              <p style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 12, color: 'var(--cream-60)', margin: 0 }}>
                 {totalBookings} bookings · {totalPax} pax
               </p>
             )}
@@ -212,7 +212,7 @@ export default function BookingsScreen({ onAuthError }) {
           <button
             type="button"
             onClick={() => setDate(brisToday())}
-            style={{ alignSelf: 'center', paddingInline: 14, paddingBlock: 5, borderRadius: 16, border: '1px solid var(--gold-25)', background: 'transparent', cursor: 'pointer', fontFamily: "'DM Sans', sans-serif", fontSize: 13, color: 'var(--gold)', minHeight: 32 }}
+            style={{ alignSelf: 'center', paddingInline: 14, paddingBlock: 5, borderRadius: 16, border: '1px solid var(--gold-25)', background: 'transparent', cursor: 'pointer', fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 13, color: 'var(--gold)', minHeight: 32 }}
           >
             Back to Today
           </button>
@@ -222,8 +222,8 @@ export default function BookingsScreen({ onAuthError }) {
       {/* Error state */}
       {state.status === 'error' && (
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '32px 20px', gap: 8 }}>
-          <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 15, fontWeight: 600, color: 'var(--cream)', margin: 0 }}>Couldn't load bookings</p>
-          <button type="button" onClick={() => load(date)} style={{ marginTop: 8, paddingInline: 16, paddingBlock: 8, borderRadius: 20, border: '1px solid var(--gold-25)', background: 'transparent', color: 'var(--gold)', fontFamily: "'DM Sans', sans-serif", fontSize: 13, cursor: 'pointer', minHeight: 44 }}>Retry</button>
+          <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: 15, fontWeight: 600, color: 'var(--cream)', margin: 0 }}>Couldn't load bookings</p>
+          <button type="button" onClick={() => load(date)} style={{ marginTop: 8, paddingInline: 16, paddingBlock: 8, borderRadius: 20, border: '1px solid var(--gold-25)', background: 'transparent', color: 'var(--gold)', fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 13, cursor: 'pointer', minHeight: 44 }}>Retry</button>
         </div>
       )}
 
@@ -244,8 +244,8 @@ export default function BookingsScreen({ onAuthError }) {
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="var(--cream-40)" strokeWidth="1.5" strokeLinecap="round" aria-hidden="true">
                 <rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" />
               </svg>
-              <p style={{ fontFamily: "'Space Grotesk', sans-serif", fontSize: 16, fontWeight: 600, color: 'var(--cream)', margin: 0 }}>No bookings</p>
-              <p style={{ fontFamily: "'DM Sans', sans-serif", fontSize: 14, color: 'var(--cream-55)', margin: 0, textAlign: 'center' }}>No bookings found for {fmtDate(date)}.</p>
+              <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: 16, fontWeight: 600, color: 'var(--cream)', margin: 0 }}>No bookings</p>
+              <p style={{ fontFamily: "'Hanken Grotesk', system-ui, sans-serif", fontSize: 14, color: 'var(--cream-55)', margin: 0, textAlign: 'center' }}>No bookings found for {fmtDate(date)}.</p>
             </div>
           ) : (
             <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>

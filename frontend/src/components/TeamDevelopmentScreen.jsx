@@ -67,7 +67,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
         <p
           style={{
             margin: '0 0 4px',
-            fontFamily: "'IBM Plex Mono', monospace",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 12,
             fontWeight: 600,
             letterSpacing: '0.1em',
@@ -80,7 +80,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
         <h1
           style={{
             margin: 0,
-            fontFamily: "'Space Grotesk', system-ui, sans-serif",
+            fontFamily: "'Fraunces', Georgia, serif",
             fontSize: 20,
             fontWeight: 700,
             color: 'var(--cream)',
@@ -92,7 +92,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
         <p
           style={{
             margin: '4px 0 0',
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 13,
             color: 'var(--text-muted)',
           }}
@@ -112,7 +112,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
           <p
             style={{
               margin: '0 0 10px',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               fontWeight: 600,
               letterSpacing: '0.08em',
@@ -137,7 +137,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
             <p
               style={{
                 margin: '0 0 10px',
-                fontFamily: "'IBM Plex Mono', monospace",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 12,
                 fontWeight: 600,
                 letterSpacing: '0.08em',
@@ -181,7 +181,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
             <p
               style={{
                 margin: '0 0 4px',
-                fontFamily: "'IBM Plex Mono', monospace",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 12,
                 fontWeight: 600,
                 letterSpacing: '0.08em',
@@ -194,7 +194,7 @@ export default function TeamDevelopmentScreen({ onAuthError }) {
             <p
               style={{
                 margin: 0,
-                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 14,
                 color: 'var(--cream)',
                 lineHeight: 1.5,
@@ -241,7 +241,7 @@ function SummaryStrip({ summary }) {
           <p
             style={{
               margin: '0 0 3px',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 20,
               fontWeight: 700,
               color: color || 'var(--cream)',
@@ -253,7 +253,7 @@ function SummaryStrip({ summary }) {
           <p
             style={{
               margin: 0,
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               color: 'var(--text-muted)',
               lineHeight: 1.2,
@@ -308,7 +308,7 @@ function StaffTile({ staff, onTap }) {
             )}
             <span
               style={{
-                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 15,
                 fontWeight: 600,
                 color: 'var(--cream)',
@@ -321,7 +321,7 @@ function StaffTile({ staff, onTap }) {
           <p
             style={{
               margin: '0 0 8px',
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 13,
               color: 'var(--text-sub)',
               lineHeight: 1.2,
@@ -335,7 +335,7 @@ function StaffTile({ staff, onTap }) {
             <p
               style={{
                 margin: '0 0 3px',
-                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 13,
                 color: config.color,
                 lineHeight: 1.4,
@@ -348,7 +348,7 @@ function StaffTile({ staff, onTap }) {
             <p
               style={{
                 margin: 0,
-                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 13,
                 color: 'var(--amber)',
                 lineHeight: 1.4,
@@ -363,7 +363,7 @@ function StaffTile({ staff, onTap }) {
             <p
               style={{
                 margin: '4px 0 0',
-                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 13,
                 color: 'var(--text-sub)',
                 lineHeight: 1.4,
@@ -388,7 +388,7 @@ function StaffTile({ staff, onTap }) {
           >
             <span
               style={{
-                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 13,
                 fontWeight: 600,
                 color: config.color,
@@ -401,7 +401,7 @@ function StaffTile({ staff, onTap }) {
           <p
             style={{
               margin: 0,
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               color: 'var(--text-muted)',
               lineHeight: 1,
@@ -424,7 +424,7 @@ function StaffTile({ staff, onTap }) {
       >
         <span
           style={{
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 12,
             color: 'var(--gold)',
           }}
@@ -450,7 +450,7 @@ function GapRow({ gap, rank, isLast }) {
     >
       <span
         style={{
-          fontFamily: "'IBM Plex Mono', monospace",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 14,
           fontWeight: 700,
           color: 'var(--amber)',
@@ -465,7 +465,7 @@ function GapRow({ gap, rank, isLast }) {
         <p
           style={{
             margin: '0 0 2px',
-            fontFamily: "'DM Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 14,
             fontWeight: 600,
             color: 'var(--cream)',
@@ -477,7 +477,7 @@ function GapRow({ gap, rank, isLast }) {
         <p
           style={{
             margin: 0,
-            fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+            fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
             fontSize: 13,
             color: 'var(--text-sub)',
             lineHeight: 1.4,
@@ -532,7 +532,7 @@ function StaffDetailView({ staff, onBack }) {
           <p
             style={{
               margin: '0 0 2px',
-              fontFamily: "'Space Grotesk', system-ui, sans-serif",
+              fontFamily: "'Fraunces', Georgia, serif",
               fontSize: 17,
               fontWeight: 700,
               color: 'var(--cream)',
@@ -544,7 +544,7 @@ function StaffDetailView({ staff, onBack }) {
           <p
             style={{
               margin: 0,
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 13,
               color: 'var(--text-sub)',
             }}
@@ -562,7 +562,7 @@ function StaffDetailView({ staff, onBack }) {
         >
           <span
             style={{
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 13,
               fontWeight: 600,
               color: config.color,
@@ -588,7 +588,7 @@ function StaffDetailView({ staff, onBack }) {
           <p
             style={{
               margin: 0,
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 13,
               color: 'var(--text-sub)',
               lineHeight: 1.4,
@@ -611,7 +611,7 @@ function StaffDetailView({ staff, onBack }) {
           <p
             style={{
               margin: '0 0 4px',
-              fontFamily: "'IBM Plex Mono', monospace",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 12,
               fontWeight: 600,
               letterSpacing: '0.08em',
@@ -624,7 +624,7 @@ function StaffDetailView({ staff, onBack }) {
           <p
             style={{
               margin: 0,
-              fontFamily: "'DM Sans', system-ui, sans-serif",
+              fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
               fontSize: 16,
               fontWeight: 600,
               color: staff.developmentStatus === 'stagnant' ? 'var(--red)' : 'var(--cream)',
@@ -648,7 +648,7 @@ function StaffDetailView({ staff, onBack }) {
             <p
               style={{
                 margin: '0 0 8px',
-                fontFamily: "'IBM Plex Mono', monospace",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 12,
                 fontWeight: 600,
                 letterSpacing: '0.08em',
@@ -662,7 +662,7 @@ function StaffDetailView({ staff, onBack }) {
               <p
                 style={{
                   margin: '0 0 4px',
-                  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                  fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                   fontSize: 14,
                   color: 'var(--cream)',
                   lineHeight: 1.4,
@@ -675,7 +675,7 @@ function StaffDetailView({ staff, onBack }) {
               <p
                 style={{
                   margin: 0,
-                  fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                  fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                   fontSize: 14,
                   color: 'var(--amber)',
                   lineHeight: 1.4,
@@ -701,7 +701,7 @@ function StaffDetailView({ staff, onBack }) {
             <p
               style={{
                 margin: '0 0 4px',
-                fontFamily: "'IBM Plex Mono', monospace",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 12,
                 fontWeight: 600,
                 letterSpacing: '0.08em',
@@ -714,7 +714,7 @@ function StaffDetailView({ staff, onBack }) {
             <p
               style={{
                 margin: 0,
-                fontFamily: "'DM Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 15,
                 color: 'var(--cream)',
               }}
@@ -738,7 +738,7 @@ function StaffDetailView({ staff, onBack }) {
             <p
               style={{
                 margin: 0,
-                fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+                fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
                 fontSize: 14,
                 color: 'var(--text-sub)',
                 lineHeight: 1.5,
@@ -766,7 +766,7 @@ function LoadingState() {
     >
       <span
         style={{
-          fontFamily: "'IBM Plex Mono', monospace",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 14,
           color: 'var(--text-sub)',
         }}
@@ -791,7 +791,7 @@ function ErrorState() {
       <p
         style={{
           margin: 0,
-          fontFamily: "'Plus Jakarta Sans', system-ui, sans-serif",
+          fontFamily: "'Hanken Grotesk', system-ui, sans-serif",
           fontSize: 15,
           color: 'var(--text-sub)',
           textAlign: 'center',

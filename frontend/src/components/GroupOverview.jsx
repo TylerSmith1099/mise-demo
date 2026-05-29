@@ -53,9 +53,9 @@ const T = {
 };
 
 const FONTS = {
-  display: "'Space Grotesk', system-ui, sans-serif",
-  ui:      "'DM Sans', system-ui, sans-serif",
-  mono:    "'IBM Plex Mono', 'Courier New', monospace",
+  display: "'Fraunces', Georgia, serif",
+  ui:      "'Hanken Grotesk', system-ui, sans-serif",
+  mono:    "'Hanken Grotesk', system-ui, sans-serif",
 };
 
 // ─── CSS (injected once) ─────────────────────────────────────────────────────
