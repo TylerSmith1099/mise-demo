@@ -91,34 +91,19 @@ function selectLeadResult(results, query = '') {
 
 function composeAnswer({ results, lowConfidence, persona, query = '' }) {
   if (!results.length) {
-    return "I couldn't find anything in your venue's knowledge base for that. " +
-      'Check with your Duty Manager before acting.';
+    return "Nothing in the knowledge base matched that question. Ask your duty manager.";
   }
   const top = selectLeadResult(results, query);
 
-  // Citation trail: the on-point source, plus the most relevant statute/code.
-  // For a gambling/gaming question we prefer the Gaming Machine Act / RG Code
-  // over an incidental national instrument, so the legal grounding is correct.
-  const gamblingLeg = results.find(
-    (r) => r.shared && /gaming machine|responsible gambling/i.test(r.source),
-  );
-  const anyLeg = results.find((r) => r.shared);
-  const legCite = gamblingLeg || anyLeg;
-  const sources = [`${top.source} — ${top.section}`];
-  if (legCite && legCite.source !== top.source) {
-    sources.push(`${legCite.source} — ${legCite.section}`);
-  }
-  const citation = `\n\n*(Source: ${sources.join('; ')})*`;
-
   // Calibrated low confidence -> hedge in the persona's escalation voice.
+  // No inline citations in either path — source attribution is in the Sources panel.
   if (lowConfidence) {
     const who = persona?.label === 'Gaming Attendant' ? 'your supervisor' : 'your Duty Manager';
     return (
-      `I can't confidently match this to your knowledge base — check with ${who} ` +
-      `before acting. The closest guidance I have:\n\n${top.content}${citation}`
+      `Low confidence on this one — confirm with ${who} before acting.\n\n${top.content}`
     );
   }
-  return `${top.content}${citation}`;
+  return top.content;
 }
 
 // Pull the caller's OWN live operational rows to inject as synthesis context
